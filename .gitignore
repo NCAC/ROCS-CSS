@@ -1,0 +1,26 @@
+# ignore everything
+/*
+
+# except these files
+!*.gitignore
+!LICENSE
+!README.md
+!README_FR.md
+
+!package.json
+!CONTRIBUTING.md
+
+!.stylelintrc.json
+!.stylelintignore
+!eslint.config.js
+!.release-it.json
+
+!.github/
+/.github/*
+!/.github/workflows/
+
+!.husky/
+
+!docs/
+!tools/
+!examples/
