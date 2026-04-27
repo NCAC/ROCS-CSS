@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProductCard - ROCS Example</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <article class="ProductCard" data-featured>
+    <div class="ProductCard-header">
+      <span class="ProductCard-headerBadge">Nouveau</span>
+      <button class="ProductCard-headerFavorite" aria-label="Ajouter aux favoris">
+        ♥
+      </button>
+    </div>
+    
+    <img class="ProductCard-media" 
+         src="https://via.placeholder.com/400x300" 
+         alt="Produit exemple">
+    
+    <div class="ProductCard-content">
+      <h3 class="ProductCard-title">Nom du produit</h3>
+      <p class="ProductCard-description">
+        Description courte du produit avec quelques détails importants.
+      </p>
+      
+      <div class="ProductCard-footer">
+        <span class="ProductCard-price" data-tone="highlight">49,99 €</span>
+        <button class="ProductCard-cta">
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Version expanded -->
+  <article class="ProductCard" data-state="expanded">
+    <div class="ProductCard-header">
+      <span class="ProductCard-headerBadge">Promo</span>
+      <button class="ProductCard-headerFavorite" aria-label="Ajouter aux favoris">
+        ♥
+      </button>
+    </div>
+    
+    <img class="ProductCard-media" 
+         src="https://via.placeholder.com/400x300" 
+         alt="Produit en promotion">
+    
+    <div class="ProductCard-content">
+      <h3 class="ProductCard-title">Produit en détail</h3>
+      <p class="ProductCard-description">
+        Description étendue visible lorsque la carte est en état "expanded".
+        Cet état est géré via data-state, pas via une classe supplémentaire.
+      </p>
+      
+      <ul class="ProductCard-features">
+        <li class="ProductCard-feature">Caractéristique 1</li>
+        <li class="ProductCard-feature">Caractéristique 2</li>
+        <li class="ProductCard-feature">Caractéristique 3</li>
+      </ul>
+      
+      <div class="ProductCard-footer">
+        <span class="ProductCard-price" data-tone="highlight">39,99 €</span>
+        <button class="ProductCard-cta">
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+  </article>
+</body>
+</html>

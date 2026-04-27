@@ -1,0 +1,36 @@
+{
+  "git": {
+    "commitMessage": "release: v${version}",
+    "tagName": "v${version}",
+    "requireCleanWorkingDir": true
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "in": "package.json",
+      "out": ["package.json", "README.md", "README_FR.md"]
+    },
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md",
+      "writerOpts": {
+        "transform": {
+          "feat": "✨ Features",
+          "fix": "🐛 Bug Fixes",
+          "chore": "🔧 Maintenance",
+          "refacto": "♻️ Refactoring",
+          "docs": "📚 Documentation",
+          "release": "🚀 Releases"
+        }
+      }
+    }
+  },
+  "hooks": {
+    "before:bump": "npm run check"
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": {
+    "release": true
+  }
+}

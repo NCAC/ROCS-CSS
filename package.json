@@ -1,0 +1,59 @@
+{
+  "name": "rocs-css",
+  "version": "1.0.0",
+  "description": "Role-Oriented, One-Class CSS Methodology",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "lint:css": "stylelint '**/*.{css,scss}'",
+    "lint:css:fix": "stylelint '**/*.{css,scss}' --fix",
+    "lint:jsx": "eslint --no-error-on-unmatched-pattern '**/*.{jsx,tsx}'",
+    "lint": "npm run lint:css && npm run lint:jsx",
+    "validate": "node tools/rocs-validate.js --dir ./examples",
+    "validate:strict": "node tools/rocs-validate.js --dir ./examples --strict",
+    "validate:json": "node tools/rocs-validate.js --dir ./examples --format json",
+    "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css",
+    "check": "npm run lint && npm run validate",
+    "release": "release-it",
+    "release:dry": "release-it --dry-run",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "rocs",
+    "css",
+    "scss",
+    "methodology",
+    "naming-convention",
+    "semantic",
+    "architecture",
+    "frontend",
+    "bem",
+    "oocss",
+    "atomic-css",
+    "stylelint"
+  ],
+  "author": "ncac",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@release-it/bumper": "^7.0.5",
+    "@release-it/conventional-changelog": "^10.0.6",
+    "eslint": "^9.0.0",
+    "husky": "^8.0.3",
+    "release-it": "^19.2.4",
+    "sass": "^1.70.0",
+    "stylelint": "^16.2.0",
+    "stylelint-config-standard-scss": "^13.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NCAC/ROCS-CSS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NCAC/ROCS-CSS/issues"
+  },
+  "homepage": "https://github.com/NCAC/ROCS-CSS#readme"
+}

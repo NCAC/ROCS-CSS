@@ -1,0 +1,322 @@
+@charset "UTF-8";
+.CheckoutForm {
+  max-width: 560px;
+  margin: 48px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, sans-serif;
+  color: #111827;
+}
+
+.CheckoutForm-steps {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  counter-reset: none;
+}
+
+.CheckoutForm-step {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.45;
+  transition: opacity 250ms ease-in-out;
+}
+.CheckoutForm-step[aria-current=step] {
+  opacity: 1;
+}
+.CheckoutForm-step[aria-current=step] :where(.CheckoutForm-stepNumber) {
+  background: #1a56db;
+  color: #fff;
+  border-color: #1a56db;
+}
+.CheckoutForm-step[aria-current=step] :where(.CheckoutForm-stepLabel) {
+  font-weight: 600;
+  color: #1a56db;
+}
+
+.CheckoutForm-stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: #f9fafb;
+  color: #4b5563;
+  transition: background 250ms ease-in-out, border-color 250ms ease-in-out, color 250ms ease-in-out;
+}
+
+.CheckoutForm-stepLabel {
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-align: center;
+  transition: color 250ms ease-in-out, font-weight 250ms ease-in-out;
+}
+
+.CheckoutForm-panel {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.CheckoutForm-panel:where([data-panel]) {
+  animation: panelFadeIn 250ms ease-in-out both;
+}
+
+.CheckoutForm-panelTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.CheckoutForm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.CheckoutForm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (width <= 480px) {
+  .CheckoutForm-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.CheckoutForm-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.CheckoutForm-input {
+  appearance: none;
+  width: 100%;
+  padding: 8px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #111827;
+  background: #fff;
+  transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out, outline 150ms ease-in-out;
+}
+.CheckoutForm-input:focus {
+  outline: 2px solid #1a56db;
+  outline-offset: 2px;
+  border-color: #1a56db;
+}
+.CheckoutForm-input:where([aria-invalid=true]) {
+  border-color: #c81e1e;
+  background-color: #fde8e8;
+}
+.CheckoutForm-input:where([aria-invalid=true]):focus {
+  outline-color: #c81e1e;
+  box-shadow: 0 0 0 3px rgba(200, 30, 30, 0.15);
+}
+.CheckoutForm-input:valid:not(:placeholder-shown) {
+  border-color: #057a55;
+}
+.CheckoutForm-input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+}
+
+.CheckoutForm-fieldError {
+  font-size: 0.875rem;
+  color: #c81e1e;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.CheckoutForm-fieldError::before {
+  content: "⚠";
+  font-size: 0.75em;
+}
+
+.CheckoutForm-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.CheckoutForm-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 150ms ease-in-out, background 150ms ease-in-out;
+}
+.CheckoutForm-option:has(input[type=radio]:checked) {
+  border-color: #1a56db;
+  background: #dbeafe;
+}
+.CheckoutForm-option:hover:not(:has(input:checked)) {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+.CheckoutForm-option input[type=radio] {
+  accent-color: #1a56db;
+}
+
+.CheckoutForm-optionLabel {
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.CheckoutForm-options[data-delivery-type=express] :where(.CheckoutForm-option:first-child) {
+  opacity: 0.6;
+}
+
+.CheckoutForm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.CheckoutForm-nextStep,
+.CheckoutForm-submit {
+  padding: 8px 32px;
+  background: #1a56db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease-in-out, transform 150ms ease-in-out, box-shadow 150ms ease-in-out;
+}
+.CheckoutForm-nextStep:hover,
+.CheckoutForm-submit:hover {
+  background: #1240a8;
+  box-shadow: 0 2px 8px rgba(26, 86, 219, 0.35);
+}
+.CheckoutForm-nextStep:active,
+.CheckoutForm-submit:active {
+  transform: translateY(1px);
+}
+.CheckoutForm-nextStep:disabled,
+.CheckoutForm-submit:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.CheckoutForm-prevStep {
+  padding: 8px 24px;
+  background: transparent;
+  color: #4b5563;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 150ms ease-in-out, color 150ms ease-in-out;
+}
+.CheckoutForm-prevStep:hover {
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.CheckoutFormSummary {
+  text-align: center;
+  padding: 32px 0;
+  animation: panelFadeIn 250ms ease-in-out both;
+}
+
+.CheckoutFormSummary-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #057a55;
+  margin-bottom: 8px;
+}
+
+.CheckoutFormSummary-message {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 24px;
+}
+
+.CheckoutFormSummary-details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 24px;
+  text-align: left;
+  margin: 0 auto 24px;
+  max-width: 320px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.CheckoutFormSummary-detailLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.CheckoutFormSummary-detailValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.CheckoutFormSummary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 32px;
+  background: #1a56db;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease-in-out;
+}
+.CheckoutFormSummary-cta:hover {
+  background: #1240a8;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .CheckoutForm-panel,
+  .CheckoutFormSummary {
+    animation: none;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

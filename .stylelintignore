@@ -1,0 +1,3 @@
+# Fichiers compilés (build artifacts — générés par Sass)
+examples/**/*.css
+node_modules/
