@@ -41,9 +41,7 @@ jobs:
         run: npm ci
 
       - name: Run Stylelint
-        run: npx stylelint '**/*.{scss}'
-        env:
-          NODE_ENV: ci
+        run: npm run lint:css
 
   # ─── Job 2 : Lint JSX/HTML ───────────────────────────────────────────────
   eslint:
@@ -63,8 +61,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint --no-error-on-unmatched-pattern '**/*.{jsx,tsx,vue}'
-        continue-on-error: false
+        run: npm run lint:jsx
 
   # ─── Job 3 : Validation ROCS (script custom) ────────────────────────────
   rocs-validate:
