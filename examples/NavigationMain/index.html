@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NavigationMain — Exemple ROCS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!--
+    ROCS — Exemple : NavigationMain
+    ================================
+    Démontre :
+    - Bloc ROCS : NavigationMain (unité sémantique autonome)
+    - Éléments : items, links, trigger, submenu, logo, actions
+    - États via ARIA : aria-expanded, aria-current, aria-hidden (§4, §6.2.2)
+    - Métadonnée contextuelle : data-has-submenu (§4.2) — param. layout,
+      pas un variant sémantique
+    - Aucune classe d'état (pas de is-open, is-active) (§3.5)
+    - Max 1 classe ROCS par élément (§3.1)
+    - id réservés aux ancres/JS, jamais en CSS (§5)
+  -->
+
+  <header class="NavigationMain" role="banner">
+    <a class="NavigationMain-logo" href="/" aria-label="Accueil — ROCS CSS">
+      <span class="NavigationMain-logoText">ROCS</span>
+    </a>
+
+    <!--
+      ROCS §4.2 — Métadonnée contextuelle :
+      data-nav-layout="desktop|mobile" est un paramètre technique de rendu,
+      pas un variant sémantique. Il est initialisé côté serveur et modifié
+      par JS lors du resize. Cible en CSS avec :where() (§6.2.2).
+    -->
+    <nav
+      class="NavigationMain-nav"
+      aria-label="Navigation principale"
+      data-nav-state="idle"
+    >
+
+      <!--
+        ROCS §3.5 — Bouton mobile : pas de classe d'état.
+        L'état ouvert/fermé est porté par aria-expanded (attribut ARIA natif).
+        JS modifie aria-expanded="true/false" sur ce bouton ET data-nav-state
+        sur le parent <nav>.
+      -->
+      <button
+        class="NavigationMain-menuToggle"
+        aria-controls="navigation-list"
+        aria-expanded="false"
+        aria-label="Ouvrir le menu"
+        id="navigation-toggle"
+        type="button"
+      >
+        <span class="NavigationMain-menuToggleBar"></span>
+        <span class="NavigationMain-menuToggleBar"></span>
+        <span class="NavigationMain-menuToggleBar"></span>
+      </button>
+
+      <ul
+        class="NavigationMain-list"
+        id="navigation-list"
+        role="list"
+      >
+        <!--
+          Item sans sous-menu : pas de data-has-submenu.
+          aria-current="page" porté par l'item actif (attribut natif).
+        -->
+        <li class="NavigationMain-item">
+          <a class="NavigationMain-link" href="/" aria-current="page">
+            Accueil
+          </a>
+        </li>
+
+        <li class="NavigationMain-item">
+          <a class="NavigationMain-link" href="/specification">
+            Spécification
+          </a>
+        </li>
+
+        <!--
+          Item avec sous-menu.
+          ROCS §4.2 — data-has-submenu est une métadonnée contextuelle locale :
+          elle configure le layout de l'item (flèche, comportement hover/focus).
+          Elle ne change pas la nature sémantique de l'item.
+          Usage CSS via :where() obligatoire (§6.2.2).
+        -->
+        <li class="NavigationMain-item" data-has-submenu="true">
+          <button
+            class="NavigationMain-trigger"
+            aria-expanded="false"
+            aria-controls="submenu-guides"
+            type="button"
+          >
+            Guides
+            <!--
+              ROCS §3.6.3 — Icône purement décorative : pseudo-élément ::after.
+              Pas de nœud SVG séparé car pas de style propre requis.
+            -->
+          </button>
+
+          <ul
+            class="NavigationMain-submenu"
+            id="submenu-guides"
+            aria-hidden="true"
+            role="list"
+          >
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/guides/demarrage">
+                Démarrage rapide
+              </a>
+            </li>
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/guides/migration">
+                Guide de migration
+              </a>
+            </li>
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/guides/implementation">
+                Guide d'implémentation
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="NavigationMain-item" data-has-submenu="true">
+          <button
+            class="NavigationMain-trigger"
+            aria-expanded="false"
+            aria-controls="submenu-outils"
+            type="button"
+          >
+            Outils
+          </button>
+
+          <ul
+            class="NavigationMain-submenu"
+            id="submenu-outils"
+            aria-hidden="true"
+            role="list"
+          >
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/outils/stylelint">
+                Stylelint
+              </a>
+            </li>
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/outils/eslint">
+                ESLint
+              </a>
+            </li>
+            <li class="NavigationMain-subitem">
+              <a class="NavigationMain-sublink" href="/outils/validateur">
+                Validateur ROCS
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="NavigationMain-item">
+          <a class="NavigationMain-link" href="/exemples">
+            Exemples
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="NavigationMain-actions">
+      <a class="NavigationMain-githubLink" href="https://github.com/ncac/rocs-css" aria-label="Voir sur GitHub">
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Script minimal de démo -->
+  <script>
+    // ROCS §4 — JS pilote les états dynamiques via ARIA et data-*
+    // Aucune classe d'état ajoutée ou supprimée.
+
+    // Gestion du menu mobile
+    const toggle = document.getElementById('navigation-toggle');
+    const nav = document.querySelector('.NavigationMain-nav');
+
+    if (toggle && nav) {
+      toggle.addEventListener('click', () => {
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        toggle.setAttribute('aria-label', isExpanded ? 'Ouvrir le menu' : 'Fermer le menu');
+        // ROCS §4 — état dynamique sur le parent via data-*
+        nav.dataset.navState = isExpanded ? 'idle' : 'open';
+      });
+    }
+
+    // Gestion des sous-menus
+    document.querySelectorAll('.NavigationMain-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+        const controlsId = trigger.getAttribute('aria-controls');
+        const submenu = document.getElementById(controlsId);
+
+        trigger.setAttribute('aria-expanded', String(!isExpanded));
+        if (submenu) {
+          submenu.setAttribute('aria-hidden', String(isExpanded));
+        }
+      });
+    });
+
+    // Fermeture au clic extérieur
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.NavigationMain-item[data-has-submenu]')) {
+        document.querySelectorAll('.NavigationMain-trigger[aria-expanded="true"]').forEach(t => {
+          const submenu = document.getElementById(t.getAttribute('aria-controls'));
+          t.setAttribute('aria-expanded', 'false');
+          if (submenu) submenu.setAttribute('aria-hidden', 'true');
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

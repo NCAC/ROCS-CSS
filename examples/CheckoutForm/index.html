@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CheckoutForm — Exemple ROCS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!--
+    ROCS — Exemple : CheckoutForm (formulaire de paiement multi-étapes)
+    ====================================================================
+    Démontre :
+    - Bloc ROCS : CheckoutForm (unité sémantique autonome)
+    - Éléments avec rôles fonctionnels clairs (pas d'apparence dans le nom)
+    - États de champs via attributs natifs : :invalid, :valid, aria-invalid (§3.5, §6.2.2)
+    - États de champs désactivés via `disabled` (attribut natif)
+    - État multi-étapes via data-step (état dynamique JS) (§4.2)
+    - Aucune classe d'état (pas de is-error, is-disabled, is-active) (§3.5)
+    - Promotion : CheckoutFormSummary promu en Bloc (§7)
+    - id réservés aux labels/aria, jamais en CSS (§5)
+    - 0 ou 1 classe ROCS par élément (§3.1)
+  -->
+
+  <main>
+    <!--
+      ROCS §4 — data-step est un état dynamique :
+      JS modifie data-step="1|2|3" selon la progression de l'utilisateur.
+      Ciblé en CSS pour afficher/masquer les étapes.
+    -->
+    <form
+      class="CheckoutForm"
+      data-step="1"
+      novalidate
+      aria-label="Formulaire de paiement"
+      id="checkout-form"
+    >
+
+      <!-- ── Indicateur d'étapes ─────────────────────────────────────────── -->
+      <!--
+        ROCS §4.2 — data-total-steps est une métadonnée contextuelle :
+        paramètre de layout (nombre d'étapes), pas un variant sémantique.
+      -->
+      <ol
+        class="CheckoutForm-steps"
+        aria-label="Progression du paiement"
+        data-total-steps="3"
+      >
+        <li class="CheckoutForm-step" aria-current="step">
+          <span class="CheckoutForm-stepNumber" aria-hidden="true">1</span>
+          <span class="CheckoutForm-stepLabel">Livraison</span>
+        </li>
+        <li class="CheckoutForm-step">
+          <span class="CheckoutForm-stepNumber" aria-hidden="true">2</span>
+          <span class="CheckoutForm-stepLabel">Paiement</span>
+        </li>
+        <li class="CheckoutForm-step">
+          <span class="CheckoutForm-stepNumber" aria-hidden="true">3</span>
+          <span class="CheckoutForm-stepLabel">Confirmation</span>
+        </li>
+      </ol>
+
+      <!-- ── Étape 1 : Livraison ────────────────────────────────────────── -->
+      <fieldset class="CheckoutForm-panel" data-panel="1" aria-labelledby="step1-title">
+        <legend class="CheckoutForm-panelTitle" id="step1-title">
+          Adresse de livraison
+        </legend>
+
+        <!--
+          ROCS §3.6.1 — CheckoutForm-field est le rôle primaire du wrapper.
+          Il existe pour le style (layout label + input + erreur).
+        -->
+        <div class="CheckoutForm-field">
+          <label class="CheckoutForm-label" for="firstname">Prénom *</label>
+          <input
+            class="CheckoutForm-input"
+            type="text"
+            id="firstname"
+            name="firstname"
+            autocomplete="given-name"
+            required
+            aria-required="true"
+            aria-describedby="firstname-error"
+          >
+          <!--
+            ROCS §3.5 — L'erreur est portée par aria-invalid sur l'input
+            et par aria-live="polite" ici. Pas de classe is-error, is-invalid.
+          -->
+          <span
+            class="CheckoutForm-fieldError"
+            id="firstname-error"
+            aria-live="polite"
+            role="alert"
+            hidden
+          >
+            Le prénom est requis.
+          </span>
+        </div>
+
+        <div class="CheckoutForm-field">
+          <label class="CheckoutForm-label" for="lastname">Nom *</label>
+          <input
+            class="CheckoutForm-input"
+            type="text"
+            id="lastname"
+            name="lastname"
+            autocomplete="family-name"
+            required
+            aria-required="true"
+            aria-describedby="lastname-error"
+          >
+          <span class="CheckoutForm-fieldError" id="lastname-error" aria-live="polite" role="alert" hidden>
+            Le nom est requis.
+          </span>
+        </div>
+
+        <div class="CheckoutForm-field">
+          <label class="CheckoutForm-label" for="address">Adresse *</label>
+          <input
+            class="CheckoutForm-input"
+            type="text"
+            id="address"
+            name="address"
+            autocomplete="street-address"
+            required
+            aria-required="true"
+            aria-describedby="address-error"
+          >
+          <span class="CheckoutForm-fieldError" id="address-error" aria-live="polite" role="alert" hidden>
+            L'adresse est requise.
+          </span>
+        </div>
+
+        <div class="CheckoutForm-row">
+          <div class="CheckoutForm-field">
+            <label class="CheckoutForm-label" for="zip">Code postal *</label>
+            <input
+              class="CheckoutForm-input"
+              type="text"
+              id="zip"
+              name="zip"
+              autocomplete="postal-code"
+              pattern="[0-9]{5}"
+              required
+              aria-required="true"
+              aria-describedby="zip-error"
+              inputmode="numeric"
+            >
+            <span class="CheckoutForm-fieldError" id="zip-error" aria-live="polite" role="alert" hidden>
+              Code postal invalide (5 chiffres requis).
+            </span>
+          </div>
+
+          <div class="CheckoutForm-field">
+            <label class="CheckoutForm-label" for="city">Ville *</label>
+            <input
+              class="CheckoutForm-input"
+              type="text"
+              id="city"
+              name="city"
+              autocomplete="address-level2"
+              required
+              aria-required="true"
+              aria-describedby="city-error"
+            >
+            <span class="CheckoutForm-fieldError" id="city-error" aria-live="polite" role="alert" hidden>
+              La ville est requise.
+            </span>
+          </div>
+        </div>
+
+        <!--
+          ROCS §4 — data-delivery-type est un état dynamique :
+          JS modifie la valeur lors de la sélection de l'utilisateur.
+          Ciblé en CSS pour les styles conditionnels.
+        -->
+        <div class="CheckoutForm-field">
+          <span class="CheckoutForm-label" id="delivery-label">Mode de livraison *</span>
+          <div class="CheckoutForm-options" role="radiogroup" aria-labelledby="delivery-label" data-delivery-type="standard">
+            <label class="CheckoutForm-option">
+              <input type="radio" name="delivery" value="standard" checked>
+              <span class="CheckoutForm-optionLabel">Standard (3–5 jours) — Gratuit</span>
+            </label>
+            <label class="CheckoutForm-option">
+              <input type="radio" name="delivery" value="express">
+              <span class="CheckoutForm-optionLabel">Express (24h) — 9,90 €</span>
+            </label>
+            <label class="CheckoutForm-option">
+              <input type="radio" name="delivery" value="relay">
+              <span class="CheckoutForm-optionLabel">Point relais (2–4 jours) — 2,90 €</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="CheckoutForm-actions">
+          <button class="CheckoutForm-nextStep" type="button" data-action="next-step">
+            Continuer vers le paiement
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- ── Étape 2 : Paiement ─────────────────────────────────────────── -->
+      <fieldset class="CheckoutForm-panel" data-panel="2" aria-labelledby="step2-title" hidden>
+        <legend class="CheckoutForm-panelTitle" id="step2-title">
+          Informations de paiement
+        </legend>
+
+        <div class="CheckoutForm-field">
+          <label class="CheckoutForm-label" for="card-number">Numéro de carte *</label>
+          <input
+            class="CheckoutForm-input"
+            type="text"
+            id="card-number"
+            name="card-number"
+            autocomplete="cc-number"
+            inputmode="numeric"
+            pattern="[0-9 ]{13,19}"
+            maxlength="19"
+            required
+            aria-required="true"
+            aria-describedby="card-number-error"
+            placeholder="1234 5678 9012 3456"
+          >
+          <span class="CheckoutForm-fieldError" id="card-number-error" aria-live="polite" role="alert" hidden>
+            Numéro de carte invalide.
+          </span>
+        </div>
+
+        <div class="CheckoutForm-row">
+          <div class="CheckoutForm-field">
+            <label class="CheckoutForm-label" for="card-expiry">Date d'expiration *</label>
+            <input
+              class="CheckoutForm-input"
+              type="text"
+              id="card-expiry"
+              name="card-expiry"
+              autocomplete="cc-exp"
+              inputmode="numeric"
+              pattern="(0[1-9]|1[0-2])\/[0-9]{2}"
+              maxlength="5"
+              required
+              aria-required="true"
+              aria-describedby="card-expiry-error"
+              placeholder="MM/AA"
+            >
+            <span class="CheckoutForm-fieldError" id="card-expiry-error" aria-live="polite" role="alert" hidden>
+              Date invalide (MM/AA).
+            </span>
+          </div>
+
+          <div class="CheckoutForm-field">
+            <label class="CheckoutForm-label" for="card-cvv">CVV *</label>
+            <input
+              class="CheckoutForm-input"
+              type="text"
+              id="card-cvv"
+              name="card-cvv"
+              autocomplete="cc-csc"
+              inputmode="numeric"
+              pattern="[0-9]{3,4}"
+              maxlength="4"
+              required
+              aria-required="true"
+              aria-describedby="card-cvv-error"
+              placeholder="123"
+            >
+            <span class="CheckoutForm-fieldError" id="card-cvv-error" aria-live="polite" role="alert" hidden>
+              CVV invalide (3–4 chiffres).
+            </span>
+          </div>
+        </div>
+
+        <div class="CheckoutForm-field">
+          <label class="CheckoutForm-label" for="card-name">Nom sur la carte *</label>
+          <input
+            class="CheckoutForm-input"
+            type="text"
+            id="card-name"
+            name="card-name"
+            autocomplete="cc-name"
+            required
+            aria-required="true"
+            aria-describedby="card-name-error"
+            placeholder="PRÉNOM NOM"
+          >
+          <span class="CheckoutForm-fieldError" id="card-name-error" aria-live="polite" role="alert" hidden>
+            Le nom est requis.
+          </span>
+        </div>
+
+        <div class="CheckoutForm-actions">
+          <button class="CheckoutForm-prevStep" type="button" data-action="prev-step">
+            Retour
+          </button>
+          <button class="CheckoutForm-submit" type="submit" data-action="submit">
+            Confirmer et payer
+          </button>
+        </div>
+      </fieldset>
+
+      <!-- ── Étape 3 : Confirmation ─────────────────────────────────────── -->
+      <!--
+        ROCS §7 — Promotion :
+        CheckoutFormSummary est promu en Bloc autonome car il a sa propre
+        structure interne riche (~5 éléments stylés) et pourrait être réutilisé
+        dans d'autres contextes (ex: page "Mon compte > Commandes").
+      -->
+      <div class="CheckoutForm-panel" data-panel="3" hidden>
+        <div class="CheckoutFormSummary" aria-live="polite">
+          <h2 class="CheckoutFormSummary-title">Commande confirmée !</h2>
+          <p class="CheckoutFormSummary-message">
+            Merci pour votre commande. Vous recevrez un email de confirmation.
+          </p>
+          <dl class="CheckoutFormSummary-details">
+            <dt class="CheckoutFormSummary-detailLabel">Numéro de commande</dt>
+            <dd class="CheckoutFormSummary-detailValue" id="order-number">#000000</dd>
+            <dt class="CheckoutFormSummary-detailLabel">Livraison estimée</dt>
+            <dd class="CheckoutFormSummary-detailValue" id="delivery-estimate">3–5 jours ouvrés</dd>
+          </dl>
+          <a class="CheckoutFormSummary-cta" href="/compte/commandes">
+            Suivre ma commande
+          </a>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <script>
+    // ROCS §4 — JS pilote l'état multi-étapes via data-step et l'attribut hidden.
+    // Aucune classe d'état ajoutée.
+    const form = document.getElementById('checkout-form');
+
+    function goToStep(step) {
+      if (!form) return;
+      form.dataset.step = String(step);
+
+      // Afficher/masquer les panels via l'attribut HTML natif `hidden`
+      form.querySelectorAll('.CheckoutForm-panel').forEach(panel => {
+        const panelStep = parseInt(panel.dataset.panel || '0', 10);
+        panel.hidden = panelStep !== step;
+      });
+
+      // Mettre à jour l'indicateur d'étapes
+      form.querySelectorAll('.CheckoutForm-step').forEach((stepEl, idx) => {
+        const isCurrent = idx + 1 === step;
+        stepEl.removeAttribute('aria-current');
+        if (isCurrent) stepEl.setAttribute('aria-current', 'step');
+      });
+    }
+
+    form?.querySelectorAll('[data-action="next-step"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const current = parseInt(form.dataset.step || '1', 10);
+        goToStep(current + 1);
+      });
+    });
+
+    form?.querySelectorAll('[data-action="prev-step"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const current = parseInt(form.dataset.step || '1', 10);
+        goToStep(Math.max(1, current - 1));
+      });
+    });
+
+    // Validation inline : aria-invalid sur le champ, message dans CheckoutForm-fieldError
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const inputs = form.querySelectorAll('.CheckoutForm-input[required]');
+      let isValid = true;
+
+      inputs.forEach(input => {
+        const errorEl = document.getElementById(input.getAttribute('aria-describedby') || '');
+        if (!input.validity.valid) {
+          isValid = false;
+          // ROCS §3.5 — état d'erreur via aria-invalid (attribut natif), pas de classe
+          input.setAttribute('aria-invalid', 'true');
+          if (errorEl) errorEl.hidden = false;
+        } else {
+          input.setAttribute('aria-invalid', 'false');
+          if (errorEl) errorEl.hidden = true;
+        }
+      });
+
+      if (isValid) {
+        document.getElementById('order-number').textContent = `#${Math.floor(Math.random() * 900000 + 100000)}`;
+        goToStep(3);
+      }
+    });
+  </script>
+
+</body>
+</html>

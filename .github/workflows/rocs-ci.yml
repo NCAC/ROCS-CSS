@@ -1,0 +1,167 @@
+# ROCS — CI/CD GitHub Actions
+# Valide automatiquement la conformité ROCS sur chaque push et PR
+# Référence : IMPLEMENTATION_GUIDE_FR.md §7
+
+name: ROCS Quality Check
+
+on:
+  push:
+    branches: [main, develop, "release/**"]
+    paths:
+      - "**/*.scss"
+      - "**/*.html"
+      - "**/*.jsx"
+      - "**/*.tsx"
+      - "**/*.vue"
+      - ".stylelintrc.json"
+      - "eslint.config.js"
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Job 1 : Lint CSS/SCSS ───────────────────────────────────────────────
+  stylelint:
+    name: Stylelint — Nommage ROCS CSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Stylelint
+        run: npm run lint:css
+
+  # ─── Job 2 : Lint JSX/HTML ───────────────────────────────────────────────
+  eslint:
+    name: ESLint — Nommage ROCS HTML/JSX
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint:jsx
+
+  # ─── Job 3 : Validation ROCS (script custom) ────────────────────────────
+  rocs-validate:
+    name: ROCS Validator — Audit complet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ROCS validator
+        run: node tools/rocs-validate.js --dir ./examples --format json --output rocs-report.json
+        continue-on-error: false
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rocs-validation-report
+          path: rocs-report.json
+          retention-days: 14
+
+  # ─── Job 4 : Compiler les exemples ──────────────────────────────────────
+  compile-examples:
+    name: Compiler les exemples SCSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile examples
+        run: |
+          for dir in examples/*/; do
+            if [ -f "$dir/styles.scss" ]; then
+              echo "Compiling $dir/styles.scss..."
+              npx sass "$dir/styles.scss" "$dir/styles.css" --no-source-map
+            fi
+          done
+
+      - name: Check for compilation errors
+        run: |
+          for dir in examples/*/; do
+            if [ -f "$dir/styles.scss" ] && [ ! -f "$dir/styles.css" ]; then
+              echo "ERROR: $dir/styles.css not generated"
+              exit 1
+            fi
+          done
+
+  # ─── Job 5 : Vérifier la cohérence des exemples ─────────────────────────
+  validate-examples:
+    name: Valider les exemples ROCS
+    runs-on: ubuntu-latest
+    needs: [compile-examples]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate examples HTML
+        run: node tools/rocs-validate.js --dir ./examples
+
+  # ─── Synthèse ────────────────────────────────────────────────────────────
+  summary:
+    name: Synthèse ROCS
+    runs-on: ubuntu-latest
+    needs: [stylelint, eslint, rocs-validate, validate-examples]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          if [[ "${{ needs.stylelint.result }}" == "failure" || \
+                "${{ needs.eslint.result }}" == "failure" || \
+                "${{ needs.rocs-validate.result }}" == "failure" || \
+                "${{ needs.validate-examples.result }}" == "failure" ]]; then
+            echo "❌ Des violations ROCS ont été détectées. Voir les détails dans les jobs ci-dessus."
+            exit 1
+          fi
+          echo "✅ Tous les checks ROCS sont passés."
