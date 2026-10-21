@@ -117,7 +117,31 @@ ESLint permet de valider les classes ROCS dans les attributs `className` (JSX) o
 
 ### 2.1 Configuration de référence
 
-Le fichier [`eslint.config.js`](../../eslint.config.js) à la racine du repo contient un **plugin ROCS complet** en flat config ESM (ESLint v9+). Il implémente deux règles :
+Le package `@rocss/rocs` fournit un **plugin ROCS** en flat config ESM (ESLint v9+), sous deux formes :
+
+- `@rocss/rocs/eslint` : configuration prête à l'emploi, qui active les deux règles sur `**/*.jsx` et `**/*.tsx`, sans aucune règle cœur d'ESLint ni ignore ;
+- `@rocss/rocs/eslint-plugin` : le plugin seul, pour choisir soi-même les fichiers et la sévérité.
+
+```javascript
+// eslint.config.js — configuration prête à l'emploi
+import rocs from '@rocss/rocs/eslint';
+
+export default [...rocs];
+```
+
+```javascript
+// eslint.config.js — plugin seul
+import rocs from '@rocss/rocs/eslint-plugin';
+
+export default [{
+  files: ['src/**/*.jsx'],
+  languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
+  plugins: { rocs },
+  rules: { 'rocs/class-naming': 'error', 'rocs/no-state-classes': 'warn' },
+}];
+```
+
+Les fichiers `.tsx` nécessitent en plus un parseur TypeScript (`typescript-eslint`). Dans ce dépôt, le plugin est défini dans [`packages/rocs/eslint-plugin.js`](../../packages/rocs/eslint-plugin.js). Il implémente deux règles :
 
 | Règle | Section spec | Objectif |
 |---|---|---|
@@ -126,29 +150,47 @@ Le fichier [`eslint.config.js`](../../eslint.config.js) à la racine du repo con
 
 ### 2.2 Pattern ROCS (identique dans tous les outils)
 
-Le regex suivant **DOIT** être identique dans Stylelint, ESLint et `rocs-validate.js` :
+Le regex suivant **DOIT** être identique dans Stylelint, ESLint et le validateur CLI :
 
 ```
 ^[A-Z][a-zA-Z0-9]*(?:-(?:[a-z]+[0-9]*)(?:[A-Z][a-z]+[0-9]*){0,2})?$
 ```
 
-> **Important** : la contrainte de profondeur (Bloc ≤ 4 segments PascalCase, Élément ≤ 3 segments camelCase) n'est pas encodable dans un seul regex. Elle est vérifiée par une logique complémentaire dans `eslint.config.js` et `tools/rocs-validate.js`.
+> **Important** : la contrainte de profondeur (Bloc ≤ 4 segments PascalCase, Élément ≤ 3 segments camelCase) n'est pas encodable dans un seul regex. Elle est vérifiée par une logique complémentaire dans `packages/rocs/eslint-plugin.js` et `packages/rocs/src/validator.js`.
 
 ### 2.3 Préfixes non-ROCS autorisés
 
-Les classes imposées par des frameworks tiers sont hors périmètre ROCS. Configurez une liste de préfixes autorisés :
+Les classes imposées par des frameworks tiers sont hors périmètre ROCS. Les classes qui commencent par un préfixe autorisé sont ignorées par **les deux règles** : `rocs/class-naming` ne les valide pas et ne les compte pas comme classes ROCS, et `rocs/no-state-classes` ne les signale pas (`swiper-slide--active` est accepté).
+
+Préfixes autorisés par défaut (exportés en `DEFAULT_ALLOWED_PREFIXES` par `@rocss/rocs/eslint-plugin`) : `js-`, `v-`, `ng-`, `swiper-`, `slick-`, `fancybox-`.
+
+La liste se configure une seule fois, dans les `settings` partagés d'ESLint :
 
 ```javascript
-const NON_ROCS_ALLOWED_PREFIXES = [
-  'js-',        // hooks JavaScript purs
-  'v-',         // Vue.js (v-cloak, etc.)
-  'ng-',        // Angular
-  'swiper-',    // Swiper.js
-  'slick-',     // Slick slider
+// eslint.config.js
+import rocs from '@rocss/rocs/eslint';
+
+export default [
+  ...rocs,
+  {
+    settings: {
+      rocs: {
+        allowedPrefixes: ['ais-', 'swiper-'], // ajoutés aux préfixes par défaut
+        useDefaultPrefixes: true,             // false : n'utiliser que allowedPrefixes
+      },
+    },
+  },
 ];
 ```
 
-Ces préfixes sont ignorés par le plugin `rocs/class-naming`.
+| Réglage | Type | Défaut | Effet |
+|---|---|---|---|
+| `allowedPrefixes` | `string[]` | `[]` | Préfixes ajoutés à la liste |
+| `useDefaultPrefixes` | `boolean` | `true` | `false` retire les préfixes par défaut |
+
+Une valeur invalide arrête ESLint avec une erreur explicite. Un préfixe autorisé exclut aussi la classe du contrôle des classes d'état : ne pas y ajouter `is-` ou `has-`.
+
+Le validateur CLI n'utilise pas ces réglages : il tolère toute classe non-ROCS, mais applique la détection des classes d'état (R04) à toutes les classes.
 
 ---
 

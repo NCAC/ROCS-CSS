@@ -1,10 +1,50 @@
 # ROCS — *Role‑Oriented CSS Semantics*
 
-**Version 1.0.0**
+**Spécification ROCS 1.0.0** — versions des packages indépendantes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > ROCS est une discipline d'architecture HTML/CSS, portée par une **spécification normative** : des classes qui décrivent le **rôle**, un HTML qui reste **stable** pendant les refontes, et une réutilisation visuelle faite **uniquement dans le CSS**.
+
+---
+
+## 📦 Monorepo et packages
+
+La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)).
+
+| Package | Version | Contenu et statut |
+| --- | --- | --- |
+| [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 0.1.0 | **Brouillon documentaire** d'architecture de référence ; aucun mixin Sass ni code d'exécution. |
+| [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Implémentation Sass expérimentale privée** (`private: true`) : sept mixins dans quatre familles ; tests à exécuter et contrats à revoir avant toute levée du statut privé. |
+
+Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
+
+Les [sources françaises ROCS](docs/fr/) font autorité ; les [documents anglais](docs/en/) sont leur traduction. Le brouillon Sass est généré depuis les [sources d'architecture](scss-rocs-framework/), copiées sans modification de leur contenu. Les copies de documentation dans les packages sont générées par `pnpm run build` ou le hook `prepack` : **ne jamais les éditer directement**.
+
+Les sources canoniques des combinators sont dans [packages/sass/](packages/sass/) : **13 fichiers SCSS copiés/adaptés** depuis le dossier local d'import initial. Ce dossier est conservé localement intact comme provenance, mais ignoré par Git via la règle `/*` : il n'est ni une source versionnée ou distribuée, ni un deuxième workspace, et n'est pas fourni par un clone Git. Ne pas l'ajouter au dépôt afin d'éviter une double implémentation. Le package contient une [copie réelle de la licence MIT](packages/sass/LICENSE).
+
+Les sept mixins disponibles sont `context.media`, `context.supports`, `context.container`, `state.pseudo-class`, `state.attribute`, `scope.ancestor` et `part.pseudo-element`. Importer chaque famille avec `@use "pkg:@rocss/sass/context"`, `/state`, `/scope` ou `/part`, en activant l'importeur de packages Node de Dart Sass (≥ 1.71.0 ; CLI : `--pkg-importer=node`, API : `importers: [new NodePackageImporter()]`). `loadPaths: ["node_modules"]` reste une alternative ; voir le [README du package](packages/sass/README.md#imports). Après `pnpm install`, ces imports résolvent le workspace local ; ils ne supposent aucune publication npm.
+
+Le validateur et son API résident dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), avec le CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js) et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js). Le [CLI historique](tools/rocs-validate.js) reste disponible comme wrapper. **CSS est désormais inclus**, avec HTML, HTM et SCSS, dans les extensions analysées : l'analyse reste **heuristique**, sans adaptateurs de templates (Twig, Vue, JSX, etc.) ni garantie de conformité complète. Les sources SCSS et les CSS générés sont analysés séparément ; une revue humaine reste nécessaire.
+
+### Développement depuis le dépôt
+
+Avec Node.js ≥ 20, depuis la racine :
+
+```bash
+pnpm install --frozen-lockfile
+pnpm run build
+pnpm test
+pnpm run check
+pnpm run pack:check
+```
+
+`pnpm run check` enchaîne **build → test → lint → validate**. `pnpm run pack:check` inspecte à blanc les **trois archives**, dont celle du workspace privé `@rocss/sass`, via `pnpm pack --dry-run` ; **il ne publie rien**. Le statut privé empêche la publication, pas la création d'une archive locale avec `pnpm pack`.
+
+Des tests ont été ajoutés pour les compilations Sass (points d'entrée et compositions), les arguments invalides et l'installation des trois archives hors dépôt, avec compilation depuis le package installé. **Ces tests restent à exécuter ; leur présence ne garantit pas leur réussite.**
+
+**Aucun package n'est publié à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.** Les scripts de release à la racine ont été supprimés : l'ancien mécanisme global ne convient pas aux versions indépendantes. Une éventuelle publication sera manuelle depuis le dépôt, après les contrôles et vérification des droits npm ; aucune publication par CI n'est configurée.
 
 ---
 
@@ -56,6 +96,7 @@ ROCS est particulièrement adapté aux projets **"HTML‑first"** :
 - **SSR/SSG moderne** : Next.js, Nuxt, SvelteKit utilisés en mode pages/SSR avec templates stables.
 
 **Caractéristiques communes** :
+
 - Le HTML est produit côté serveur (ou statiquement) et consommé tel quel par le navigateur.
 - Le HTML est l'**artefact stable** : il est inspecté, versionné, maintenu dans la durée.
 - Les classes sont **lisibles** dans le code source rendu et dans les outils de debug.
@@ -103,7 +144,7 @@ Ici, le **scope du module** (`ProductFooter`) est analogue à un **Bloc ROCS**, 
 #### Différences clés
 
 | Aspect | ROCS (HTML-first) | CSS Modules (component-first) |
-|--------|-------------------|-------------------------------|
+| -------- | ------------------- | ------------------------------- |
 | **Artefact stable** | HTML rendu | Code du composant (.tsx/.vue) |
 | **Isolation** | Convention de nommage | Scoping technique (hash) |
 | **Lisibilité** | HTML inspectable | Code source + devtools composant |
@@ -274,7 +315,7 @@ ROCS évite les styles “par contexte” implicite :
 2. Appliquer le **[Guide d'implémentation](./docs/fr/IMPLEMENTATION_GUIDE.md)** (outillage + CI).
 3. Consulter l'**[Aide-mémoire](./docs/fr/CHEATSHEET.md)** pour avoir toutes les règles en une page.
 4. Regarder les **[exemples](./examples/)** pour un modèle de structure ([ProductCard](./examples/ProductCard/README.md), [NavigationMain](./examples/NavigationMain/README.md), [CheckoutForm](./examples/CheckoutForm/README.md)).
-5. Lancer le **validateur** sur votre code : `npm run validate`.
+5. Lancer le **validateur** sur votre code : `pnpm run validate`.
 
 ---
 

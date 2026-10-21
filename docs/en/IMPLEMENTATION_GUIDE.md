@@ -117,7 +117,31 @@ ESLint can validate ROCS classes in `className` (JSX) or `class` (HTML via plugi
 
 ### 2.1 Reference configuration
 
-The [`eslint.config.js`](../../eslint.config.js) file at the repo root contains a **complete ROCS plugin** in flat config ESM (ESLint v9+). It implements two rules:
+The `@rocss/rocs` package provides a **ROCS plugin** in flat config ESM (ESLint v9+), in two forms:
+
+- `@rocss/rocs/eslint`: a ready-to-use configuration that enables both rules on `**/*.jsx` and `**/*.tsx`, with no ESLint core rules and no ignores;
+- `@rocss/rocs/eslint-plugin`: the plugin alone, to choose files and severity yourself.
+
+```javascript
+// eslint.config.js — ready-to-use configuration
+import rocs from '@rocss/rocs/eslint';
+
+export default [...rocs];
+```
+
+```javascript
+// eslint.config.js — plugin only
+import rocs from '@rocss/rocs/eslint-plugin';
+
+export default [{
+  files: ['src/**/*.jsx'],
+  languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
+  plugins: { rocs },
+  rules: { 'rocs/class-naming': 'error', 'rocs/no-state-classes': 'warn' },
+}];
+```
+
+`.tsx` files additionally require a TypeScript parser (`typescript-eslint`). In this repository, the plugin is defined in [`packages/rocs/eslint-plugin.js`](../../packages/rocs/eslint-plugin.js). It implements two rules:
 
 | Rule | Spec section | Purpose |
 |---|---|---|
@@ -126,29 +150,47 @@ The [`eslint.config.js`](../../eslint.config.js) file at the repo root contains 
 
 ### 2.2 ROCS pattern (identical across all tools)
 
-The following regex **MUST** be identical in Stylelint, ESLint, and `rocs-validate.js`:
+The following regex **MUST** be identical in Stylelint, ESLint, and the CLI validator:
 
 ```
 ^[A-Z][a-zA-Z0-9]*(?:-(?:[a-z]+[0-9]*)(?:[A-Z][a-z]+[0-9]*){0,2})?$
 ```
 
-> **Important**: the depth constraint (Block ≤ 4 PascalCase segments, Element ≤ 3 camelCase segments) cannot be encoded in a single regex. It is enforced by additional logic in `eslint.config.js` and `tools/rocs-validate.js`.
+> **Important**: the depth constraint (Block ≤ 4 PascalCase segments, Element ≤ 3 camelCase segments) cannot be encoded in a single regex. It is enforced by additional logic in `packages/rocs/eslint-plugin.js` and `packages/rocs/src/validator.js`.
 
 ### 2.3 Allowed non-ROCS prefixes
 
-Classes imposed by third-party frameworks are outside ROCS scope. Configure a list of allowed prefixes:
+Classes imposed by third-party frameworks are outside ROCS scope. Classes starting with an allowed prefix are ignored by **both rules**: `rocs/class-naming` neither validates them nor counts them as ROCS classes, and `rocs/no-state-classes` does not report them (`swiper-slide--active` is accepted).
+
+Default allowed prefixes (exported as `DEFAULT_ALLOWED_PREFIXES` by `@rocss/rocs/eslint-plugin`): `js-`, `v-`, `ng-`, `swiper-`, `slick-`, `fancybox-`.
+
+The list is configured once, in ESLint's shared `settings`:
 
 ```javascript
-const NON_ROCS_ALLOWED_PREFIXES = [
-  'js-',        // pure JavaScript hooks
-  'v-',         // Vue.js (v-cloak, etc.)
-  'ng-',        // Angular
-  'swiper-',    // Swiper.js
-  'slick-',     // Slick slider
+// eslint.config.js
+import rocs from '@rocss/rocs/eslint';
+
+export default [
+  ...rocs,
+  {
+    settings: {
+      rocs: {
+        allowedPrefixes: ['ais-', 'swiper-'], // added to the default prefixes
+        useDefaultPrefixes: true,             // false: use allowedPrefixes only
+      },
+    },
+  },
 ];
 ```
 
-These prefixes are ignored by the `rocs/class-naming` plugin.
+| Setting | Type | Default | Effect |
+|---|---|---|---|
+| `allowedPrefixes` | `string[]` | `[]` | Prefixes added to the list |
+| `useDefaultPrefixes` | `boolean` | `true` | `false` removes the default prefixes |
+
+An invalid value stops ESLint with an explicit error. An allowed prefix also exempts the class from the state-class check: do not add `is-` or `has-`.
+
+The CLI validator does not use these settings: it tolerates any non-ROCS class, but applies state-class detection (R04) to every class.
 
 ---
 
