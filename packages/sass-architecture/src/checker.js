@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
+import selectorParser from 'postcss-selector-parser';
 import { scan } from './scan.js';
 
 export const LAYERS = ['tokens', 'primitives', 'behaviors', 'combinators', 'components', 'globals', 'bootstrap'];
@@ -72,6 +73,33 @@ export function discoverLayers(root, overrides = {}) {
 const normalize = name => name.replaceAll('_', '-');
 const inside = (dir, path) => path === dir || path.startsWith(dir + sep);
 
+const inNthArgument = node => {
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'pseudo' && /^:nth-/.test(parent.value)) return true;
+  }
+  return false;
+};
+
+/** Problèmes I19 d'un sélecteur ; les interpolations sont neutralisées, une syntaxe inconnue est ignorée. */
+function selectorProblems(selector, layer, family) {
+  const problems = new Set();
+  try {
+    selectorParser(root => {
+      root.walk(node => {
+        if (node.type === 'class' || node.type === 'id') {
+          problems.add('Sélecteur sémantique (classe ou id) interdit');
+        } else if (node.type === 'combinator' && layer !== 'bootstrap' && !inNthArgument(node)) {
+          const descendant = !node.value.trim();
+          if (!descendant || family !== 'scope') problems.add('Combinateur CSS interdit hors forme canonique scope');
+        }
+      });
+    }).processSync(selector.replace(/#\{[^}]*\}/g, '__interpolation__'));
+  } catch {
+    // Pas un sélecteur (ex. étape de @keyframes) : rien à contrôler.
+  }
+  return problems;
+}
+
 /**
  * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I11, I13, I16, I19, I22, I23).
  * L'analyse est statique et heuristique : elle ne prouve pas la conformité complète.
@@ -101,14 +129,20 @@ export function checkArchitecture(root, options = {}) {
 
   const load = file => {
     if (!cache.has(file)) {
-      const nodes = scan(readFileSync(file, 'utf8'));
+      let nodes = [];
+      let error = null;
+      try {
+        nodes = scan(readFileSync(file, 'utf8'));
+      } catch (e) {
+        error = { line: e.line ?? 1, message: e.reason ?? e.message };
+      }
       const imports = [];
       for (const node of nodes) {
         if (node.atRule !== 'use' && node.atRule !== 'forward') continue;
         const spec = /^@(?:use|forward)\s+(["'])(.+?)\1/.exec(node.raw)?.[2];
         if (spec) imports.push({ spec, line: node.line });
       }
-      cache.set(file, { nodes, imports });
+      cache.set(file, { nodes, imports, error });
     }
     return cache.get(file);
   };
@@ -168,9 +202,11 @@ export function checkArchitecture(root, options = {}) {
 
   for (const { file, layer } of files) {
     const rel = relative(root, file);
-    const { nodes, imports } = load(file);
+    const { nodes, imports, error } = load(file);
     const report = (rule, line, message, severity = 'error') =>
       violations.push({ rule, severity, file: rel, line, layer, message });
+
+    if (error) report('SYNTAX', error.line, `Syntaxe SCSS invalide : ${error.message}`);
 
     for (const { spec, line } of imports) {
       const target = resolveImport(spec, file);
@@ -227,14 +263,10 @@ export function checkArchitecture(root, options = {}) {
         }
       }
 
-      // Sélecteurs (I19). Les interpolations sont neutralisées.
+      // Sélecteurs (I19), analysés avec postcss-selector-parser.
       if (isRule(node)) {
-        const selector = text.replace(/#\{[^}]*\}/g, '§');
-        if (/#[A-Za-z_-]/.test(selector) || /\.[A-Za-z_-]/.test(selector.replace(/\[[^\]]*\]|\([^)]*\)/g, ''))) {
-          report('I19', line, `Sélecteur sémantique (classe ou id) interdit dans un mixin : "${text}".`);
-        }
-        if (layer !== 'bootstrap' && /(^|\s|&|\))[>+~](\s|$|&)/.test(selector.replace(/\[[^\]]*\]|\([^)]*\)/g, ''))) {
-          report('I19', line, `Combinateur CSS interdit hors forme canonique scope : "${text}".`);
+        for (const problem of selectorProblems(text, layer, familyOf(file))) {
+          report('I19', line, `${problem} : "${text}".`);
         }
       }
 

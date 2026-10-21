@@ -39,3 +39,5 @@
 /packages/sass-architecture/docs/
 /packages/sass-architecture/LICENSE
 **/*.tgz
+# Dependencies of any workspace
+**/node_modules/

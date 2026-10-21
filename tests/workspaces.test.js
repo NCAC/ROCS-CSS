@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { readFileSync, mkdtempSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, mkdirSync, mkdtempSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
@@ -93,7 +93,8 @@ test('Build and tarballs work outside the monorepo', () => {
     }
     writeFileSync(join(temporary, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
     // Consumers may use npm: install the pnpm-built archives with npm to check compatibility.
-    run('npm', ['install', '--offline', '--ignore-scripts', '--legacy-peer-deps',
+    // Runtime dependencies of the archives (postcss-scss…) come from the npm cache or registry.
+    run('npm', ['install', '--prefer-offline', '--ignore-scripts', '--legacy-peer-deps',
       '--no-audit', '--no-fund', ...archives], temporary);
     const imported = run(process.execPath, ['--input-type=module', '-e', `
       import assert from 'node:assert/strict';
@@ -140,6 +141,13 @@ test('Build and tarballs work outside the monorepo', () => {
     assert.equal(pkgCss, '.ProductCard:hover{display:block}');
     const help = run(process.execPath, [join(temporary, 'node_modules/@rocss/rocs/bin/rocs.js'), '--help'], temporary);
     assert.match(help, /ROCS Validator/);
+    const architecture = run(process.execPath,
+      [join(temporary, 'node_modules/@rocss/sass-architecture/bin/sass-architecture.js'), '--help'], temporary);
+    assert.match(architecture, /Sass Architecture Checker/);
+    mkdirSync(join(temporary, 'tokens'));
+    writeFileSync(join(temporary, 'tokens/_color.scss'), '$primary: #036;\n');
+    run(process.execPath, [join(temporary, 'node_modules/@rocss/sass-architecture/bin/sass-architecture.js'),
+      'check', temporary], temporary);
   } finally {
     rmSync(temporary, { recursive: true, force: true });
   }

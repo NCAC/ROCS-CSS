@@ -140,3 +140,25 @@ test('The @rocss/sass workspace satisfies its own architecture checks', () => {
   });
   assert.deepEqual(result.violations.filter(v => v.severity === 'error').map(v => `${v.rule} ${v.file}`), []);
 });
+
+test('Parsing tolerates comments, strings, interpolation and maps, and reports syntax errors', () => {
+  assert.deepEqual(rules({
+    ...compliant,
+    'tokens/_tricky.scss': `// body { color: red; }
+/* .Fake { } */
+$map: (a: "} { ;", b: url(http://example.com/a.png));
+$name: "#{'x'}";
+`,
+    'combinators/state/_tricky.scss': `@mixin tricky($s) {
+  // @include truncate;
+  &:#{$s} { content: "} .Child {"; @content; }
+}
+`,
+  }), []);
+  assert.deepEqual(rules({ ...compliant, 'tokens/_broken.scss': '$a: (1;\n.x { color: red;\n' }), ['SYNTAX']);
+  assert.ok(rules({ ...compliant, 'combinators/state/_bad.scss': '@mixin bad { :where(.Child) & { @content; } }\n' }).includes('I19'));
+  assert.deepEqual(rules({
+    ...compliant,
+    'combinators/scope/_ok.scss': '@mixin ancestor($a) { #{$a} & { @content; } }\n',
+  }), []);
+});

@@ -204,7 +204,17 @@ importers:
 
   packages/sass: {}
 
-  packages/sass-architecture: {}
+  packages/sass-architecture:
+    dependencies:
+      postcss:
+        specifier: ^8.5.31
+        version: 8.5.31
+      postcss-scss:
+        specifier: ^4.0.9
+        version: 4.0.9(postcss@8.5.31)
+      postcss-selector-parser:
+        specifier: ^7.1.6
+        version: 7.1.6
 
 packages:
 
