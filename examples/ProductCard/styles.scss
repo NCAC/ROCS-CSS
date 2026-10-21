@@ -1,11 +1,11 @@
 // Mixins helpers (pas de classes utilitaires dans le HTML)
-@mixin flex-center {
+@mixin flex_center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-@mixin flex-between {
+@mixin flex_between {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,7 +80,7 @@ body {
 
 // Éléments du ProductCard
 .ProductCard-header {
-  @include flex-between;
+  @include flex_between;
 }
 
 // Sous-éléments (camelCase après le 2e tiret)
@@ -155,7 +155,7 @@ body {
 }
 
 .ProductCard-footer {
-  @include flex-between;
+  @include flex_between;
 
   margin-top: 0.5rem;
 }
