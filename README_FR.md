@@ -20,7 +20,7 @@ La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm wo
 
 Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
 
-Les [sources françaises ROCS](docs/fr/) font autorité ; les [documents anglais](docs/en/) sont leur traduction. Le brouillon Sass est généré depuis les [sources d'architecture](scss-rocs-framework/), copiées sans modification de leur contenu. Les copies de documentation dans les packages sont générées par `pnpm run build` ou le hook `prepack` : **ne jamais les éditer directement**.
+Les [sources françaises ROCS](docs/fr/) font autorité ; les [documents anglais](docs/en/) sont leur traduction. Le brouillon d'architecture Sass a ses sources dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/). Les copies de documentation du package `@rocss/rocs` sont générées par `pnpm run build` ou le hook `prepack` : **ne jamais les éditer directement**.
 
 Les sources canoniques des combinators sont dans [packages/sass/](packages/sass/) : **13 fichiers SCSS copiés/adaptés** depuis le dossier local d'import initial. Le dossier d'import initial a été supprimé : `packages/sass` est la seule source. Le package contient une [copie réelle de la licence MIT](packages/sass/LICENSE).
 

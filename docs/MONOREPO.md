@@ -21,7 +21,7 @@ les exigences sémantiques du texte normatif.
 ## Sources canoniques
 
 - ROCS : [documents français](fr/SPECIFICATION.md), traductions dans le dossier anglais.
-- Architecture : [bases conceptuelles](../scss-rocs-framework/Framework%20SCSS%20—%20Bases%20conceptuelles.md).
+- Architecture : [spécification d'architecture](../packages/sass-architecture/docs/fr/SPECIFICATION.md), source canonique du package `@rocss/sass-architecture`.
 - Implémentation de validation : [package rocs](../packages/rocs/README.md).
 - Bibliothèque Sass : [sources canoniques du workspace `@rocss/sass`](../packages/sass/), avec 13 fichiers SCSS copiés/adaptés depuis le dossier local d'import initial. Le dossier d'import initial a été supprimé : `packages/sass` est la seule source.
 

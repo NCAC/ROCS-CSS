@@ -58,11 +58,10 @@ La spécification distingue `tokens`, `primitives`, `behaviors`, `combinators`,
 `components`, `globals` et `bootstrap`. Ses contraintes supplémentaires ne
 constituent pas des obligations pour toute application ROCS.
 
-La source canonique reste le dossier
-[scss-rocs-framework](https://github.com/NCAC/ROCS-CSS/tree/main/scss-rocs-framework)
-du dépôt. La construction copie les documents dans ce package sans modifier
-leur contenu ni adopter les propositions de la revue. Le guide et la revue
-doivent encore être harmonisés avec le texte normatif actuel.
+Les documents de [docs/fr/](docs/fr/) sont les sources canoniques, éditées
+directement dans ce package (ils ne sont pas générés). Les propositions de la
+revue ne sont pas adoptées automatiquement. Le guide et la revue doivent encore
+être harmonisés avec le texte normatif actuel.
 
 Les versions des packages sont indépendantes. La conformité à ROCS ne dépend
 ni de l'adoption de cette architecture, ni de l'installation de ce package.

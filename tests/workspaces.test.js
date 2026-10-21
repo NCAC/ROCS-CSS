@@ -49,21 +49,19 @@ test('Build and tarballs work outside the monorepo', () => {
   const temporary = mkdtempSync(join(tmpdir(), 'rocs-packages-'));
   try {
     for (const name of ['rocs', 'sass-architecture']) {
-      // Exercise cwd-independent builds, including paths with spaces in sources.
+      // Exercise cwd-independent builds.
       run(process.execPath, [join(root, 'tools/build-package-docs.js'), name], temporary);
     }
     const pairs = [
       ['docs/fr/SPECIFICATION.md', 'packages/rocs/docs/fr/SPECIFICATION.md'],
       ['docs/en/SPECIFICATION.md', 'packages/rocs/docs/en/SPECIFICATION.md'],
-      ['scss-rocs-framework/Framework SCSS — Bases conceptuelles.md',
-        'packages/sass-architecture/docs/fr/SPECIFICATION.md'],
-      ['scss-rocs-framework/scss-framework-guide.md',
-        'packages/sass-architecture/docs/fr/GUIDE.md'],
-      ['scss-rocs-framework/revue-contradictoire-invariants-framework-scss.md',
-        'packages/sass-architecture/docs/fr/REVIEW.md'],
     ];
     for (const [source, destination] of pairs) {
       assert.equal(readFileSync(join(root, source), 'utf8'), readFileSync(join(root, destination), 'utf8'));
+    }
+    // The architecture documents are sources: building must keep them and never overwrite them.
+    for (const document of ['SPECIFICATION.md', 'GUIDE.md', 'REVIEW.md']) {
+      assert.ok(existsSync(join(root, 'packages/sass-architecture/docs/fr', document)), `Missing ${document}`);
     }
     const archives = [];
     for (const name of names) {
