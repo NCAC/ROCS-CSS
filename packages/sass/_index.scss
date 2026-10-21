@@ -1,0 +1,12 @@
+// =============================================================================
+// _index.scss — Agrégateur de commodité des quatre familles
+// -----------------------------------------------------------------------------
+// Une couche soumise à une restriction de famille (ex. bootstrap → context
+// seul) NE DOIT PAS importer cet agrégateur (I23) : elle importe directement
+// @rocss/sass/<famille>.
+// =============================================================================
+
+@forward "context" show media, supports, container;
+@forward "state" show pseudo-class, attribute;
+@forward "scope" show ancestor;
+@forward "part" show pseudo-element;

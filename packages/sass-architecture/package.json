@@ -1,0 +1,30 @@
+{
+  "name": "@rocss/sass-architecture",
+  "version": "0.1.0",
+  "description": "Draft reference architecture specification for ROCS-compatible Sass definitions",
+  "license": "MIT",
+  "author": "ncac",
+  "files": [
+    "docs/",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    "./specification": "./docs/fr/SPECIFICATION.md",
+    "./guide": "./docs/fr/GUIDE.md",
+    "./docs/*": "./docs/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node ../../tools/build-package-docs.js sass-architecture",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NCAC/ROCS-CSS.git",
+    "directory": "packages/sass-architecture"
+  }
+}

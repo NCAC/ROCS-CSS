@@ -1,3 +1,6 @@
 # Fichiers compilés (build artifacts — générés par Sass)
 examples/**/*.css
 node_modules/
+
+# Original local import: maintained sources live in the workspace instead.
+rocs-scss-combinators/

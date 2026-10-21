@@ -1,0 +1,60 @@
+{
+  "name": "@rocss/sass",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Canonical Sass combinators for ROCS: context, state, scope and part",
+  "license": "MIT",
+  "author": "ncac",
+  "sass": "./_index.scss",
+  "style": "./_index.scss",
+  "exports": {
+    ".": {
+      "sass": "./_index.scss",
+      "default": "./_index.scss"
+    },
+    "./context": {
+      "sass": "./context/_index.scss",
+      "default": "./context/_index.scss"
+    },
+    "./state": {
+      "sass": "./state/_index.scss",
+      "default": "./state/_index.scss"
+    },
+    "./scope": {
+      "sass": "./scope/_index.scss",
+      "default": "./scope/_index.scss"
+    },
+    "./part": {
+      "sass": "./part/_index.scss",
+      "default": "./part/_index.scss"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "_index.scss",
+    "context/",
+    "state/",
+    "scope/",
+    "part/",
+    "internal/",
+    "LICENSE",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "sass": ">=1.71.0",
+    "sass-embedded": ">=1.71.0"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    },
+    "sass-embedded": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NCAC/ROCS-CSS.git",
+    "directory": "packages/sass"
+  }
+}

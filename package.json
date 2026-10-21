@@ -1,22 +1,24 @@
 {
-  "name": "rocs-css",
+  "name": "rocs-monorepo",
   "version": "1.0.0",
-  "description": "Role-Oriented, One-Class CSS Methodology",
-  "main": "index.js",
+  "private": true,
+  "description": "ROCS specifications, validation tools and Sass workspaces",
   "type": "module",
+  "packageManager": "pnpm@12.14.0",
   "scripts": {
+    "build": "pnpm -r --if-present run build",
+    "test": "node --test tests/*.test.js",
+    "pack:check": "pnpm -r --filter \"./packages/*\" pack --dry-run",
     "lint:css": "stylelint '**/*.{css,scss}'",
     "lint:css:fix": "stylelint '**/*.{css,scss}' --fix",
     "lint:jsx": "eslint --no-error-on-unmatched-pattern '**/*.{jsx,tsx}'",
-    "lint": "npm run lint:css && npm run lint:jsx",
+    "lint": "pnpm run lint:css && pnpm run lint:jsx",
     "validate": "node tools/rocs-validate.js --dir ./examples",
     "validate:strict": "node tools/rocs-validate.js --dir ./examples --strict",
     "validate:json": "node tools/rocs-validate.js --dir ./examples --format json",
     "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css",
-    "check": "npm run lint && npm run validate",
-    "release": "release-it",
-    "release:dry": "release-it --dry-run",
-    "prepare": "husky"
+    "check": "pnpm run build && pnpm test && pnpm run lint && pnpm run validate",
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -38,13 +40,15 @@
   "author": "ncac",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
+    "@rocss/rocs": "workspace:*",
+    "@rocss/sass-architecture": "workspace:*",
+    "@rocss/sass": "workspace:*",
     "@release-it/bumper": "^7.0.5",
     "@release-it/conventional-changelog": "^10.0.6",
     "eslint": "^9.0.0",
     "husky": "^8.0.3",
     "release-it": "^19.2.4",
-    "sass": "^1.70.0",
+    "sass": "^1.71.0",
     "stylelint": "^16.2.0",
     "stylelint-config-standard-scss": "^13.0.0"
   },

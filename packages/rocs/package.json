@@ -1,0 +1,52 @@
+{
+  "name": "@rocss/rocs",
+  "version": "1.0.0",
+  "description": "ROCS specification and heuristic HTML/CSS validation tools",
+  "type": "module",
+  "license": "MIT",
+  "author": "ncac",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bin": {
+    "rocs": "./bin/rocs.js"
+  },
+  "exports": {
+    ".": "./src/validator.js",
+    "./eslint": "./eslint.config.js",
+    "./eslint-plugin": "./eslint-plugin.js",
+    "./stylelint": "./stylelint.config.json",
+    "./docs/*": "./docs/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "eslint.config.js",
+    "eslint-plugin.js",
+    "stylelint.config.json",
+    "docs/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ../../tools/build-package-docs.js rocs",
+    "prepack": "pnpm run build"
+  },
+  "peerDependencies": {
+    "stylelint-config-standard-scss": "^13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "stylelint-config-standard-scss": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NCAC/ROCS-CSS.git",
+    "directory": "packages/rocs"
+  }
+}

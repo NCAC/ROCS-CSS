@@ -1,0 +1,29 @@
+// =============================================================================
+// scope/_ancestor.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme ancêtre (famille scope, I12) : <ancêtre> :where(&).
+// L'ancêtre est un argument du consommateur, de forme <racine>[<attribut>] avec
+// <racine> ∈ { html, body, :root, .Classe } ; aucun combinateur n'est admis.
+// & est placé dans :where() (spécificité nulle).
+// =============================================================================
+
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+@mixin ancestor($ancestor) {
+  @if not meta.content-exists() {
+    @error "ancestor() : bloc @content obligatoire.";
+  }
+
+  @if not v.parent-is-simple(&) {
+    @error "ancestor() : & doit être un sélecteur composé unique sans combinateur.";
+  }
+
+  @if not v.is-ancestor($ancestor) {
+    @error "ancestor() : ancêtre hors forme <racine>[<attribut>] : #{meta.inspect($ancestor)}.";
+  }
+
+  @at-root #{$ancestor} :where(#{&}) {
+    @content;
+  }
+}

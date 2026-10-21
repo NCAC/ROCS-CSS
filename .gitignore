@@ -8,7 +8,8 @@
 !README_FR.md
 
 !package.json
-!package-lock.json
+!pnpm-workspace.yaml
+!pnpm-lock.yaml
 !CONTRIBUTING.md
 
 !.stylelintrc.json
@@ -25,3 +26,16 @@
 !docs/
 !tools/
 !examples/
+
+# Monorepo sources and package tests
+!packages/
+!tests/
+!scss-rocs-framework/
+!CLAUDE.md
+
+# Generated documentation included in package tarballs, never edited here
+/packages/rocs/docs/
+/packages/rocs/LICENSE
+/packages/sass-architecture/docs/
+/packages/sass-architecture/LICENSE
+**/*.tgz

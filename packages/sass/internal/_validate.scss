@@ -1,0 +1,249 @@
+// =============================================================================
+// internal/_validate.scss
+// -----------------------------------------------------------------------------
+// Utilitaires de validation partagés par les canoniques. Module interne : non
+// exposé par les points d'entrée. Validation syntaxique, non sémantique ROCS.
+// =============================================================================
+
+@use "sass:list";
+@use "sass:meta";
+@use "sass:selector";
+@use "sass:string";
+
+$letters: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+$digits: "0123456789";
+$ident-chars: "#{$letters}#{$digits}-_";
+$whitespace: " \9 \a \d \c ";
+
+@function only-chars($value, $allowed) {
+  @if meta.type-of($value) != "string" or string.length($value) == 0 {
+    @return false;
+  }
+
+  @for $i from 1 through string.length($value) {
+    @if not string.index($allowed, string.slice($value, $i, $i)) {
+      @return false;
+    }
+  }
+
+  @return true;
+}
+
+@function trim($value) {
+  @while string.length($value) > 0 and string.index($whitespace, string.slice($value, 1, 1)) {
+    $value: string.slice($value, 2);
+  }
+
+  @while string.length($value) > 0 and string.index($whitespace, string.slice($value, -1)) {
+    $value: string.slice($value, 1, -2);
+  }
+
+  @return $value;
+}
+
+@function is-condition($value) {
+  @if meta.type-of($value) != "string" or string.length(trim($value)) == 0 {
+    @return false;
+  }
+
+  @each $forbidden in ("{", "}", ";") {
+    @if string.index($value, $forbidden) {
+      @return false;
+    }
+  }
+
+  @return true;
+}
+
+// Sous-ensemble ASCII des identifiants CSS, sans échappement ni namespace.
+// Accepte notamment les noms natifs, aria-* et data-* sans juger leur sens.
+@function is-attribute-name($name) {
+  @if not only-chars($name, $ident-chars) {
+    @return false;
+  }
+
+  $first: string.slice($name, 1, 1);
+
+  @if $first == "-" {
+    @if string.length($name) == 1 {
+      @return false;
+    }
+
+    @return string.index("#{$letters}_-", string.slice($name, 2, 2)) != null;
+  }
+
+  @return string.index("#{$letters}_", $first) != null;
+}
+
+@function is-attribute-value($value) {
+  @if meta.type-of($value) != "string" and meta.type-of($value) != "number" {
+    @return false;
+  }
+
+  $text: "#{$value}";
+
+  @each $forbidden in ('"', "'", "[", "]", "\\", "\a ", "\d ", "\c ") {
+    @if string.index($text, $forbidden) {
+      @return false;
+    }
+  }
+
+  @return true;
+}
+
+// Parsing lexical fermé puis vérification structurelle par sass:selector.
+@function is-ancestor($ancestor) {
+  @if meta.type-of($ancestor) != "string" {
+    @return false;
+  }
+
+  $open: string.index($ancestor, "[");
+
+  @if not $open or $open == 1 or string.slice($ancestor, -1) != "]" {
+    @return false;
+  }
+
+  $root: string.slice($ancestor, 1, $open - 1);
+  $inside: string.slice($ancestor, $open + 1, -2);
+  $root-ok: $root == "html" or $root == "body" or $root == ":root" or
+    (string.slice($root, 1, 1) == "." and is-attribute-name(string.slice($root, 2)));
+
+  @if not $root-ok or string.index($inside, "[") or string.index($inside, "]") {
+    @return false;
+  }
+
+  $equal: string.index($inside, "=");
+  $name: $inside;
+
+  @if $equal {
+    @if $equal == 1 {
+      @return false;
+    }
+
+    $name: string.slice($inside, 1, $equal - 1);
+    $value: string.slice($inside, $equal + 1);
+    $quote: string.slice($value, 1, 1);
+
+    @if $quote == '"' or $quote == "'" {
+      @if string.length($value) < 2 or string.slice($value, -1) != $quote {
+        @return false;
+      }
+
+      @if not is-attribute-value(string.slice($value, 2, -2)) {
+        @return false;
+      }
+    } @else if not is-attribute-name($value) {
+      @return false;
+    }
+  }
+
+  @if not is-attribute-name($name) {
+    @return false;
+  }
+
+  $parsed: selector.parse($ancestor);
+
+  @if list.length($parsed) != 1 or list.length(list.nth($parsed, 1)) != 1 {
+    @return false;
+  }
+
+  @return list.length(selector.simple-selectors(list.nth(list.nth($parsed, 1), 1))) == 2;
+}
+
+@function parent-is-simple($parent) {
+  @if not $parent or list.length($parent) != 1 {
+    @return false;
+  }
+
+  @return list.length(list.nth($parent, 1)) == 1;
+}
+
+// Contrat consommateur : composé unique, ou forme canonique de scope suivie
+// éventuellement d'états/parties. Vérifie la structure, pas sa provenance.
+// Tout autre parent complexe et toute liste sont refusés.
+@function parent-is-supported($parent) {
+  @if parent-is-simple($parent) {
+    @return true;
+  }
+
+  @if not $parent or list.length($parent) != 1 {
+    @return false;
+  }
+
+  $complex: list.nth($parent, 1);
+
+  @if list.length($complex) != 2 {
+    @return false;
+  }
+
+  // & est déjà analysé par Sass : sa sérialisation peut retirer les guillemets
+  // d'une valeur Unicode. Ne pas lui réappliquer le filtre lexical ASCII.
+  $ancestor-parts: selector.simple-selectors(list.nth($complex, 1));
+
+  @if list.length($ancestor-parts) != 2 {
+    @return false;
+  }
+
+  $root: list.nth($ancestor-parts, 1);
+  $attribute: list.nth($ancestor-parts, 2);
+  $root-ok: $root == "html" or $root == "body" or $root == ":root" or string.slice($root, 1, 1) == ".";
+
+  @if not $root-ok or string.slice($attribute, 1, 1) != "[" or string.slice($attribute, -1) != "]" {
+    @return false;
+  }
+
+  $simples: selector.simple-selectors(list.nth($complex, 2));
+  $where: list.nth($simples, 1);
+
+  @if string.slice($where, 1, 7) != ":where(" or string.slice($where, -1) != ")" {
+    @return false;
+  }
+
+  @return parent-is-simple(selector.parse(string.slice($where, 8, -2)));
+}
+
+@function is-integer($value) {
+  @if string.slice($value, 1, 1) == "+" or string.slice($value, 1, 1) == "-" {
+    $value: string.slice($value, 2);
+  }
+
+  @return only-chars($value, $digits);
+}
+
+// An+B : pas d'espace à l'intérieur du coefficient, ni entre signe et entier
+// isolé ; espaces CSS permis autour du signe de B et aux extrémités.
+@function is-nth($value) {
+  $value: string.to-lower-case(trim($value));
+
+  @if $value == "odd" or $value == "even" or is-integer($value) {
+    @return true;
+  }
+
+  $n: string.index($value, "n");
+
+  @if not $n {
+    @return false;
+  }
+
+  $coefficient: "";
+
+  @if $n > 1 {
+    $coefficient: string.slice($value, 1, $n - 1);
+  }
+
+  @if $coefficient != "" and $coefficient != "+" and $coefficient != "-" and not is-integer($coefficient) {
+    @return false;
+  }
+
+  $offset: trim(string.slice($value, $n + 1));
+
+  @if $offset == "" {
+    @return true;
+  }
+
+  @if string.slice($offset, 1, 1) != "+" and string.slice($offset, 1, 1) != "-" {
+    @return false;
+  }
+
+  @return only-chars(trim(string.slice($offset, 2)), $digits);
+}

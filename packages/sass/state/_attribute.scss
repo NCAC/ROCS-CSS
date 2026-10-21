@@ -1,0 +1,39 @@
+// =============================================================================
+// state/_attribute.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme attribut (famille state, I12) : &[<attribut>] ou
+// &[<attribut>="<valeur>"]. Nom : identifiant ASCII natif, aria-* ou data-* ;
+// validation syntaxique seulement. Valeur sans guillemet, crochet, antislash,
+// LF, CR ou FF ; les espaces sont permis.
+// =============================================================================
+
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+@mixin attribute($name, $value: null) {
+  @if not meta.content-exists() {
+    @error "attribute() : bloc @content obligatoire.";
+  }
+
+  @if not v.parent-is-supported(&) {
+    @error "attribute() : & doit être un composé unique ou un parent canonique de scope.";
+  }
+
+  @if not v.is-attribute-name($name) {
+    @error "attribute() : nom d'attribut invalide : #{meta.inspect($name)}.";
+  }
+
+  @if meta.type-of($value) == "null" {
+    &[#{$name}] {
+      @content;
+    }
+  } @else {
+    @if not v.is-attribute-value($value) {
+      @error "attribute() : valeur invalide : #{meta.inspect($value)}.";
+    }
+
+    &[#{$name}="#{$value}"] {
+      @content;
+    }
+  }
+}

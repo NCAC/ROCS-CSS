@@ -1,0 +1,67 @@
+// =============================================================================
+// state/_pseudo-class.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme pseudo-classe (famille state, I12) : &:<pseudo>.
+// Domaine fermé : pseudo-classes simples listées ci-dessous et pseudo-classes
+// structurelles d'indice (nth-child(2n+1)…). Toute pseudo-classe fonctionnelle
+// prenant un sélecteur en argument (:is, :not, :has, :where, nth-child(… of …))
+// est refusée : sa spécificité n'est pas bornée (I21).
+// =============================================================================
+
+@use "sass:list";
+@use "sass:meta";
+@use "sass:string";
+@use "../internal/validate" as v;
+
+$simple: (
+  "hover", "focus", "focus-visible", "focus-within", "active", "visited", "link",
+  "any-link", "target", "disabled", "enabled", "checked", "indeterminate",
+  "default", "required", "optional", "valid", "invalid", "user-valid",
+  "user-invalid", "in-range", "out-of-range", "read-only", "read-write",
+  "placeholder-shown", "empty", "first-child", "last-child", "only-child",
+  "first-of-type", "last-of-type", "only-of-type"
+);
+$indexed: ("nth-child", "nth-last-child", "nth-of-type", "nth-last-of-type");
+
+@function is-valid($pseudo) {
+  @if meta.type-of($pseudo) != "string" {
+    @return false;
+  }
+
+  $open: string.index($pseudo, "(");
+
+  @if not $open {
+    @return list.index($simple, $pseudo) != null;
+  }
+
+  @if string.slice($pseudo, -1) != ")" {
+    @return false;
+  }
+
+  $name: string.slice($pseudo, 1, $open - 1);
+  $argument: string.slice($pseudo, $open + 1, -2);
+
+  @if not list.index($indexed, $name) {
+    @return false;
+  }
+
+  @return v.is-nth($argument);
+}
+
+@mixin pseudo-class($pseudo) {
+  @if not meta.content-exists() {
+    @error "pseudo-class() : bloc @content obligatoire.";
+  }
+
+  @if not v.parent-is-supported(&) {
+    @error "pseudo-class() : & doit être un composé unique ou un parent canonique de scope.";
+  }
+
+  @if not is-valid($pseudo) {
+    @error "pseudo-class() : pseudo-classe hors du domaine fermé : #{meta.inspect($pseudo)}.";
+  }
+
+  &:#{$pseudo} {
+    @content;
+  }
+}

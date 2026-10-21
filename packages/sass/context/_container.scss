@@ -1,0 +1,23 @@
+// =============================================================================
+// context/_container.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme container (famille context, I12) : enveloppe @content dans
+// @container <condition>, exactement une fois (I11), sans transformer &.
+// =============================================================================
+
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+@mixin container($condition) {
+  @if not meta.content-exists() {
+    @error "container() : bloc @content obligatoire.";
+  }
+
+  @if not v.is-condition($condition) {
+    @error "container() : condition non vide sans accolades ni point-virgule attendue, reçu #{meta.inspect($condition)}.";
+  }
+
+  @container #{$condition} {
+    @content;
+  }
+}
