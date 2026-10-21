@@ -18,6 +18,36 @@ L'objectif n'est pas de réécrire immédiatement l'ensemble de la théorie, mai
 4. proposer des reformulations normatives ciblées ;
 5. fournir une base de travail pour une future mise à jour du document source.
 
+## Arbitrage
+
+Cette revue portait sur la première version du document source. Une partie de ses corrections prioritaires (A à I, §4) était déjà intégrée à la version actuelle de [la spécification](SPECIFICATION.md) ; le reste a été arbitré point par point et appliqué dans la spécification et le [guide](GUIDE.md). Le corps de la revue est conservé tel quel, comme trace de l'analyse : lire les verdicts ci-dessous avant les sections détaillées.
+
+| Point | Décision | Application |
+| --- | --- | --- |
+| I1, I8, I10, I14, I16 | Robustes, aucun changement | — |
+| I2 | **Adopté** : définition d'« émission autonome » (au chargement, sans appel de la couche de consommation) | I2 |
+| I3 | Déjà corrigé : affectation dans `bootstrap`, enregistrement et `initial-value` dans `globals` | I3, I4 |
+| I4 | **Adopté en partie** : le « nom » est précisé comme identifiant CSS du token. Le renommage de l'« alias » en « référence CSS » est **rejeté** (changement de vocabulaire sans gain, utilisé dans tout le package) | I4 |
+| I5 | Déjà corrigé : liste fermée des contextes où `var()` n'est pas résolu, valeur issue de `tokens` | I5 |
+| I6 | Déjà précisé : répartition des responsabilités par couche | I6 |
+| I6 bis | **Adopté** : l'attribut est une métadonnée globale du document ; la formule « seule qualification » est limitée aux sélecteurs d'émission de tokens, le reset étant borné à part | I6 bis, §1.3 |
+| I7 | Déjà corrigé : option stricte (aucune dépendance entre modules de tokens, index réexportable) | I7 |
+| I9, I11, I15, I17, I23 | Déjà corrigés (priorité 2) : at-rules interdites dans les behaviors, `@content` exactement une fois, précédence des familles, exclusions de la composition, points d'entrée et dépendances transitives | I9, I11, I15, I17, I23 |
+| I12 | Déjà corrigé : `context` n'opère pas sur `&`, canonique exposé par l'API publique, domaine des arguments fermé ou validé | I12 |
+| I13 | Déjà précisé : délégation directe, acyclique, `@content` transmis intégralement | I13 |
+| I18 | **Adopté** : « garantie de rendu indépendante de toute entité métier, fonctionnalité applicative ou contexte produit » ; contrôle explicitement sémantique | I18 |
+| I19 | **Adopté** : l'interdiction vise l'expansion des mixins, pas seulement leur texte ; `ancestor` reste le seul chemin autorisé | I19 |
+| I20 | Déjà réécrit : une dépendance externe est classée par ses effets, sans exemption | I20 |
+| I21 | Déjà réécrit : solution A de la revue (pseudo-classes fonctionnelles refusées par `pseudo-class`), avec réserve d'un mécanisme distinct (solution C) | I21 |
+| I22 | **Adopté** : « reset » défini comme sous-régime borné (option 3 du §3.3) | I22, §1.3 |
+| §3.1 `:disabled` | **Adopté** : `:disabled` relève de `pseudo-class`, `[disabled]` d'`attribute` ; la pseudo-classe native est préférée (DEVRAIT) | Tableau §4 |
+| §3.2 balises | **Adopté** : `html`, `body` et le reset sont exceptés de l'interdiction des balises | §1.1 |
+| §3.3 reset | **Adopté** : sélecteurs universels ou de type seuls, sans classe, `id`, attribut, combinateur ni pseudo-classe fonctionnelle | §1.3 |
+| §5 principe transversal | **Adopté comme énoncé informatif** : il résume I12, I19, I20 et I21 sans créer d'obligation nouvelle | §1.4 |
+| §6 étape 5 (vérifications) | Partiellement implémentées par `sass-architecture check` (I1–I3, I7–I11, I13, I16, I19, I22, I23) ; I12, I14, I15, I18 et I21 restent à outiller | README du package |
+
+Réserve : ces décisions n'ont été éprouvées que par relecture et par les tests du vérificateur. Aucun projet réel n'applique encore l'architecture ; les critères d'acceptation du §7 ne valent donc que sous cette réserve.
+
 ## Consignes pour l'agent
 
 L'agent doit considérer le document source comme la référence normative actuelle et la présente revue comme une **analyse critique**, non comme une nouvelle spécification déjà adoptée.

@@ -10,8 +10,8 @@ sous-chemins `@rocss/sass-architecture/specification` et
 `@rocss/sass-architecture/guide` ; ils ne sont pas des modules JavaScript à importer.
 
 - [Spécification d'architecture](docs/fr/SPECIFICATION.md) : référence normative du brouillon.
-- [Guide pédagogique](docs/fr/GUIDE.md) : informatif, pas encore entièrement synchronisé.
-- [Revue contradictoire](docs/fr/REVIEW.md) : document de travail, propositions non automatiquement adoptées.
+- [Guide pédagogique](docs/fr/GUIDE.md) : informatif, aligné sur la spécification.
+- [Revue contradictoire](docs/fr/REVIEW.md) : analyse critique, arbitrée point par point (section « Arbitrage »).
 
 ## Vérificateur d'architecture
 
@@ -59,9 +59,8 @@ La spécification distingue `tokens`, `primitives`, `behaviors`, `combinators`,
 constituent pas des obligations pour toute application ROCS.
 
 Les documents de [docs/fr/](docs/fr/) sont les sources canoniques, éditées
-directement dans ce package (ils ne sont pas générés). Les propositions de la
-revue ne sont pas adoptées automatiquement. Le guide et la revue doivent encore
-être harmonisés avec le texte normatif actuel.
+directement dans ce package (ils ne sont pas générés). La
+revue est arbitrée dans sa section « Arbitrage ».
 
 Les versions des packages sont indépendantes. La conformité à ROCS ne dépend
 ni de l'adoption de cette architecture, ni de l'installation de ce package.

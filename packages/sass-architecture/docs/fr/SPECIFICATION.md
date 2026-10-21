@@ -41,11 +41,41 @@ Le framework NE DOIT émettre que deux catégories de sélecteurs :
 1. les **transformations relatives** du sélecteur courant `&`, produites par les combinators des familles `state`, `scope` et `part` ;
 2. les **sélecteurs absolus** de `bootstrap`, qui ne visent que le document (`:root`, `html`, `body`, reset). Ils PEUVENT être qualifiés par un attribut de métadonnée contextuelle globale (I6 bis).
 
-Aucun autre sélecteur n'est permis : aucun combinateur CSS hors de la forme canonique `scope` (I19), aucune classe, balise ou `id`.
+Aucun autre sélecteur n'est permis : aucun combinateur CSS hors de la forme canonique `scope` (I19), aucune classe ni `id`, et aucune balise en dehors de `html`, `body` et du reset de `bootstrap` (§1.3).
 
 ### 1.2 Précondition sur `&`
 
 Le sélecteur courant `&` fourni par le consommateur DOIT être un **sélecteur composé sans combinateur**. En ROCS, c'est toujours une classe unique (ROCS §3.1, §6.2.1) ; la précondition est donc satisfaite par construction.
+
+### 1.3 Reset de `bootstrap`
+
+Le **reset** est le seul sous-régime de `bootstrap` autorisé à cibler des éléments natifs. Il est borné par les règles suivantes :
+
+- ses sélecteurs sont des listes (séparées par des virgules) de sélecteurs universels ou de type (`*`, `html`, `body`, `button`…), chacun PEUT être suivi d'un pseudo-élément (`::before`, `::after`) ;
+- ils NE DOIVENT contenir ni classe, ni `id`, ni attribut, ni combinateur, ni pseudo-classe fonctionnelle ;
+- ses déclarations normalisent le rendu natif ; elles NE DOIVENT pas styler un composant ;
+- seul le reset PEUT émettre `!important` (I22, ROCS §6.1).
+
+✅ Conforme :
+
+```scss
+*, *::before, *::after { box-sizing: border-box; }
+button, input, textarea, select { font: inherit; }
+```
+
+❌ Non conforme :
+
+```scss
+.Button { font: inherit; }       // classe
+form input { font: inherit; }    // combinateur
+:is(button, input) { margin: 0; } // pseudo-classe fonctionnelle
+```
+
+Informatif : sans cette définition, le mot « reset » deviendrait une échappatoire aux contraintes sur les sélecteurs absolus. Les surcharges de tokens sur `:root` ou `(:root | html | body)[data-*]` relèvent de I6 bis, pas du reset.
+
+### 1.4 Principe de fermeture
+
+Cette section est informative : elle résume ce que I12, I19, I20 et I21 imposent chacun pour leur périmètre. Toute entrée susceptible de contenir de la syntaxe CSS (argument de combinator, pseudo-classe fonctionnelle, ancêtre de `scope`, dépendance externe, appel dynamique via `sass:meta`, module agrégateur) possède un domaine fermé, validé ou statiquement borné. Une API du framework ne permet jamais de produire indirectement une construction qu'elle interdit directement.
 
 ## 2. Les couches
 
@@ -82,13 +112,13 @@ Les numéros de la v1 sont conservés pour la traçabilité ; I6 bis et I21 à I
 
 **I1.** Une couche NE DOIT consommer que les couches que sa ligne du tableau §2 autorise. Aucune couche NE DOIT consommer `globals` ni `bootstrap`.
 
-**I2.** Les couches de la chaîne NE DOIVENT rien émettre d'autonome. Seules les deux couches terminales émettent : `bootstrap` écrit les sélecteurs absolus ; `globals` est la seule couche autorisée à émettre des règles globales non sélectives (`@keyframes`, `@font-face`, `@property`).
+**I2.** Les couches de la chaîne NE DOIVENT rien émettre d'autonome. Une émission est **autonome** lorsqu'elle se produit au chargement du module, sans appel explicite par la couche de consommation ; le corps d'un mixin n'émet qu'à son inclusion. Seules les deux couches terminales émettent : `bootstrap` écrit les sélecteurs absolus ; `globals` est la seule couche autorisée à émettre des règles globales non sélectives (`@keyframes`, `@font-face`, `@property`).
 
 **I3.** L'affectation d'une custom property représentant un token DOIT être émise dans `bootstrap`, seule couche qui consomme à la fois `tokens` et `primitives` tout en écrivant un sélecteur. Lorsqu'un token est enregistré par `@property`, `globals` PEUT en émettre la valeur initiale, conformément à I4. Aucune autre couche NE DOIT affecter ni enregistrer un token.
 
 ### Tokens et primitives
 
-**I4.** Un token existe sous deux formes : le **nom** de sa custom property et l'**alias** `var(--nom)`. Le nom brut NE DOIT être consommé que par les couches qui déclarent le token au moteur CSS : `bootstrap`, qui l'affecte, et `globals`, qui l'enregistre via `@property`. Partout ailleurs, seul l'alias est consommé. Pour un token enregistré, `initial-value` DOIT provenir de la même variable Sass que la valeur par défaut émise par `bootstrap`.
+**I4.** Un token existe sous deux formes : le **nom** de sa custom property, c'est-à-dire son identifiant CSS (`--spacing-small`), et l'**alias** `var(--spacing-small)`. Le nom NE DOIT être consommé que par les couches qui déclarent le token au moteur CSS : `bootstrap`, qui l'affecte, et `globals`, qui l'enregistre via `@property`. Partout ailleurs, seul l'alias est consommé. Pour un token enregistré, `initial-value` DOIT provenir de la même variable Sass que la valeur par défaut émise par `bootstrap`.
 
 Informatif : `globals` et `bootstrap` partagent alors une même variable de `tokens` sans se consommer mutuellement. La cohérence vient de la source commune, conformément à I1.
 
@@ -108,7 +138,7 @@ Dans ces contextes, la valeur DOIT provenir d'une variable Sass de `tokens`, jam
 - `bootstrap` émet la valeur initiale et les surcharges conditionnelles ;
 - les autres couches consomment uniquement l'alias.
 
-**I6 bis.** La valeur d'un token PEUT varier selon une **métadonnée contextuelle globale** (ROCS §4.7), par exemple une préférence de thème pilotée côté client. La surcharge DOIT être émise dans `bootstrap`, sur un sélecteur de forme `(:root | html | body)[data-*]`. C'est la seule qualification de sélecteur autorisée dans `bootstrap`, qui ne consomme toujours pas `scope`. Une variation exprimable par un token DEVRAIT passer par cette voie plutôt que par un `scope` de component.
+**I6 bis.** La valeur d'un token PEUT varier selon une **métadonnée contextuelle globale** (ROCS §4.7), par exemple une préférence de thème pilotée côté client. La surcharge DOIT être émise dans `bootstrap`, sur un sélecteur de forme `(:root | html | body)[data-*]`. L'attribut DOIT représenter une métadonnée applicable au document ou à l'environnement global de rendu, jamais l'état dynamique d'un composant ni une donnée métier locale. C'est la seule qualification autorisée pour les sélecteurs d'émission de tokens dans `bootstrap` (le reset est borné par §1.3), qui ne consomme toujours pas `scope`. Une variation exprimable par un token DEVRAIT passer par cette voie plutôt que par un `scope` de component.
 
 **I7.** Les modules de `tokens` NE DOIVENT pas dépendre les uns des autres. Un module d'exposition (index) PEUT les réexporter, sans en consommer aucun ni réintroduire de dépendance entre eux.
 
@@ -165,11 +195,11 @@ Ne constituent pas une composition au sens de cet invariant :
 - la spécialisation transparente autorisée par I13 ;
 - l'usage de combinators `context` par `bootstrap` pour conditionner l'émission d'un token.
 
-**I18.** Un nom de component DOIT décrire une **forme générique**, jamais un rôle métier ni un contexte produit.
+**I18.** Un nom de component DOIT décrire une **forme générique**, c'est-à-dire une garantie de rendu indépendante de toute entité métier, fonctionnalité applicative ou contexte produit. Ce contrôle est sémantique : il ne se vérifie pas par le seul nom.
 
 ### Sélecteurs
 
-**I19.** Aucun mixin NE DOIT écrire de combinateur CSS (descendant, `>`, `+`, `~`) hors de la forme canonique `scope`. Aucun mixin NE DOIT écrire ni présupposer un sélecteur sémantique (classe, balise, `id`), y compris lorsque le nom est imposé par une source externe. Les pseudo-classes structurelles (`:first-child`, `:nth-child()`…) PEUVENT s'appliquer à `&` via le canonique `state/pseudo-classe`.
+**I19.** Aucun mixin NE DOIT écrire de combinateur CSS (descendant, `>`, `+`, `~`) hors de la forme canonique `scope`, que ce soit dans son texte source ou par son expansion : l'inclusion du canonique `ancestor` reste le seul chemin autorisé. Aucun mixin NE DOIT écrire ni présupposer un sélecteur sémantique (classe, balise, `id`), y compris lorsque le nom est imposé par une source externe. Les pseudo-classes structurelles (`:first-child`, `:nth-child()`…) PEUVENT s'appliquer à `&` via le canonique `state/pseudo-classe`.
 
 Informatif : un layout passe par les propriétés du conteneur (`gap`, grid, flex) ; chaque enfant stylé porte sa propre classe ROCS. Le contrat entre contenu et framework s'écrit côté consommation, par exemple `.RichText-subTitle { @include heading_level_2; }`.
 
@@ -198,7 +228,7 @@ En conséquence, le canonique `pseudo-class` NE DOIT accepter aucune pseudo-clas
 
 Informatif : avec le plafond (0,3,0) de la configuration Stylelint de référence ROCS, on peut cumuler au plus deux `state` hors scope, ou un scope suivi d'un seul `state`. Un `part` ne s'ajoute alors qu'à une signature de spécificité strictement inférieure à (0,3,0).
 
-**I22.** Seul le reset de `bootstrap` PEUT émettre `!important` (ROCS §6.1).
+**I22.** Seul le reset de `bootstrap` (§1.3) PEUT émettre `!important` (ROCS §6.1).
 
 ### Vérifiabilité
 
@@ -212,14 +242,16 @@ Chaque forme de sélecteur que le framework peut produire correspond à une exce
 
 | Construction du framework | Sélecteur produit | Disposition ROCS |
 | --- | --- | --- |
-| `state/pseudo-classe` | `.C:hover`, `.C:first-child` | §6.2.2 (1) pseudo-classes |
-| `state/attribut` (natif, ARIA) | `.C:disabled`, `.C[aria-expanded="true"]` | §6.2.2 (2), §3.5 |
+| `state/pseudo-classe` | `.C:hover`, `.C:disabled`, `.C:first-child` | §6.2.2 (1) pseudo-classes |
+| `state/attribut` (natif, ARIA) | `.C[disabled]`, `.C[aria-expanded="true"]` | §6.2.2 (2), §3.5 |
 | `state/attribut` (`data-*`) | `.C[data-state="open"]` | §6.2.2 (3) état dynamique sur l'élément lui-même |
 | `part/pseudo-élément` | `.C::before` | §6.2.2 (1), §3.6.3 |
 | `scope`, ancêtre de classe | `.B-list[data-x="1"] :where(.B-item)` | §6.2.2 (3) métadonnée locale, profondeur 2 |
 | `scope`, ancêtre global | `body[data-device-type="mobile"] :where(.C)` | §6.2.2 (4) métadonnée globale, profondeur 2 |
 | `bootstrap` qualifié (I6 bis) | `:root[data-theme="dark"] { --x: … }` | §4.7 métadonnée globale |
-| reset de `bootstrap` | `html`, `body`, … avec `!important` éventuel | §6.1 (4) |
+| reset de `bootstrap` (§1.3) | `html`, `body`, `*`, … avec `!important` éventuel | §6.1 (4) |
+
+Doctrine : pour un état natif qui dispose d'une pseudo-classe (`:disabled`, `:checked`), le mécanisme `pseudo-class` DEVRAIT être préféré. Le mécanisme `attribute` est réservé aux attributs ARIA, aux `data-*` dynamiques et aux attributs sans pseudo-classe équivalente, afin d'éviter deux signatures concurrentes pour une même sémantique.
 
 ### Ce que le framework ne couvre pas
 
