@@ -1,6 +1,6 @@
 # @rocss/sass
 
-Mixins Sass canoniques intégrées depuis le dossier fourni `rocs-scss-combinators`.
+Mixins Sass canoniques, issues d'un import initial puis adaptées dans ce workspace.
 Le workspace est désormais la source de référence du monorepo ; le dossier
 d'origine reste intact.
 

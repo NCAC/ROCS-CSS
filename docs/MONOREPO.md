@@ -23,7 +23,7 @@ les exigences sémantiques du texte normatif.
 - ROCS : [documents français](fr/SPECIFICATION.md), traductions dans le dossier anglais.
 - Architecture : [bases conceptuelles](../scss-rocs-framework/Framework%20SCSS%20—%20Bases%20conceptuelles.md).
 - Implémentation de validation : [package rocs](../packages/rocs/README.md).
-- Bibliothèque Sass : [sources canoniques du workspace `@rocss/sass`](../packages/sass/), avec 13 fichiers SCSS copiés/adaptés depuis le dossier local d'import initial. Ce dossier est conservé localement intact comme provenance, mais ignoré par Git via la règle `/*` : il n'est ni une source versionnée ou distribuée, ni un deuxième workspace, et n'est pas fourni par un clone Git. Ne pas l'ajouter au dépôt afin d'éviter une double implémentation.
+- Bibliothèque Sass : [sources canoniques du workspace `@rocss/sass`](../packages/sass/), avec 13 fichiers SCSS copiés/adaptés depuis le dossier local d'import initial. Le dossier d'import initial a été supprimé : `packages/sass` est la seule source.
 
 Les anciens chemins documentaires restent valides. `pnpm run build` et les
 hooks `prepack` copient les documents et la licence dans les deux packages
