@@ -79,6 +79,10 @@ test('Build and tarballs work outside the monorepo', () => {
           assert.ok(paths.includes(path), `Missing Sass source: ${path}`);
         }
       }
+      if (name === 'sass-architecture') {
+        assert.ok(paths.includes('bin/sass-architecture.js'));
+        assert.ok(paths.includes('src/checker.js'));
+      }
       if (name === 'rocs') {
         assert.ok(paths.includes('bin/rocs.js'));
         assert.ok(paths.includes('src/validator.js'));

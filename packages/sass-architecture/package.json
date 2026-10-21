@@ -1,15 +1,25 @@
 {
   "name": "@rocss/sass-architecture",
   "version": "0.1.0",
-  "description": "Draft reference architecture specification for ROCS-compatible Sass definitions",
+  "description": "Draft reference architecture specification and static checker for ROCS-compatible Sass definitions",
+  "type": "module",
   "license": "MIT",
   "author": "ncac",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bin": {
+    "sass-architecture": "./bin/sass-architecture.js"
+  },
   "files": [
+    "bin/",
+    "src/",
     "docs/",
     "LICENSE",
     "README.md"
   ],
   "exports": {
+    ".": "./src/checker.js",
     "./specification": "./docs/fr/SPECIFICATION.md",
     "./guide": "./docs/fr/GUIDE.md",
     "./docs/*": "./docs/*",

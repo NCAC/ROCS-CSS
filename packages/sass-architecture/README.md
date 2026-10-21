@@ -1,7 +1,8 @@
 # @rocss/sass-architecture
 
 **Brouillon d'architecture de référence**, version 0.1.0, ciblant ROCS 1.0.
-Ce package est documentaire : il ne fournit ni JavaScript ni mixins Sass.
+Ce package est essentiellement documentaire. Il fournit aussi un vérificateur
+statique optionnel (`sass-architecture check`) ; il ne fournit aucun mixin Sass.
 
 Après publication : `npm install --save-dev @rocss/sass-architecture`.
 Les fichiers Markdown sont consultables directement ou localisables via les
@@ -11,6 +12,39 @@ sous-chemins `@rocss/sass-architecture/specification` et
 - [Spécification d'architecture](docs/fr/SPECIFICATION.md) : référence normative du brouillon.
 - [Guide pédagogique](docs/fr/GUIDE.md) : informatif, pas encore entièrement synchronisé.
 - [Revue contradictoire](docs/fr/REVIEW.md) : document de travail, propositions non automatiquement adoptées.
+
+## Vérificateur d'architecture
+
+```sh
+npx sass-architecture check ./src --format json
+npx sass-architecture check . --layer tokens=assets/tokens --layer bootstrap=assets/base
+```
+
+Convention : un dossier par couche (`tokens`, `primitives`, `behaviors`,
+`combinators`, `components`, `globals`, `bootstrap`), à la racine ou sous `src/`,
+`scss/` ou `styles/`. Les combinators se répartissent en sous-dossiers `context/`,
+`scope/`, `state/` et `part/`. `--layer nom=chemin` surcharge un emplacement.
+Codes de sortie : 0 conforme, 1 violation (ou avertissement avec `--strict`), 2 usage invalide.
+L'API JavaScript est `checkArchitecture(dir, { layers })`.
+
+| Invariant | Contrôle |
+| --- | --- |
+| I1 | `@use`/`@forward` conformes au tableau des couches ; aucun import de `globals` ni `bootstrap` |
+| I2 | aucune émission autonome hors `bootstrap` et `globals` (`@keyframes`, `@font-face`, `@property`) |
+| I3 | affectation de custom property hors `bootstrap`/`globals` (avertissement) |
+| I7 | modules de `tokens` indépendants |
+| I8 | `primitives` : fonctions uniquement |
+| I9, I10 | behaviors output-only, sans `&`, `@content`, at-rule conditionnelle ni autre behavior |
+| I11 | chaque combinator contient au moins un `@content` |
+| I13, I16 | combinators limités à leur famille, sans behavior ni component |
+| I19 | pas de classe ni d'`id` littéral, ni de combinateur `>`, `+`, `~` hors `bootstrap` |
+| I22 | `!important` réservé à `bootstrap` |
+| I23 | `bootstrap` n'atteint que la famille `context`, transitivement |
+
+Limites : analyse heuristique et textuelle, sans compilation Sass. Elle ne vérifie
+pas I11 « exactement une fois par branche », I12, I14, I15, I18, I21 ni les
+sélecteurs descendants implicites. Le reset de `bootstrap` n'est pas distingué
+du reste de la couche. Une absence de violation ne prouve pas la conformité.
 
 La spécification distingue `tokens`, `primitives`, `behaviors`, `combinators`,
 `components`, `globals` et `bootstrap`. Ses contraintes supplémentaires ne

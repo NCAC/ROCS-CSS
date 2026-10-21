@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ROCS (Role-Oriented, One-Class CSS Semantics) is a CSS methodology specification and tooling project — not an application. The private root **rocs-monorepo** (`private: true`) uses pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)), with independent package versions:
 
 - [@rocss/rocs](packages/rocs/README.md) **1.0.0**: specification, CLI/JavaScript validator API, and Stylelint/ESLint configurations.
-- [@rocss/sass-architecture](packages/sass-architecture/README.md) **0.1.0**: documentation-only draft reference architecture, generated from [scss-rocs-framework/](scss-rocs-framework/) without changing source contents. No runtime code or Sass mixins.
+- [@rocss/sass-architecture](packages/sass-architecture/README.md) **0.1.0**: draft reference architecture documentation, generated from [scss-rocs-framework/](scss-rocs-framework/) without changing source contents, plus a heuristic static checker (`sass-architecture check`, [src/checker.js](packages/sass-architecture/src/checker.js)) for invariants I1–I3, I7–I11, I13, I16, I19, I22 and I23. No Sass mixins.
 - [@rocss/sass](packages/sass/README.md) **0.1.0**: experimental Sass implementation, still `private: true` and unpublished pending test execution and contract review.
 - Annotated [examples/](examples/).
 

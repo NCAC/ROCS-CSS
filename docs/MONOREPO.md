@@ -5,7 +5,7 @@
 | Workspace | Version initiale | Contenu | Statut |
 | --- | --- | --- | --- |
 | `@rocss/rocs` | 1.0.0 | Spécification, CLI, API et configurations de lint | Extrait de l'outillage existant, non publié dans cette migration |
-| `@rocss/sass-architecture` | 0.1.0 | Spécification d'architecture et documents associés | Brouillon documentaire |
+| `@rocss/sass-architecture` | 0.1.0 | Spécification d'architecture, documents associés et vérificateur statique `sass-architecture check` | Brouillon documentaire, vérificateur heuristique |
 | `@rocss/sass` | 0.1.0 | Implémentation Sass : sept mixins, quatre familles | Expérimental, `private: true`, tests à exécuter et contrats à revoir |
 
 La racine est privée et orchestre les workspaces pnpm déclarés dans
