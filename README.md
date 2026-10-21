@@ -3,7 +3,7 @@
 **ROCS specification 1.0.0** — packages are versioned independently.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Status: Stable](https://img.shields.io/badge/Status-Stable-green.svg)]()
+[![ROCS spec: stable](https://img.shields.io/badge/ROCS%20spec-stable-green.svg)]()
 
 > A strict, readable, and scalable CSS methodology.\
 > Modern alternative to BEM, OOCSS, and Atomic CSS.
