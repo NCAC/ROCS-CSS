@@ -15,6 +15,7 @@
 - **[Aide-mémoire](./docs/fr/CHEATSHEET.md)** — référence rapide (patterns, décision tree, états)
 - **[Glossaire](./docs/fr/GLOSSARY.md)** — définitions normatives de tous les termes ROCS
 - **[Guide de migration](./docs/fr/MIGRATION_GUIDE.md)** — BEM, OOCSS et Tailwind → ROCS
+- **[Comparaison](./docs/fr/COMPARISON.md)** — ROCS, BEM et Atomic CSS face à face (philosophies, exemples, quand choisir quoi)
 - **[Exemples](./examples/)** — cas concrets annotés ([ProductCard](./examples/ProductCard/), [NavigationMain](./examples/NavigationMain/), [CheckoutForm](./examples/CheckoutForm/))
 - **[Validateur CLI](./tools/rocs-validate.js)** — `node tools/rocs-validate.js --dir ./examples`
 - **[Contribuer](./CONTRIBUTING.md)**

@@ -13,7 +13,7 @@
 ## Table des matières
 1. [Conventions normatives](#0-conventions-normatives)
 2. [Objectifs et rôles](#1-objectifs-et-rôles)
-3. [Principes](#2-principes)
+3. [Principes](#2-principes) — dont [§2.0 Isolation de portée](#20-principe-fondateur--isolation-de-portée-normatif), [§2.0.1 Périmètre de la garantie](#201-périmètre-de-la-garantie-disolation-normatif)
 4. [Nommage](#3-nommage)
 5. [Attributs `data-*`](#4-attributs-data-libres-mais-strictement-réservés-au-js)
 6. [Identifiants (`id`)](#5-id-interdits-en-css)
@@ -23,6 +23,8 @@
 - [Annexe B. Cas pratiques (FAQ)](#annexe-b-cas-pratiques-faq)
 - [Annexe C. Outillage](#annexe-c-outillage-recommandations)
 - [Annexe D. Licence](#annexe-d-licence)
+- [Annexe E. Limites et coûts assumés](#annexe-e-limites-et-coûts-assumés-informative)
+- [Annexe F. ROCS et le scoping CSS natif](#annexe-f-rocs-et-le-scoping-css-natif-scope-layer-informative)
 
 ---
 
@@ -181,6 +183,20 @@ Les termes ci-dessous sont utilisés dans tout le document.
 
 ## 2. Principes normatifs
 
+### 2.0 Principe fondateur — Isolation de portée (normatif)
+
+Toute classe ROCS **DOIT** être une **cible de style pleinement isolée** : écrire une règle de style sur une classe ROCS affecte exactement les éléments portant cette classe, et rien d'autre. L'effet d'un style sur une classe **NE DOIT PAS** dépendre de la position de l'élément dans l'arbre DOM, de la présence d'une autre classe, ni d'un contexte parent implicite.
+
+Toutes les règles de nommage et de sélecteurs de cette spécification (§3.1 une classe par élément, §6.1 spécificité faible et uniforme, §6.2.1 auto-suffisance, interdiction des sélecteurs combinés, des `id` et de `!important`) sont des **corollaires** de ce principe : ce sont les conditions nécessaires pour que l'isolation de portée soit garantie.
+
+### 2.0.1 Périmètre de la garantie d'isolation (normatif)
+
+ROCS garantit l'**isolation de portée** (§2.0) : la *cible* d'une déclaration de style est entièrement déterminée par la classe ROCS, sans effet de bord contextuel, sur le HTML contrôlé par l'équipe.
+
+ROCS ne gouverne **pas** la **résolution entre plusieurs déclarations ciblant la même classe**. Lorsque deux règles s'appliquent à la même classe ROCS, l'ordre de déclaration et la cascade CSS déterminent le résultat — c'est une propriété du CSS et elle **DOIT** être gérée entièrement dans la couche CSS contrôlée par l'équipe. Elle n'est jamais exprimée ni décidée depuis le HTML.
+
+En d'autres termes : ROCS garantit *quels éléments* une règle affecte ; il ne contraint délibérément pas *comment plusieurs règles sur la même classe se combinent*, ce qui est délégué à la discipline de composition CSS (voir §2.3 et Annexe A).
+
 ### 2.1 Le HTML décrit le sens (normatif)
 
 Le HTML **DOIT** exprimer la structure et la signification (rôle) du document.
@@ -218,6 +234,18 @@ Les styles réutilisables **DOIVENT** être factorisés **dans le CSS**, jamais 
 
 > **Note informative — Outillage** : En pratique, cette exigence implique l'usage d'un mécanisme de factorisation CSS (préprocesseur Sass/Less, PostCSS, ou fonctionnalités CSS natives comme `@layer`, `@scope`, custom properties). Sans un tel outil, la factorisation des styles réutilisables devient impraticable. Voir [Annexe A](#annexe-a-architecture--optimisation-css-recommandations) pour les recommandations d'architecture.
 
+#### Contrat de frontière avec la couche de composition (informatif — DEVRAIT)
+
+ROCS garantit l'isolation de portée (§2.0) par lui-même, indépendamment de tout préprocesseur. Toute mise en œuvre à l'échelle industrielle d'une méthodologie CSS présuppose néanmoins une couche de composition (Sass, Less, Stylus, PostCSS, fonctionnalités CSS natives) : cette réalité est un fait acquis, pas une exigence normative de ROCS. La définition de cette couche est **hors périmètre ROCS**.
+
+Pour préserver les garanties de §2.0, la couche de composition **DEVRAIT** respecter le contrat d'alignement suivant :
+
+1. Elle **NE DEVRAIT PAS** introduire de variation de spécificité entre les règles applicatives ROCS (la spécificité doit rester faible et uniforme — corollaire de §6.1).
+2. Elle **NE DEVRAIT PAS** créer de dépendance entre le style d'une classe ROCS et un autre sélecteur ROCS (pas de couplage inter-sélecteurs — corollaire de §2.0 / §6.2.1).
+3. Toute résolution dépendante de l'ordre **DEVRAIT** être confinée dans la couche CSS (§2.0.1) et **NE DEVRAIT PAS** être observable ni décidée depuis le HTML.
+
+Si la couche de composition viole ces conditions, c'est elle qui rompt l'isolation de portée — pas la spec ROCS. ROCS spécifie *quelles propriétés* la couche de composition devrait préserver, pas *comment* l'implémenter.
+
 **Exemple** (avec préprocesseur SCSS) :
 
 ```scss
@@ -232,6 +260,8 @@ Les styles réutilisables **DOIVENT** être factorisés **dans le CSS**, jamais 
 ## 3. Nommage (normatif)
 
 ### 3.1 Règle "une classe maximum par élément"
+
+> *Corollaire de §2.0 — isolation de portée.*
 
 Un élément HTML **DOIT** porter **0 ou 1 classe** ROCS.
 
@@ -264,11 +294,37 @@ Les classes ROCS **DOIVENT** respecter les patterns suivants :
 - Le `kebab-case` pour les Blocs **NE DOIT PAS** être utilisé (ex: `best-sellers-books`).
 - Les classes génériques de design system **NE DOIVENT PAS** être utilisées comme Blocs (ex: `Button`, `Card`, `Input`, `Modal`, `Accordion`, `Menu`, `Slider`).
 
-> **Clarification (informatif) — Blocs de page** : un Bloc purement générique comme `Page` (layout/structure, sans sémantique métier) se comporte comme une primitive de design system et **NE DEVRAIT PAS** être utilisé comme Bloc ROCS.
->
-> Alternatives conformes, peu verbeuses, et sans encoder la hiérarchie DOM :
-> - `ProductsPage`, `FaqPage`, `AboutPage` (rôle de page explicite)
-> - ou un nom de page plus métier : `ProductsListing`, `HelpCenter`, `LegalNotices`
+#### Blocs structurels vs composants design system (normatif)
+
+Un nom générique **NE DOIT PAS** être utilisé comme Bloc lorsqu'il dénote un **type instanciable et interchangeable** — un composant design system pouvant exister en plusieurs instances parallèles (ex : `Card`, `Button`, `Modal`, `Input`, `Accordion`, `Slider`).
+
+Un nom générique **PEUT** être utilisé comme Bloc lorsqu'il dénote un **rôle structurel singulier et invariant** du document — un élément qui existe en occurrence unique et dont le rôle ne varie pas selon les contextes documentaires (ex : `Page`, `Main`, `Layout`).
+
+**Test opérationnel** :
+1. *Peut-il y en avoir deux simultanément dans le même document ?* — Oui → type instanciable → composant design system → **interdit** comme Bloc. Non → candidat Bloc structurel.
+2. *Son rôle varie-t-il selon les contextes (page utilisateur, listing produits, FAQ, plan du site…) ?* — Oui → il n'est pas invariant → spécialisez-le. Non → Bloc structurel **légitime**.
+
+Un nom ne passe le test que s'il est **à la fois singulier et invariant**. La généricité du nom n'est pas, en elle-même, un critère disqualifiant : seule l'instanciabilité et la variation contextuelle le sont.
+
+#### Identité vs type structurel (normatif, complément au test ci-dessus)
+
+Le test de singularité + invariance est une condition nécessaire mais insuffisante au niveau de la page. Une classe ROCS **DOIT** encoder l'*identité* de l'élément, pas seulement son type structurel. `Page` sur la page FAQ encode un rôle structurel ("conteneur de page") ; `FaqPage` encode une identité ("la page FAQ"). Dans le principe ROCS où le HTML est un artefact sémantique — il décrit le sens et le rôle des éléments indépendamment de toute préoccupation de présentation — un Bloc de page **DOIT** porter son identité documentaire dans son nom.
+
+Ce n'est pas de la sur-ingénierie : `FaqPage` n'est pas plus verbeux que `page` + `data-context="faq"`, et il est sémantiquement honnête là où ce dernier ne l'est pas.
+
+#### Contexte de page — théorème et tout-ou-rien (normatif)
+
+**Théorème.** Un contexte documentaire persistant ne peut s'exprimer, en ROCS, **que** par une classe ROCS. Un attribut `data-*` encodant un contexte persistant est interdit au style (§4.3 point 1, §4.4) — le `data-*` est réservé aux états dynamiques JS, aux métadonnées contextuelles techniques (layout/configuration) et aux hooks JS non stylés, dont aucun ne constitue un contexte métier persistant. Un sélecteur combiné depuis un Bloc parent viole §6.2.1 et §2.0. Par conséquent, un contexte de page qui influence le rendu **DOIT** être porté par le nom du Bloc (`FaqPage`), jamais par un attribut ou un contexte parent.
+
+**Conséquence — tout-ou-rien.** Au niveau racine (page), seuls deux régimes sont conformes :
+
+- **(a) `Page` uniforme** — le projet **affirme** que le contexte documentaire de page est, et restera définitivement, sans pertinence pour le rendu. Toute variation contextuelle réside entièrement dans les Blocs enfants (`Faq`, `UserProfile`, …). C'est un pari sur l'invariance future : si une page doit un jour diverger structurellement à la racine, le HTML **DEVRA** être modifié — contrairement à l'objectif de stabilité lors des refontes (§1). `Page` ne se qualifie comme Bloc structurel légitime que tant que ce pari tient.
+
+- **(b) `XxxPage` systématique** — le contexte de page est toujours nommé (`FaqPage`, `UserPage`, `OrderConfirmationPage`, …). Chaque instance est une cible unique, complète et localisable. Une refonte qui fait diverger une page ne touche **que le CSS** : le Bloc contextuel existe déjà. Ce régime est la conséquence directe du traitement du HTML comme artefact sémantique.
+
+Un régime **mixte** (certaines pages `Page`, d'autres `XxxPage`) est **non conforme** : les pages génériques divergentes n'auraient aucun moyen légal d'exprimer leur contexte.
+
+**Relation avec le test de singularité.** Le régime (b) ne contredit pas la légitimité structurelle de `Page` établie ci-dessus. Le test définit ce que la spec *autorise structurellement* ; le principe d'identité ajoute un critère que le régime (b) satisfait par construction. Le régime (a) est une exception permise — un pari délibéré et borné — non le comportement par défaut.
 
 > **Convention recommandée — ordre "rôle → type"** : lorsque le nom d'un Bloc (ou d'un Élément) combine un **rôle métier** et un **type de composant** (ex: `Page`, `Modal`, `Card`, `List`, `Header`, `Title`), l'ordre **DEVRAIT** être : **rôle d'abord, type ensuite**.
 >
@@ -720,6 +776,8 @@ Les `id` sont **interdits** dans la logique CSS ROCS :
 
 ### 6.1 Spécificité (normatif)
 
+> *Corollaires de §2.0 — isolation de portée.*
+
 Les sélecteurs CSS **DOIVENT** respecter les règles suivantes :
 
 1. **Spécificité faible** : privilégier les sélecteurs de classe (`.ClassName`) ou d'attribut (`[data-*]`).
@@ -732,6 +790,8 @@ Les sélecteurs CSS **DOIVENT** respecter les règles suivantes :
 La cascade CSS **DOIT** être maîtrisée pour garantir la prévisibilité et la maintenabilité du code.
 
 #### 6.2.1 Auto-suffisance des classes ROCS
+
+> *Corollaire de §2.0 — isolation de portée.*
 
 Les classes ROCS **DOIVENT** être auto-suffisantes : chaque classe doit définir ses propres styles sans dépendre d'un contexte parent implicite.
 
@@ -778,6 +838,14 @@ Les classes ROCS **DOIVENT** être auto-suffisantes : chaque classe doit défini
   margin-left: 0;
 }
 ```
+
+#### Listes de sélecteurs — distinction avec les sélecteurs combinés (clarification)
+
+Une **liste de sélecteurs** (séparés par des virgules, ex : `.BestSellersBooks, .StaffPicksBooks, .TopRatedBooks { … }`) est **autorisée**. Elle est strictement équivalente à écrire les mêmes déclarations sur chaque cible indépendamment : elle ne crée aucune dépendance à une relation DOM, à une position ou à un contexte, et préserve donc pleinement l'isolation de portée (§2.0).
+
+C'est catégoriquement différent des **sélecteurs combinés** interdits par §6.2.1 (descendant `.A .B`, enfant `.A > .B`, adjacent `.A + .B`), dont l'effet dépend d'une relation dans l'arbre.
+
+**Limite** : une liste de sélecteurs ne factorise que des déclarations **strictement identiques**. Dès qu'une cible nécessite *commun + variation*, la liste seule est insuffisante — ajouter une règle de surcharge séparée réintroduirait une dépendance à l'ordre. Ce cas **DOIT** être géré par la couche de composition (mixins/placeholders composant commun + variation *au sein d'une cible isolée unique*), et non par des surcharges inter-règles.
 
 #### 6.2.2 Exceptions autorisées
 
@@ -994,3 +1062,47 @@ La conformité ROCS peut être automatisée via des linters et outils d'analyse 
 ## Annexe D. Licence
 
 ROCS est publié sous licence MIT.
+
+---
+
+## Annexe E. Limites et coûts assumés (informative)
+
+La garantie d'isolation de portée de ROCS s'applique au **HTML contrôlé par l'équipe**. Ses limites et ses coûts sont énoncés ici honnêtement.
+
+**1. Contenu injecté non contrôlé.** Le contenu WYSIWYG / éditorial / HTML tiers que l'équipe ne template pas peut nécessiter des sélecteurs combinés (ex : styliser des `h2`/`p` bruts dans une zone éditoriale). Ce cas est traité par l'exception tiers cadrée (§6.2.2 point 5) et se situe, par définition, hors du périmètre du HTML contrôlé de §2.0.
+
+  *Note* : dans les configurations où les templates serveur sont entièrement maîtrisés et émettent des classes ROCS (ex : projets Drupal avec templates Twig personnalisés), cette limite ne s'applique pas au markup de l'équipe — elle concerne uniquement le contenu réellement non contrôlé (saisie éditoriale libre). Elle est listée comme limite générale de la spécification, pas comme faiblesse d'une stack de templating particulière.
+
+**2. Theming / dark mode / surcharges de tokens.** La cascade est l'outil prévu pour le theming. ROCS ne l'interdit pas ; il la canalise via des sélecteurs de contexte à spécificité nulle (`:root[data-theme] :where(.Bloc)`) et des propriétés personnalisées, préservant l'isolation de portée tout en autorisant un style contextuel global.
+
+**3. Coût de l'isolation.** L'isolation de portée est obtenue en partie en relocisant la complexité de composition dans la couche de composition (mixins/placeholders), qui n'est pas elle-même indépendante de l'ordre. La garantie est *conditionnelle* au respect du contrat de frontière de §2.3 par cette couche. Il existe aussi un coût en verbosité (davantage de nœuds nommés, duplication potentielle là où la couche de composition n'est pas utilisée). Ce sont des compromis assumés : déplacer la non-commutativité dans une couche outillée, factorisée et testable est préférable à la laisser implicite dans la cascade globale — mais c'est un compromis, pas un gain gratuit.
+
+**4. Coût du régime `Page` uniforme.** Choisir le régime (a) de §3.2 (`Page` uniforme) revient à **parier que le contexte de page ne deviendra jamais une distinction de rendu pertinente**. Un redesign ultérieur peut invalider ce pari : le jour où une page doit diverger structurellement à la racine, le projet devra introduire un Bloc contextuel (`FaqPage`) et donc **modifier le HTML** — contrairement à l'objectif de stabilité lors des refontes (§1). Le régime (b) (`XxxPage` systématique) paie un petit coût de nommage à l'avance pour immuniser contre cela ; le régime (a) est plus léger mais gèle le postulat d'invariance racine.
+
+---
+
+## Annexe F. ROCS et le scoping CSS natif (`@scope`, `@layer`) (informative)
+
+### `@scope` et ROCS : deux philosophies opposées
+
+`@scope` (Baseline 2026) attaque le même problème racine (isolation du style) mais via un mécanisme qui **contredit l'axiome fondateur ROCS (§2.0)** :
+
+- `@scope` ajoute la **proximité de portée** à la cascade : lorsque deux portées entrent en conflit, la règle dont la racine de portée est la moins éloignée dans le DOM l'emporte. L'effet d'une règle dépend donc de **la position de l'élément dans l'arbre DOM** — exactement ce que §2.0 interdit.
+- À proximité égale, **l'ordre de source** décide. `@scope` empile ainsi *deux* critères contextuels (proximité, puis ordre) par-dessus la spécificité. Il rend la dépendance contextuelle *gérable* ; ROCS la rend *inexistante*.
+- Les bornes `@scope` (`.a` to `.b`) sont des **ancres dans l'arbre DOM**. Déplacer un élément hors de sa racine de portée change son style. Sous ROCS, un élément conserve sa classe où qu'il soit dans l'arbre → style stable → HTML libre de se déplacer lors d'un redesign (objectif §1). Le scoping natif ne fournit pas cette garantie aussi fortement.
+
+**Ce que `@scope` fait et que les méthodes à base de classes ne peuvent pas faire** — empêcher un parent de styler un composant imbriqué (la "donut scope" via le mot-clé `to`) — ROCS l'obtient différemment : un parent *ne peut pas* accidentellement styler un enfant, car il n'a aucun sélecteur le ciblant (corollaire de §6.2.1).
+
+### Usage recommandé de `@scope` *au sein de* ROCS
+
+`@scope` est mieux traité comme un **outil pour les exceptions documentées**, non comme un concurrent :
+
+- Pour le **contenu injecté non contrôlé** (zone éditoriale/WYSIWYG), `@scope (.Article-body) to (.NestedBlock) { … }` est une implémentation native plus propre de l'exception tiers (§6.2.2 point 5) qu'un sélecteur combiné nu, car il confine les styles sans fuiter dans les Blocs ROCS imbriqués.
+
+### `@layer`
+
+`@layer` est **complémentaire, non concurrent** : il ordonne les *origines* de la cascade (ex : styles tiers vs styles produit), ce qui est orthogonal à l'isolation de portée par élément. ROCS **PEUT** utiliser `@layer` pour isoler ses styles applicatifs des feuilles de style externes sans modifier aucune règle ROCS.
+
+### Synthèse
+
+`@scope` achète l'isolation au prix de deux critères contextuels (proximité + ordre) que l'axiome ROCS supprime. Ils opèrent à des niveaux différents : `@scope` borne *où* s'appliquent des sélecteurs couplés au DOM ; ROCS supprime le couplage au DOM. ROCS peut adopter `@scope`/`@layer` comme outils pour ses exceptions sans toucher à son axiome.

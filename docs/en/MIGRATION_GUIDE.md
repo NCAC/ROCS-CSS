@@ -3,6 +3,8 @@
 **Version 1.0** · [Specification](./SPECIFICATION.md) · [Cheat Sheet](./CHEATSHEET.md)
 
 > This guide helps teams migrate an existing project (BEM, OOCSS, Tailwind, custom naming) to ROCS. It is **informative**: the normative rules are in `SPECIFICATION.md`.
+>
+> **Before migrating**, read [`COMPARISON.md`](./COMPARISON.md) to fully grasp what distinguishes ROCS from other approaches and to confirm it fits your context.
 
 ---
 

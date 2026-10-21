@@ -3,6 +3,8 @@
 **Version 1.0** · [Spécification](./SPECIFICATION.md) · [Aide-mémoire](./CHEATSHEET.md)
 
 > Ce guide accompagne les équipes qui migrent un projet existant (BEM, OOCSS, Tailwind, nommage maison) vers ROCS. Il est **informatif** : les règles normatives sont dans `SPECIFICATION.md`.
+>
+> **Avant de migrer**, lire [`COMPARISON.md`](./COMPARISON.md) pour bien comprendre ce qui distingue ROCS des autres approches et vérifier qu'il est pertinent pour votre contexte.
 
 ---
 

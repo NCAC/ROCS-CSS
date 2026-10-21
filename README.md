@@ -179,6 +179,8 @@ See **[SPECIFICATION.md](./docs/en/SPECIFICATION.md)** for the detailed specific
 ## 📚 Resources
 
 - **[Full Specification](./docs/en/SPECIFICATION.md)** — All detailed rules
+- **[Migration Guide](./docs/en/MIGRATION_GUIDE.md)** — BEM, OOCSS, Tailwind → ROCS
+- **[Comparison](./docs/en/COMPARISON.md)** — ROCS vs BEM vs Atomic CSS (philosophies, examples, when to pick which)
 - **[Examples](./examples/)** — Real components
 - **[Stylelint Config](./.stylelintrc.json)** — Ready to use
 
