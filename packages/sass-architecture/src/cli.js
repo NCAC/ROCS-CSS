@@ -1,6 +1,7 @@
 import { parseArgs } from 'node:util';
 import process from 'node:process';
 import { checkArchitecture, LAYERS } from './checker.js';
+import { checkEmission } from './emission.js';
 
 const HELP = `
 ROCS Sass Architecture Checker — v0.1
@@ -13,6 +14,7 @@ Options:
   --dir <path>          Répertoire du projet (défaut: .)
   --layer <nom=chemin>  Chemin d'une couche (répétable). Couches : ${LAYERS.join(', ')}
   --format <format>     text (défaut) ou json
+  --compile             Compile aussi les modules avec sass pour vérifier I2 (sass requis)
   --strict              Exit 1 sur les warnings également
   --help                Afficher cette aide
 
@@ -36,8 +38,8 @@ export function formatText(result) {
   return lines.join('\n');
 }
 
-/** @returns {number} code de sortie */
-export function runCli(argv = process.argv.slice(2), out = process.stdout) {
+/** @returns {Promise<number>} code de sortie */
+export async function runCli(argv = process.argv.slice(2), out = process.stdout) {
   let parsed;
   try {
     parsed = parseArgs({
@@ -46,6 +48,7 @@ export function runCli(argv = process.argv.slice(2), out = process.stdout) {
         dir: { type: 'string' },
         layer: { type: 'string', multiple: true },
         format: { type: 'string', default: 'text' },
+        compile: { type: 'boolean', default: false },
         strict: { type: 'boolean', default: false },
         help: { type: 'boolean', default: false },
       },
@@ -74,10 +77,22 @@ export function runCli(argv = process.argv.slice(2), out = process.stdout) {
     }
     layers[name] = path;
   }
-  const result = checkArchitecture(values.dir ?? maybeDir ?? '.', { layers });
+  const directory = values.dir ?? maybeDir ?? '.';
+  const result = checkArchitecture(directory, { layers });
   if (Object.keys(result.layers).length === 0) {
     process.stderr.write('Aucune couche détectée. Utilisez des dossiers nommés par couche ou --layer.\n');
     return 2;
+  }
+  if (values.compile) {
+    try {
+      const reported = new Set(result.violations.filter(v => v.rule === 'I2').map(v => v.file));
+      const compiled = await checkEmission(directory, { layers });
+      result.violations.push(...compiled.filter(v => v.rule !== 'I2' || !reported.has(v.file)));
+      result.violations.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.rule.localeCompare(b.rule));
+    } catch (error) {
+      process.stderr.write(`${error.message}\n`);
+      return 2;
+    }
   }
   out.write(values.format === 'json' ? `${JSON.stringify(result, null, 2)}\n` : formatText(result));
   const failing = result.violations.some(v => v.severity === 'error' || values.strict);

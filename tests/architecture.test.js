@@ -162,3 +162,38 @@ $name: "#{'x'}";
     'combinators/scope/_ok.scss': '@mixin ancestor($a) { #{$a} & { @content; } }\n',
   }), []);
 });
+
+test('--compile detects emission that static analysis cannot see (I2)', () => {
+  const run = files => {
+    const dir = project(files);
+    try {
+      const result = spawnSync(process.execPath, [cli, 'check', dir, '--compile', '--format', 'json'], { encoding: 'utf8' });
+      return { status: result.status, stderr: result.stderr, violations: result.stdout ? JSON.parse(result.stdout).violations : [] };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+  const ok = run(compliant);
+  assert.equal(ok.status, 0, ok.stderr);
+  assert.deepEqual(ok.violations, []);
+
+  // Dépendance externe aux couches qui émet du CSS à son chargement : invisible pour l'analyse statique.
+  const hidden = run({
+    ...compliant,
+    'vendor/_reset.scss': 'body { margin: 0; }\n',
+    'components/_emit.scss': '@use "../vendor/reset";\n',
+  });
+  assert.equal(hidden.status, 1, hidden.stderr);
+  assert.ok(hidden.violations.some(v => v.rule === 'I2' && v.file.endsWith('_emit.scss')));
+
+  // Pas de doublon quand l'analyse statique signale déjà le fichier.
+  const duplicate = run({ ...compliant, 'tokens/_bad.scss': 'body { color: red; }\n' });
+  assert.deepEqual(duplicate.violations.filter(v => v.rule === 'I2').length, 1);
+
+  const stray = run({ ...compliant, 'globals/_emit.scss': '@mixin m { .X { color: red; } }\n@include m;\n' });
+  assert.ok(stray.violations.some(v => v.rule === 'I2' && v.file.endsWith('_emit.scss')));
+
+  const broken = run({ ...compliant, 'tokens/_missing.scss': '@use "does-not-exist";\n' });
+  assert.equal(broken.status, 0);
+  assert.deepEqual(broken.violations.map(v => v.rule), ['COMPILE']);
+});

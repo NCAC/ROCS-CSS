@@ -73,6 +73,20 @@ export function discoverLayers(root, overrides = {}) {
 const normalize = name => name.replaceAll('_', '-');
 const inside = (dir, path) => path === dir || path.startsWith(dir + sep);
 
+function layerOfPath(layerDirs, path) {
+  let best = null;
+  for (const [layer, dir] of Object.entries(layerDirs)) {
+    if (inside(dir, path) && (!best || dir.length > layerDirs[best].length)) best = layer;
+  }
+  return best;
+}
+
+/** Fichiers SCSS de chaque couche ; une couche imbriquée dans une autre lui est retirée. */
+export function sourceFiles(layerDirs) {
+  return Object.entries(layerDirs).flatMap(([layer, dir]) => listScss(dir)
+    .filter(file => layerOfPath(layerDirs, file) === layer).map(file => ({ file, layer })));
+}
+
 const inNthArgument = node => {
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'pseudo' && /^:nth-/.test(parent.value)) return true;
@@ -113,13 +127,7 @@ export function checkArchitecture(root, options = {}) {
   const violations = [];
   const cache = new Map();
 
-  const layerOf = path => {
-    let best = null;
-    for (const [layer, dir] of Object.entries(layerDirs)) {
-      if (inside(dir, path) && (!best || dir.length > layerDirs[best].length)) best = layer;
-    }
-    return best;
-  };
+  const layerOf = path => layerOfPath(layerDirs, path);
   const familyOf = path => {
     const dir = layerDirs.combinators;
     if (!dir || !inside(dir, path)) return null;
@@ -164,11 +172,11 @@ export function checkArchitecture(root, options = {}) {
     const candidates = bare
       ? [dirname(from), root, ...Object.values(layerDirs).map(dirname)].map(base => resolve(base, spec))
       : [resolve(dirname(from), spec)];
-    const found = candidates.find(abs => resolveFile(abs) && layerOf(resolveFile(abs) ?? abs))
-      ?? candidates.find(abs => layerOf(abs));
+    // Un import qui ne désigne aucun fichier existant est ignoré : le compilateur le signalera.
+    const found = candidates.find(abs => resolveFile(abs) && layerOf(resolveFile(abs)));
     if (!found) return null;
     const file = resolveFile(found);
-    const path = file ?? found;
+    const path = file;
     return { layer: layerOf(path), family: familyOf(path), file };
   };
 
@@ -188,8 +196,7 @@ export function checkArchitecture(root, options = {}) {
   };
 
   // Première passe : noms de mixins par couche (I10, I16).
-  const files = Object.entries(layerDirs).flatMap(([layer, dir]) => listScss(dir)
-    .filter(file => layerOf(file) === layer).map(file => ({ file, layer })));
+  const files = sourceFiles(layerDirs);
   const mixinLayers = new Map();
   for (const { file, layer } of files) {
     for (const node of load(file).nodes) {

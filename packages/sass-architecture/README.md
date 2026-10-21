@@ -25,6 +25,13 @@ Convention : un dossier par couche (`tokens`, `primitives`, `behaviors`,
 `scss/` ou `styles/`. Les combinators se répartissent en sous-dossiers `context/`,
 `scope/`, `state/` et `part/`. `--layer nom=chemin` surcharge un emplacement.
 Codes de sortie : 0 conforme, 1 violation (ou avertissement avec `--strict`), 2 usage invalide.
+
+Avec `--compile`, chaque module des couches de la chaîne est compilé avec `sass`
+(≥ 1.71.0, pair optionnel, cherché d'abord dans le projet analysé) et ne doit
+produire aucun CSS (I2) ; `globals` ne peut produire que `@keyframes`, `@font-face`
+et `@property`. Ce contrôle sémantique détecte, par exemple, une dépendance
+externe qui émet du CSS à son chargement. Un module qui ne compile pas isolément
+(dépendance introuvable) produit un avertissement `COMPILE`, pas une erreur.
 L'API JavaScript est `checkArchitecture(dir, { layers })`.
 
 | Invariant | Contrôle |

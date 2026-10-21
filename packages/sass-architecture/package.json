@@ -20,6 +20,7 @@
   ],
   "exports": {
     ".": "./src/checker.js",
+    "./emission": "./src/emission.js",
     "./specification": "./docs/fr/SPECIFICATION.md",
     "./guide": "./docs/fr/GUIDE.md",
     "./docs/*": "./docs/*",
@@ -41,5 +42,13 @@
     "postcss": "^8.5.31",
     "postcss-scss": "^4.0.9",
     "postcss-selector-parser": "^7.1.6"
+  },
+  "peerDependencies": {
+    "sass": ">=1.71.0"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
   }
 }
