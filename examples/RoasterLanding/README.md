@@ -52,3 +52,15 @@ pnpm exec sass --pkg-importer=node examples/RoasterLanding/styles.scss examples/
 pnpm exec sass-architecture check examples/RoasterLanding --compile
 node tools/rocs-validate.js --dir ./examples/RoasterLanding
 ```
+
+## Voir la page dans un navigateur
+
+La page est statique, mais `app.js` et `styles.css` utilisent des chemins relatifs : un petit serveur Express (`tools/serve-demo.js`) suffit à l'exposer.
+
+```bash
+pnpm install          # une fois, pour installer express
+pnpm run serve:demo   # http://localhost:3000
+PORT=8080 pnpm run serve:demo
+```
+
+Le serveur sert `examples/RoasterLanding/` tel quel et ne compile rien : après une modification du SCSS, relancer la compilation ci-dessus (ou `pnpm run compile:examples`) puis recharger la page.
