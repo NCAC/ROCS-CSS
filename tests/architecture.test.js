@@ -100,6 +100,23 @@ test('A specialization consumes no other specialization (I14)', () => {
   }), ['I14']);
 });
 
+test('Each canonical is unique and lives in its own family (I12)', () => {
+  assert.deepEqual(rules({
+    ...compliant,
+    'combinators/context/_dup.scss': '@mixin media($c) { @media #{$c} { @content; } }\n',
+  }), ['I12']);
+  assert.deepEqual(rules({
+    ...compliant,
+    'combinators/state/_media.scss': '@mixin media($c) { &:#{$c} { @content; } }\n',
+  }), ['I12', 'I12']);
+  const { 'combinators/state/_pseudo-class.scss': _, ...withoutPseudoClass } = compliant;
+  assert.deepEqual(rules({
+    ...withoutPseudoClass,
+    'components/_stack.scss': '@mixin stack { color: red; }\n',
+    'combinators/part/_pseudo-class.scss': '@mixin pseudo-class($p) { &:#{$p} { @content; } }\n',
+  }), ['I12']);
+});
+
 test('Selectors and !important follow I19 and I22', () => {
   assert.deepEqual(rules({
     ...compliant,

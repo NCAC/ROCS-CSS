@@ -6,7 +6,11 @@ import { scan } from './scan.js';
 export const LAYERS = ['tokens', 'primitives', 'behaviors', 'combinators', 'components', 'globals', 'bootstrap'];
 export const FAMILIES = ['context', 'scope', 'state', 'part'];
 // Spécification I12 : identifiants des canoniques ; tout autre combinator est une spécialisation.
-const CANONICALS = new Set(['media', 'supports', 'container', 'pseudo-class', 'attribute', 'ancestor', 'pseudo-element']);
+const CANONICAL_FAMILIES = {
+  media: 'context', supports: 'context', container: 'context',
+  'pseudo-class': 'state', attribute: 'state', ancestor: 'scope', 'pseudo-element': 'part',
+};
+const CANONICALS = new Set(Object.keys(CANONICAL_FAMILIES));
 
 // Spécification §2 : couches que chaque couche PEUT consommer (hors elle-même).
 const ALLOWED = {
@@ -117,7 +121,7 @@ function selectorProblems(selector, layer, family) {
 }
 
 /**
- * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I11, I13, I14, I16, I19, I22, I23).
+ * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I14, I16, I19, I22, I23).
  * L'analyse est statique et heuristique : elle ne prouve pas la conformité complète.
  * @param {string} root
  * @param {{ layers?: Record<string,string> }} [options]
@@ -197,15 +201,19 @@ export function checkArchitecture(root, options = {}) {
     return families;
   };
 
-  // Première passe : noms de mixins par couche (I10, I14, I16).
+  // Première passe : noms de mixins par couche (I10, I14, I16) et définitions de canoniques (I12).
   const files = sourceFiles(layerDirs);
   const mixinLayers = new Map();
+  const canonicalDefs = new Map();
   for (const { file, layer } of files) {
     for (const node of load(file).nodes) {
       const name = node.atRule === 'mixin' && /^@mixin\s+([\w-]+)/.exec(node.text)?.[1];
       if (!name) continue;
       const key = normalize(name);
       mixinLayers.set(key, new Set([...(mixinLayers.get(key) ?? []), layer]));
+      if (layer === 'combinators' && CANONICALS.has(key)) {
+        canonicalDefs.set(key, [...(canonicalDefs.get(key) ?? []), { file, line: node.line, family: familyOf(file) }]);
+      }
     }
   }
 
@@ -317,6 +325,19 @@ export function checkArchitecture(root, options = {}) {
         if (!hasContent) report('I11', mixin.line, `Le combinator "${mixin.text.replace(/\s*\(.*$/, '')}" doit transmettre @content.`);
       }
     }
+  }
+
+  // I12 : un seul canonique par identifiant, dans la famille de son mécanisme.
+  for (const [id, defs] of canonicalDefs) {
+    defs.forEach(({ file, line, family }, index) => {
+      const add = message => violations.push({
+        rule: 'I12', severity: 'error', file: relative(root, file), line, layer: 'combinators', message,
+      });
+      if (index > 0) add(`Le canonique "${id}" est défini plusieurs fois ; aucun autre combinator ne doit porter ce nom.`);
+      if (family && family !== CANONICAL_FAMILIES[id]) {
+        add(`Le canonique "${id}" appartient à la famille ${CANONICAL_FAMILIES[id]}, pas à ${family}.`);
+      }
+    });
   }
 
   violations.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.rule.localeCompare(b.rule));
