@@ -12,8 +12,8 @@ const CANONICAL_FAMILIES = {
 };
 // Spécification I15 : précédence des familles, de l'extérieur vers l'intérieur.
 const FAMILY_RANK = Object.fromEntries(FAMILIES.map((family, rank) => [family, rank]));
-// Spécification I21 : plafond de spécificité d'une signature (0,3,0).
-const SPECIFICITY_CAP = [0, 3, 0];
+// Spécification I21 : plafond de spécificité d'une signature (0,3,1), aligné sur `selector-max-specificity`.
+const SPECIFICITY_CAP = [0, 3, 1];
 const CANONICALS = new Set(Object.keys(CANONICAL_FAMILIES));
 
 // Spécification §2 : couches que chaque couche PEUT consommer (hors elle-même).

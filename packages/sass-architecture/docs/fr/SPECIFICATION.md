@@ -226,7 +226,7 @@ En conséquence, le canonique `pseudo-class` NE DOIT accepter aucune pseudo-clas
 | chaque `state` | +(0,1,0) |
 | `part` | +(0,0,1) |
 
-Informatif : avec le plafond (0,3,0) de la configuration Stylelint de référence ROCS, on peut cumuler au plus deux `state` hors scope, ou un scope suivi d'un seul `state`. Un `part` ne s'ajoute alors qu'à une signature de spécificité strictement inférieure à (0,3,0).
+Informatif : avec le plafond (0,3,1) de la configuration Stylelint de référence ROCS, on peut cumuler au plus deux `state` hors scope. Avec un scope, l'ancêtre `html[…]` ou `body[…]` (0,1,1) admet deux `state`, tandis que `:root[…]` ou `.Classe[…]` (0,2,0) n'en admet qu'un. Un `part` (0,0,1) ne s'ajoute qu'à une signature de spécificité au plus égale à (0,3,0), de sorte que le total reste sous le plafond.
 
 **I22.** Seul le reset de `bootstrap` (§1.3) PEUT émettre `!important` (ROCS §6.1).
 

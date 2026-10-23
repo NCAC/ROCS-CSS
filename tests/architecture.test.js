@@ -140,7 +140,7 @@ test('Combinator families nest in order, with one scope and one part (I15)', () 
   )), ['I15']);
 });
 
-test('Signature specificity stays under the (0,3,0) cap (I21)', () => {
+test('Signature specificity stays under the (0,3,1) cap (I21)', () => {
   const families = {
     ...compliant,
     'combinators/state/_attribute.scss': '@mixin attribute($a) { &[#{$a}] { @content; } }\n',
@@ -158,8 +158,10 @@ test('Signature specificity stays under the (0,3,0) cap (I21)', () => {
   // scope html[…] (0,1,1) + 1 state = (0,2,1) : accepté ; scope .C[…] (0,2,0) + 2 state = (0,4,0) : refusé.
   assert.deepEqual(rules(stack(`@include ancestor.ancestor("html[data-theme]") { ${hover('color: red;')} }`)), []);
   assert.deepEqual(rules(stack(`@include ancestor.ancestor(".Theme[data-x]") { ${hover(open('color: red;'))} }`)), ['I21']);
-  // Un part sur (0,3,0) donne (0,3,1) : refusé.
-  assert.deepEqual(rules(stack(hover(open('@include pseudo-element.pseudo-element(before) { content: ""; }')))), ['I21']);
+  // Un part sur (0,3,0) donne (0,3,1) : accepté ; sur html[…] + 2 state (0,3,1), il donne (0,3,2) : refusé.
+  const before = '@include pseudo-element.pseudo-element(before) { content: ""; }';
+  assert.deepEqual(rules(stack(hover(open(before)))), []);
+  assert.deepEqual(rules(stack(`@include ancestor.ancestor("html[data-theme]") { ${hover(open(before))} }`)), ['I21']);
 });
 
 test('Selectors and !important follow I19 and I22', () => {

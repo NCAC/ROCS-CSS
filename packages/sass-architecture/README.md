@@ -47,7 +47,7 @@ L'API JavaScript est `checkArchitecture(dir, { layers })`.
 | I13, I14, I16 | combinators limités à leur famille, spécialisations sans autre spécialisation, sans behavior ni component |
 | I15 | précédence `context → scope → state → part` dans les `@include` imbriqués, un seul `scope` et un seul `part` |
 | I19 | pas de classe ni d'`id` littéral ; pas de combinateur (`>`, `+`, `~`, descendant) hors `bootstrap`, sauf descendant dans la famille `scope` |
-| I21 | spécificité d'une signature de composition (barème de la spec) au plus (0,3,0), quand l'ancêtre de `scope` est un littéral |
+| I21 | spécificité d'une signature de composition (barème de la spec) au plus (0,3,1), quand l'ancêtre de `scope` est un littéral |
 | I22 | `!important` réservé à `bootstrap` |
 | I23 | `bootstrap` n'atteint que la famille `context`, transitivement |
 

@@ -350,7 +350,7 @@ La spécificité de chaque sélecteur produit doit pouvoir se calculer à la lec
 | chaque `state` | +(0,1,0) |
 | `part` | +(0,0,1) |
 
-Avec le plafond (0,3,0) de la configuration Stylelint ROCS, on peut cumuler au plus deux `state` hors scope, ou un scope suivi d'un seul `state`. Un `part` ne s'ajoute qu'à une signature strictement sous (0,3,0).
+Avec le plafond (0,3,1) de la configuration Stylelint ROCS, on peut cumuler au plus deux `state` hors scope. Avec un scope, l'ancêtre `html[…]` ou `body[…]` (0,1,1) admet deux `state`, tandis que `:root[…]` ou `.Classe[…]` (0,2,0) n'en admet qu'un. Un `part` ne s'ajoute qu'à une signature d'au plus (0,3,0).
 
 ### Un point d'entrée par famille (I23)
 
