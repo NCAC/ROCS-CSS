@@ -82,7 +82,7 @@ npm install --save-dev stylelint stylelint-config-standard-scss
     "selector-max-class": 1,
     "selector-no-qualifying-type": true,
     "no-descending-specificity": true,
-    "selector-max-specificity": "0,3,0"
+    "selector-max-specificity": "0,3,1"
   }
 }
 ```
