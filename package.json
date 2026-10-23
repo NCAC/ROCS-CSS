@@ -18,7 +18,8 @@
     "validate:json": "node tools/rocs-validate.js --dir ./examples --format json",
     "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css",
     "check": "pnpm run build && pnpm test && pnpm run lint && pnpm run validate",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "serve:demo": "node tools/serve-demo.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -40,12 +41,13 @@
   "author": "ncac",
   "license": "MIT",
   "devDependencies": {
-    "@rocss/rocs": "workspace:*",
-    "@rocss/sass-architecture": "workspace:*",
-    "@rocss/sass": "workspace:*",
     "@release-it/bumper": "^7.0.5",
     "@release-it/conventional-changelog": "^10.0.6",
+    "@rocss/rocs": "workspace:*",
+    "@rocss/sass": "workspace:*",
+    "@rocss/sass-architecture": "workspace:*",
     "eslint": "^9.0.0",
+    "express": "^5.3.0",
     "husky": "^8.0.3",
     "release-it": "^19.2.4",
     "sass": "^1.71.0",
