@@ -6,7 +6,7 @@ d'origine reste intact.
 
 **Version expérimentale 0.1.0, encore privée, non publiée.** Les tests doivent
 être exécutés et les contrats revus avant de retirer `private: true`.
-Références ciblées : ROCS 1.0 et architecture Sass 0.1.0 (brouillon).
+Références ciblées : ROCS 1.0 et architecture Sass 1.0.0-rc.1.
 
 ## Imports
 

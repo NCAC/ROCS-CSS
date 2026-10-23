@@ -1,6 +1,6 @@
 # @rocss/sass-architecture
 
-**Brouillon d'architecture de référence**, version 0.1.0, ciblant ROCS 1.0.
+**Architecture de référence**, version 1.0.0-rc.1 (release candidate), ciblant ROCS 1.0.
 Ce package est essentiellement documentaire. Il fournit aussi un vérificateur
 statique optionnel (`sass-architecture check`) ; il ne fournit aucun mixin Sass.
 
@@ -9,7 +9,7 @@ Les fichiers Markdown sont consultables directement ou localisables via les
 sous-chemins `@rocss/sass-architecture/specification` et
 `@rocss/sass-architecture/guide` ; ils ne sont pas des modules JavaScript à importer.
 
-- [Spécification d'architecture](docs/fr/SPECIFICATION.md) : référence normative du brouillon.
+- [Spécification d'architecture](docs/fr/SPECIFICATION.md) : référence normative.
 - [Guide pédagogique](docs/fr/GUIDE.md) : informatif, aligné sur la spécification.
 - [Revue contradictoire](docs/fr/REVIEW.md) : analyse critique, arbitrée point par point (section « Arbitrage »).
 
@@ -64,6 +64,17 @@ constituent pas des obligations pour toute application ROCS.
 Les documents de [docs/fr/](docs/fr/) sont les sources canoniques, éditées
 directement dans ce package (ils ne sont pas générés). La
 revue est arbitrée dans sa section « Arbitrage ».
+
+## Statut de la release candidate
+
+La 1.0.0-rc.1 est publiée sous le tag npm `next`, pas `latest`. Elle fige la
+spécification et les identifiants de règles (`I1`…`I23`) pour recueillir des retours
+avant la 1.0.0. Le vérificateur reste **heuristique** : voir les limites ci-dessus.
+L'implémentation de référence `@rocss/sass` est encore expérimentale (0.1.0, privée).
+
+Politique proposée à partir de la 1.0.0 : une nouvelle vérification est introduite
+en avertissement et ne devient une erreur qu'à la version majeure suivante, afin
+qu'une mise à jour mineure ne casse pas les projets existants.
 
 Les versions des packages sont indépendantes. La conformité à ROCS ne dépend
 ni de l'adoption de cette architecture, ni de l'installation de ce package.

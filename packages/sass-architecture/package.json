@@ -1,6 +1,6 @@
 {
   "name": "@rocss/sass-architecture",
-  "version": "0.1.0",
+  "version": "1.0.0-rc.1",
   "description": "Draft reference architecture specification and static checker for ROCS-compatible Sass definitions",
   "type": "module",
   "license": "MIT",
@@ -31,7 +31,8 @@
     "prepack": "pnpm run build"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   },
   "repository": {
     "type": "git",

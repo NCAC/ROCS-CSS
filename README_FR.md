@@ -15,7 +15,7 @@ La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm wo
 | Package | Version | Contenu et statut |
 | --- | --- | --- |
 | [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 0.1.0 | **Brouillon documentaire** d'architecture de référence ; aucun mixin Sass ni code d'exécution. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0-rc.1 | Architecture de référence (release candidate, tag npm `next`) avec vérificateur statique heuristique ; aucun mixin Sass. |
 | [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Implémentation Sass expérimentale privée** (`private: true`) : sept mixins dans quatre familles ; tests à exécuter et contrats à revoir avant toute levée du statut privé. |
 
 Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
