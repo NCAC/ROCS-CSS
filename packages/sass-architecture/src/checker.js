@@ -10,6 +10,8 @@ const CANONICAL_FAMILIES = {
   media: 'context', supports: 'context', container: 'context',
   'pseudo-class': 'state', attribute: 'state', ancestor: 'scope', 'pseudo-element': 'part',
 };
+// Spécification I15 : précédence des familles, de l'extérieur vers l'intérieur.
+const FAMILY_RANK = Object.fromEntries(FAMILIES.map((family, rank) => [family, rank]));
 const CANONICALS = new Set(Object.keys(CANONICAL_FAMILIES));
 
 // Spécification §2 : couches que chaque couche PEUT consommer (hors elle-même).
@@ -121,7 +123,7 @@ function selectorProblems(selector, layer, family) {
 }
 
 /**
- * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I14, I16, I19, I22, I23).
+ * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I16, I19, I22, I23).
  * L'analyse est statique et heuristique : elle ne prouve pas la conformité complète.
  * @param {string} root
  * @param {{ layers?: Record<string,string> }} [options]
@@ -205,12 +207,16 @@ export function checkArchitecture(root, options = {}) {
   const files = sourceFiles(layerDirs);
   const mixinLayers = new Map();
   const canonicalDefs = new Map();
+  const mixinFamilies = new Map();
   for (const { file, layer } of files) {
     for (const node of load(file).nodes) {
       const name = node.atRule === 'mixin' && /^@mixin\s+([\w-]+)/.exec(node.text)?.[1];
       if (!name) continue;
       const key = normalize(name);
       mixinLayers.set(key, new Set([...(mixinLayers.get(key) ?? []), layer]));
+      if (layer === 'combinators' && familyOf(file)) {
+        mixinFamilies.set(key, new Set([...(mixinFamilies.get(key) ?? []), familyOf(file)]));
+      }
       if (layer === 'combinators' && CANONICALS.has(key)) {
         canonicalDefs.set(key, [...(canonicalDefs.get(key) ?? []), { file, line: node.line, family: familyOf(file) }]);
       }
@@ -315,6 +321,27 @@ export function checkArchitecture(root, options = {}) {
         if (layer === 'combinators' && ownerName && !CANONICALS.has(normalize(ownerName))
           && defined?.has('combinators') && !CANONICALS.has(normalize(name))) {
           report('I14', line, `La spécialisation "${ownerName}" ne consomme pas une autre spécialisation ("${name}").`);
+        }
+      }
+    }
+
+    // I15 : précédence des familles dans les @include imbriqués ; un seul scope et un seul part.
+    const familyOfInclude = node => {
+      if (node.atRule !== 'include') return null;
+      const name = /^@include\s+(?:[\w-]+\.)?([\w-]+)/.exec(node.text)?.[1];
+      const families = name && mixinFamilies.get(normalize(name));
+      return families?.size === 1 ? [...families][0] : null;
+    };
+    for (const node of nodes) {
+      const inner = familyOfInclude(node);
+      if (!inner) continue;
+      for (const outer of node.ancestors.map(familyOfInclude).filter(Boolean)) {
+        if (FAMILY_RANK[inner] < FAMILY_RANK[outer]) {
+          report('I15', node.line, `La famille ${inner} ne peut pas être imbriquée dans ${outer} (context → scope → state → part).`);
+          break;
+        } else if (inner === outer && (inner === 'scope' || inner === 'part')) {
+          report('I15', node.line, `Une signature ne contient qu'un seul ${inner}.`);
+          break;
         }
       }
     }

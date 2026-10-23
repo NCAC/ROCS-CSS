@@ -117,6 +117,29 @@ test('Each canonical is unique and lives in its own family (I12)', () => {
   }), ['I12']);
 });
 
+test('Combinator families nest in order, with one scope and one part (I15)', () => {
+  const families = {
+    ...compliant,
+    'combinators/scope/_ancestor.scss': '@mixin ancestor($a) { #{$a} :where(&) { @content; } }\n',
+    'combinators/part/_pseudo-element.scss': '@mixin pseudo-element($p) { &::#{$p} { @content; } }\n',
+  };
+  const use = '@use "../combinators/context/media";\n@use "../combinators/scope/ancestor";\n'
+    + '@use "../combinators/state/pseudo-class";\n@use "../combinators/part/pseudo-element";\n';
+  const stack = body => ({ ...families, 'components/_stack.scss': `${use}@mixin stack { ${body} }\n` });
+  assert.deepEqual(rules(stack(
+    '@include media.media(x) { @include ancestor.ancestor(y) { @include pseudo-class.pseudo-class(z) { @include pseudo-element.pseudo-element(w) { color: red; } } } }',
+  )), []);
+  assert.deepEqual(rules(stack(
+    '@include pseudo-class.pseudo-class(z) { @include ancestor.ancestor(y) { color: red; } }',
+  )), ['I15']);
+  assert.deepEqual(rules(stack(
+    '@include ancestor.ancestor(a) { @include ancestor.ancestor(b) { color: red; } }',
+  )), ['I15']);
+  assert.deepEqual(rules(stack(
+    '@include pseudo-element.pseudo-element(a) { @include pseudo-element.pseudo-element(b) { color: red; } }',
+  )), ['I15']);
+});
+
 test('Selectors and !important follow I19 and I22', () => {
   assert.deepEqual(rules({
     ...compliant,

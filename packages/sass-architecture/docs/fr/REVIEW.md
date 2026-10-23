@@ -44,7 +44,7 @@ Cette revue portait sur la première version du document source. Une partie de s
 | §3.2 balises | **Adopté** : `html`, `body` et le reset sont exceptés de l'interdiction des balises | §1.1 |
 | §3.3 reset | **Adopté** : sélecteurs universels ou de type seuls, sans classe, `id`, attribut, combinateur ni pseudo-classe fonctionnelle | §1.3 |
 | §5 principe transversal | **Adopté comme énoncé informatif** : il résume I12, I19, I20 et I21 sans créer d'obligation nouvelle | §1.4 |
-| §6 étape 5 (vérifications) | Partiellement implémentées par `sass-architecture check` (I1–I3, I7–I14, I16, I19, I22, I23) ; I15, I18 et I21 restent à outiller | README du package |
+| §6 étape 5 (vérifications) | Partiellement implémentées par `sass-architecture check` (I1–I3, I7–I16, I19, I22, I23) ; I18 et I21 restent à outiller | README du package |
 
 Réserve : ces décisions n'ont été éprouvées que par relecture et par les tests du vérificateur. Aucun projet réel n'applique encore l'architecture ; les critères d'acceptation du §7 ne valent donc que sous cette réserve.
 
