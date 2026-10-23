@@ -12,6 +12,8 @@ const CANONICAL_FAMILIES = {
 };
 // Spécification I15 : précédence des familles, de l'extérieur vers l'intérieur.
 const FAMILY_RANK = Object.fromEntries(FAMILIES.map((family, rank) => [family, rank]));
+// Spécification I21 : plafond de spécificité d'une signature (0,3,0).
+const SPECIFICITY_CAP = [0, 3, 0];
 const CANONICALS = new Set(Object.keys(CANONICAL_FAMILIES));
 
 // Spécification §2 : couches que chaque couche PEUT consommer (hors elle-même).
@@ -122,8 +124,23 @@ function selectorProblems(selector, layer, family) {
   return problems;
 }
 
+const addSpecificity = (a, b) => a.map((value, i) => value + b[i]);
+const exceeds = (specificity, cap) => {
+  for (let i = 0; i < 3; i++) if (specificity[i] !== cap[i]) return specificity[i] > cap[i];
+  return false;
+};
+
+/** Barème I21 de l'ancêtre d'un scope ; null si l'argument n'est pas un littéral reconnu. */
+function ancestorSpecificity(argument) {
+  const root = /^(html|body|:root|\.[A-Za-z][\w-]*)\[/.exec(argument ?? '')?.[1];
+  if (!root) return null;
+  return root === 'html' || root === 'body' ? [0, 1, 1] : [0, 2, 0];
+}
+
+const firstLiteral = text => /\(\s*(["'])(.*?)\1/.exec(text)?.[2] ?? null;
+
 /**
- * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I16, I19, I22, I23).
+ * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I16, I19, I21, I22, I23).
  * L'analyse est statique et heuristique : elle ne prouve pas la conformité complète.
  * @param {string} root
  * @param {{ layers?: Record<string,string> }} [options]
@@ -208,6 +225,7 @@ export function checkArchitecture(root, options = {}) {
   const mixinLayers = new Map();
   const canonicalDefs = new Map();
   const mixinFamilies = new Map();
+  const scopeAncestors = new Map();
   for (const { file, layer } of files) {
     for (const node of load(file).nodes) {
       const name = node.atRule === 'mixin' && /^@mixin\s+([\w-]+)/.exec(node.text)?.[1];
@@ -216,6 +234,11 @@ export function checkArchitecture(root, options = {}) {
       mixinLayers.set(key, new Set([...(mixinLayers.get(key) ?? []), layer]));
       if (layer === 'combinators' && familyOf(file)) {
         mixinFamilies.set(key, new Set([...(mixinFamilies.get(key) ?? []), familyOf(file)]));
+      }
+      if (layer === 'combinators' && familyOf(file) === 'scope') {
+        const ancestor = load(file).nodes.find(n => n.atRule === 'include' && n.ancestors.includes(node)
+          && /^@include\s+(?:[\w-]+\.)?ancestor\b/.test(n.text));
+        if (ancestor) scopeAncestors.set(key, firstLiteral(ancestor.raw));
       }
       if (layer === 'combinators' && CANONICALS.has(key)) {
         canonicalDefs.set(key, [...(canonicalDefs.get(key) ?? []), { file, line: node.line, family: familyOf(file) }]);
@@ -332,9 +355,32 @@ export function checkArchitecture(root, options = {}) {
       const families = name && mixinFamilies.get(normalize(name));
       return families?.size === 1 ? [...families][0] : null;
     };
+    const includeName = node => /^@include\s+(?:[\w-]+\.)?([\w-]+)/.exec(node.text)?.[1];
+    /** Spécificité d'une signature (I21) ; null si un scope n'a pas d'ancêtre littéral. */
+    const signatureSpecificity = chain => {
+      const scope = chain.find(n => familyOfInclude(n) === 'scope');
+      let total = [0, 1, 0];
+      if (scope) {
+        const name = normalize(includeName(scope));
+        const ancestor = ancestorSpecificity(name === 'ancestor' ? firstLiteral(scope.raw) : scopeAncestors.get(name));
+        if (!ancestor) return null;
+        total = ancestor;
+      }
+      for (const n of chain) {
+        if (familyOfInclude(n) === 'state') total = addSpecificity(total, [0, 1, 0]);
+        if (familyOfInclude(n) === 'part') total = addSpecificity(total, [0, 0, 1]);
+      }
+      return total;
+    };
     for (const node of nodes) {
       const inner = familyOfInclude(node);
       if (!inner) continue;
+      const chain = [...node.ancestors.filter(familyOfInclude), node];
+      const specificity = signatureSpecificity(chain);
+      const outerSpecificity = chain.length > 1 ? signatureSpecificity(chain.slice(0, -1)) : null;
+      if (specificity && exceeds(specificity, SPECIFICITY_CAP) && !(outerSpecificity && exceeds(outerSpecificity, SPECIFICITY_CAP))) {
+        report('I21', node.line, `La signature atteint la spécificité (${specificity}), au-delà du plafond (${SPECIFICITY_CAP}).`);
+      }
       for (const outer of node.ancestors.map(familyOfInclude).filter(Boolean)) {
         if (FAMILY_RANK[inner] < FAMILY_RANK[outer]) {
           report('I15', node.line, `La famille ${inner} ne peut pas être imbriquée dans ${outer} (context → scope → state → part).`);

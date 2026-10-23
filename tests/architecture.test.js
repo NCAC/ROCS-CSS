@@ -140,6 +140,28 @@ test('Combinator families nest in order, with one scope and one part (I15)', () 
   )), ['I15']);
 });
 
+test('Signature specificity stays under the (0,3,0) cap (I21)', () => {
+  const families = {
+    ...compliant,
+    'combinators/state/_attribute.scss': '@mixin attribute($a) { &[#{$a}] { @content; } }\n',
+    'combinators/scope/_ancestor.scss': '@mixin ancestor($a) { #{$a} :where(&) { @content; } }\n',
+    'combinators/part/_pseudo-element.scss': '@mixin pseudo-element($p) { &::#{$p} { @content; } }\n',
+  };
+  const use = '@use "../combinators/scope/ancestor";\n@use "../combinators/state/pseudo-class";\n'
+    + '@use "../combinators/state/attribute";\n@use "../combinators/part/pseudo-element";\n';
+  const stack = body => ({ ...families, 'components/_stack.scss': `${use}@mixin stack { ${body} }\n` });
+  const hover = inner => `@include pseudo-class.pseudo-class(hover) { ${inner} }`;
+  const open = inner => `@include attribute.attribute(open) { ${inner} }`;
+  // (0,1,0) + 2 state = (0,3,0) : accepté ; 3 state = (0,4,0) : refusé.
+  assert.deepEqual(rules(stack(hover(open('color: red;')))), []);
+  assert.deepEqual(rules(stack(hover(open(hover('color: red;'))))), ['I21']);
+  // scope html[…] (0,1,1) + 1 state = (0,2,1) : accepté ; scope .C[…] (0,2,0) + 2 state = (0,4,0) : refusé.
+  assert.deepEqual(rules(stack(`@include ancestor.ancestor("html[data-theme]") { ${hover('color: red;')} }`)), []);
+  assert.deepEqual(rules(stack(`@include ancestor.ancestor(".Theme[data-x]") { ${hover(open('color: red;'))} }`)), ['I21']);
+  // Un part sur (0,3,0) donne (0,3,1) : refusé.
+  assert.deepEqual(rules(stack(hover(open('@include pseudo-element.pseudo-element(before) { content: ""; }')))), ['I21']);
+});
+
 test('Selectors and !important follow I19 and I22', () => {
   assert.deepEqual(rules({
     ...compliant,

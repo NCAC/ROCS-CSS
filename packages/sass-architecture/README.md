@@ -47,12 +47,13 @@ L'API JavaScript est `checkArchitecture(dir, { layers })`.
 | I13, I14, I16 | combinators limités à leur famille, spécialisations sans autre spécialisation, sans behavior ni component |
 | I15 | précédence `context → scope → state → part` dans les `@include` imbriqués, un seul `scope` et un seul `part` |
 | I19 | pas de classe ni d'`id` littéral ; pas de combinateur (`>`, `+`, `~`, descendant) hors `bootstrap`, sauf descendant dans la famille `scope` |
+| I21 | spécificité d'une signature de composition (barème de la spec) au plus (0,3,0), quand l'ancêtre de `scope` est un littéral |
 | I22 | `!important` réservé à `bootstrap` |
 | I23 | `bootstrap` n'atteint que la famille `context`, transitivement |
 
 Limites : analyse statique fondée sur `postcss-scss` et `postcss-selector-parser`,
 sans compilation Sass. Elle ne vérifie pas I11 « exactement une fois par
-branche », I18 ni I21. Une erreur de syntaxe SCSS est signalée
+branche », ni I18. Une erreur de syntaxe SCSS est signalée
 (`SYNTAX`). Le reset de `bootstrap` n'est pas distingué
 du reste de la couche. Une absence de violation ne prouve pas la conformité.
 
