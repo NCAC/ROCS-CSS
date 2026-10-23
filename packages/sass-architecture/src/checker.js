@@ -5,6 +5,8 @@ import { scan } from './scan.js';
 
 export const LAYERS = ['tokens', 'primitives', 'behaviors', 'combinators', 'components', 'globals', 'bootstrap'];
 export const FAMILIES = ['context', 'scope', 'state', 'part'];
+// Spécification I12 : identifiants des canoniques ; tout autre combinator est une spécialisation.
+const CANONICALS = new Set(['media', 'supports', 'container', 'pseudo-class', 'attribute', 'ancestor', 'pseudo-element']);
 
 // Spécification §2 : couches que chaque couche PEUT consommer (hors elle-même).
 const ALLOWED = {
@@ -115,7 +117,7 @@ function selectorProblems(selector, layer, family) {
 }
 
 /**
- * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I11, I13, I16, I19, I22, I23).
+ * Vérifie l'architecture en couches (invariants I1, I2, I3, I7–I11, I13, I14, I16, I19, I22, I23).
  * L'analyse est statique et heuristique : elle ne prouve pas la conformité complète.
  * @param {string} root
  * @param {{ layers?: Record<string,string> }} [options]
@@ -195,7 +197,7 @@ export function checkArchitecture(root, options = {}) {
     return families;
   };
 
-  // Première passe : noms de mixins par couche (I10, I16).
+  // Première passe : noms de mixins par couche (I10, I14, I16).
   const files = sourceFiles(layerDirs);
   const mixinLayers = new Map();
   for (const { file, layer } of files) {
@@ -298,6 +300,13 @@ export function checkArchitecture(root, options = {}) {
         }
         if (layer === 'combinators' && (defined?.has('behaviors') || defined?.has('components'))) {
           report('I16', line, `Un combinator ne consomme ni behavior ni component ("${name}").`);
+        }
+        // I14 : une spécialisation ne consomme que des canoniques, jamais une autre spécialisation.
+        const owner = node.ancestors.findLast(a => a.atRule === 'mixin');
+        const ownerName = owner && /^@mixin\s+([\w-]+)/.exec(owner.text)?.[1];
+        if (layer === 'combinators' && ownerName && !CANONICALS.has(normalize(ownerName))
+          && defined?.has('combinators') && !CANONICALS.has(normalize(name))) {
+          report('I14', line, `La spécialisation "${ownerName}" ne consomme pas une autre spécialisation ("${name}").`);
         }
       }
     }

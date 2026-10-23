@@ -90,6 +90,16 @@ test('Combinators forward content (I11), ignore behaviors (I16) and stay in thei
   assert.deepEqual(rules({ ...compliant, 'combinators/state/_bad.scss': '@use "../context/media";\n@mixin bad { @content; }\n' }), ['I13']);
 });
 
+test('A specialization consumes no other specialization (I14)', () => {
+  const special = { 'combinators/context/_viewport.scss': '@use "media";\n@mixin from_wide { @include media.media("(min-width: 60em)") { @content; } }\n' };
+  assert.deepEqual(rules({ ...compliant, ...special }), []);
+  assert.deepEqual(rules({
+    ...compliant,
+    ...special,
+    'combinators/context/_chain.scss': '@use "viewport";\n@mixin from_wider { @include viewport.from_wide { @content; } }\n',
+  }), ['I14']);
+});
+
 test('Selectors and !important follow I19 and I22', () => {
   assert.deepEqual(rules({
     ...compliant,
