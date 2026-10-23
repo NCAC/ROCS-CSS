@@ -1,0 +1,47 @@
+// behaviors/text — déclarations typographiques atomiques (I9, I10).
+@use "../tokens";
+
+@mixin text_body {
+  color: tokens.$color_text;
+  font-family: tokens.$font_body;
+  font-size: tokens.$size_body;
+  line-height: tokens.$line_body;
+}
+
+@mixin text_small {
+  font-size: tokens.$size_small;
+}
+
+@mixin text_muted {
+  color: tokens.$color_text_muted;
+}
+
+@mixin text_heading {
+  font-family: tokens.$font_display;
+  font-size: tokens.$size_heading;
+  font-weight: tokens.$weight_bold;
+  line-height: tokens.$line_tight;
+}
+
+@mixin text_display {
+  font-family: tokens.$font_display;
+  font-size: tokens.$size_display;
+  font-weight: tokens.$weight_bold;
+  line-height: tokens.$line_tight;
+}
+
+@mixin text_eyebrow {
+  color: tokens.$color_accent;
+  font-size: tokens.$size_small;
+  font-weight: tokens.$weight_semibold;
+  letter-spacing: tokens.$tracking_caps;
+  text-transform: uppercase;
+}
+
+@mixin weight_semibold {
+  font-weight: tokens.$weight_semibold;
+}
+
+@mixin measure_readable {
+  max-inline-size: tokens.$measure;
+}

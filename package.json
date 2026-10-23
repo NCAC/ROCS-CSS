@@ -16,7 +16,7 @@
     "validate": "node tools/rocs-validate.js --dir ./examples",
     "validate:strict": "node tools/rocs-validate.js --dir ./examples --strict",
     "validate:json": "node tools/rocs-validate.js --dir ./examples --format json",
-    "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css",
+    "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css && sass --pkg-importer=node examples/RoasterLanding/styles.scss examples/RoasterLanding/styles.css",
     "check": "pnpm run build && pnpm test && pnpm run lint && pnpm run validate",
     "prepare": "husky install",
     "serve:demo": "node tools/serve-demo.js"

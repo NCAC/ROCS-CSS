@@ -1,0 +1,24 @@
+// tokens/motion — durées, courbes, distances et nom d'animation.
+
+// duration-fast
+$duration_fast_name: --duration-fast;
+$duration_fast: var(--duration-fast);
+$duration_fast_default_value: 150ms;
+
+// duration-slow
+$duration_slow_name: --duration-slow;
+$duration_slow: var(--duration-slow);
+$duration_slow_default_value: 600ms;
+
+// ease-out
+$ease_out_name: --ease-out;
+$ease_out: var(--ease-out);
+$ease_out_default_value: cubic-bezier(0, 0, 0.2, 1);
+
+// distance-rise
+$distance_rise_name: --distance-rise;
+$distance_rise: var(--distance-rise);
+$distance_rise_default_value: 1rem;
+
+// Identifiant de `@keyframes` : partagé entre globals (déclaration) et la couche de consommation.
+$animation_fade_rise: fade-rise;

@@ -1,0 +1,9 @@
+// globals/property — enregistrement d'un token (I3, I4).
+// `initial-value` provient de la même variable Sass que la valeur par défaut émise par bootstrap.
+@use "../tokens";
+
+@property #{tokens.$color_accent_name} {
+  inherits: true;
+  initial-value: #{tokens.$color_accent_default_value};
+  syntax: "<color>";
+}

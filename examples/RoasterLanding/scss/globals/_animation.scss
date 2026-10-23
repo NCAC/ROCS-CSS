@@ -1,0 +1,14 @@
+// globals/animation — symboles globaux non sélectifs (I2).
+@use "../tokens";
+
+@keyframes #{tokens.$animation_fade_rise} {
+  from {
+    opacity: 0;
+    transform: translateY(tokens.$distance_rise);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,14 @@
+// combinators/state/pseudo — spécialisations de `pseudo-class` (état natif : pseudo-classe préférée).
+@use "pkg:@rocss/sass/state";
+
+@mixin on_hover {
+  @include state.pseudo-class("hover") {
+    @content;
+  }
+}
+
+@mixin on_focus_visible {
+  @include state.pseudo-class("focus-visible") {
+    @content;
+  }
+}

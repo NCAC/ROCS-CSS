@@ -1,0 +1,6 @@
+// tokens/breakpoint — valeurs Sass seules : `var()` n'est pas résolu dans un prélude
+// `@media` ou `@container` (I5).
+
+$breakpoint_medium: 40rem;
+$breakpoint_wide: 64rem;
+$container_card_wide: 26rem;

@@ -1,0 +1,59 @@
+// tokens/type — familles, tailles, graisses, interlignes.
+
+// font-body
+$font_body_name: --font-body;
+$font_body: var(--font-body);
+$font_body_default_value: (system-ui, -apple-system, "Segoe UI", sans-serif);
+
+// font-display
+$font_display_name: --font-display;
+$font_display: var(--font-display);
+$font_display_default_value: ("Iowan Old Style", "Palatino Linotype", georgia, serif);
+
+// size-small
+$size_small_name: --size-small;
+$size_small: var(--size-small);
+$size_small_default_value: 0.875rem;
+
+// size-body
+$size_body_name: --size-body;
+$size_body: var(--size-body);
+$size_body_default_value: 1rem;
+
+// size-heading
+$size_heading_name: --size-heading;
+$size_heading: var(--size-heading);
+$size_heading_default_value: 1.5rem;
+
+// Taille fluide : seules les bornes sont nommées ici ; le calcul est une primitive.
+
+// size-display-min & size-display-max
+$size_display_name: --size-display;
+$size_display: var(--size-display);
+$size_display_min: 2rem;
+$size_display_max: 3.5rem;
+
+// line-body
+$line_body_name: --line-body;
+$line_body: var(--line-body);
+$line_body_default_value: 1.6;
+
+// line-tight
+$line_tight_name: --line-tight;
+$line_tight: var(--line-tight);
+$line_tight_default_value: 1.15;
+
+// weight-semibold
+$weight_semibold_name: --weight-semibold;
+$weight_semibold: var(--weight-semibold);
+$weight_semibold_default_value: 600;
+
+// weight-bold
+$weight_bold_name: --weight-bold;
+$weight_bold: var(--weight-bold);
+$weight_bold_default_value: 700;
+
+// tracking-caps
+$tracking_caps_name: --tracking-caps;
+$tracking_caps: var(--tracking-caps);
+$tracking_caps_default_value: 0.12em;

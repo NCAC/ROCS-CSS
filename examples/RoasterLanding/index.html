@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Torréfaction Lumen — cafés de spécialité</title>
+    <meta name="description" content="Page de démonstration ROCS : cafés de spécialité torréfiés à la semaine." />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="RoasterMasthead">
+      <a class="RoasterMasthead-brand" href="#top">Torréfaction Lumen</a>
+
+      <nav class="RoasterMasthead-panel" id="masthead-panel" data-state="closed" aria-label="Navigation principale">
+        <a class="RoasterMasthead-link" href="#top" aria-current="page">Accueil</a>
+        <a class="RoasterMasthead-link" href="#cafes">Nos cafés</a>
+        <a class="RoasterMasthead-link" href="#faq">Questions</a>
+      </nav>
+
+      <div class="RoasterMasthead-actions">
+        <button class="RoasterMasthead-theme" type="button" aria-pressed="false">Thème sombre</button>
+        <button
+          class="RoasterMasthead-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="masthead-panel"
+        >
+          Menu
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="RoasterHero" aria-labelledby="hero-title">
+        <div class="RoasterHero-copy">
+          <p class="RoasterHero-eyebrow">Torréfié chaque lundi</p>
+          <h1 class="RoasterHero-title" id="hero-title">Le café du matin, au bon degré de lumière.</h1>
+          <p class="RoasterHero-lead">
+            Des lots sélectionnés chez de petits producteurs, torréfiés en petites séries et expédiés
+            sous quarante-huit heures.
+          </p>
+          <a class="RoasterHero-cta" href="#cafes">Découvrir la gamme</a>
+        </div>
+        <div class="RoasterHero-visual" aria-hidden="true"></div>
+      </section>
+
+      <section class="BeanRange" id="cafes" aria-labelledby="range-title">
+        <h2 class="BeanRange-title" id="range-title">Nos cafés du moment</h2>
+        <p class="BeanRange-intro">
+          Trois origines, une torréfaction légère à moyenne pour conserver l'acidité et les arômes.
+        </p>
+        <ul class="BeanRange-list">
+          <li class="BeanRange-item">
+            <article class="BeanCard">
+              <div class="BeanCard-photo" aria-hidden="true"></div>
+              <div class="BeanCard-body">
+                <p class="BeanCard-origin">Éthiopie · Yirgacheffe</p>
+                <h3 class="BeanCard-name">Aurore</h3>
+                <p class="BeanCard-notes">Jasmin, bergamote, pêche blanche.</p>
+                <p class="BeanCard-price">14,50 € · 250 g</p>
+                <a class="BeanCard-cta" href="#cafes">Ajouter au panier</a>
+              </div>
+            </article>
+          </li>
+          <li class="BeanRange-item">
+            <article class="BeanCard">
+              <div class="BeanCard-photo" aria-hidden="true"></div>
+              <div class="BeanCard-body">
+                <p class="BeanCard-origin">Colombie · Huila</p>
+                <h3 class="BeanCard-name">Cordillère</h3>
+                <p class="BeanCard-notes">Caramel, pomme rouge, cacao.</p>
+                <p class="BeanCard-price">12,90 € · 250 g</p>
+                <a class="BeanCard-cta" href="#cafes">Ajouter au panier</a>
+              </div>
+            </article>
+          </li>
+          <li class="BeanRange-item">
+            <article class="BeanCard">
+              <div class="BeanCard-photo" aria-hidden="true"></div>
+              <div class="BeanCard-body">
+                <p class="BeanCard-origin">Brésil · Cerrado</p>
+                <h3 class="BeanCard-name">Crépuscule</h3>
+                <p class="BeanCard-notes">Noisette, chocolat au lait, épices douces.</p>
+                <p class="BeanCard-price">11,50 € · 250 g</p>
+                <a class="BeanCard-cta" href="#cafes">Ajouter au panier</a>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </section>
+
+      <section class="RoasterFaq" id="faq" aria-labelledby="faq-title">
+        <h2 class="RoasterFaq-title" id="faq-title">Questions fréquentes</h2>
+        <div class="RoasterFaq-list">
+          <div class="RoasterFaq-entry">
+            <h3 class="RoasterFaq-heading">
+              <button class="RoasterFaq-question" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+                Quand mon café est-il torréfié ?
+              </button>
+            </h3>
+            <div id="faq-answer-1" hidden>
+              <p class="RoasterFaq-text">
+                Chaque lundi. Les commandes passées avant dimanche soir partent avec la torréfaction de la semaine.
+              </p>
+            </div>
+          </div>
+          <div class="RoasterFaq-entry">
+            <h3 class="RoasterFaq-heading">
+              <button class="RoasterFaq-question" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+                Faut-il moudre les grains ?
+              </button>
+            </h3>
+            <div id="faq-answer-2" hidden>
+              <p class="RoasterFaq-text">
+                Nous recommandons de moudre juste avant l'infusion. Nous pouvons aussi moudre à la commande.
+              </p>
+            </div>
+          </div>
+          <div class="RoasterFaq-entry">
+            <h3 class="RoasterFaq-heading">
+              <button class="RoasterFaq-question" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+                Combien de temps se conserve-t-il ?
+              </button>
+            </h3>
+            <div id="faq-answer-3" hidden>
+              <p class="RoasterFaq-text">
+                Quatre à six semaines après la torréfaction, à l'abri de la lumière et de l'humidité.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="RoasterColophon">
+      <p class="RoasterColophon-text">© 2026 Torréfaction Lumen — page de démonstration ROCS.</p>
+      <a class="RoasterColophon-link" href="#top">Retour en haut</a>
+    </footer>
+  </body>
+</html>

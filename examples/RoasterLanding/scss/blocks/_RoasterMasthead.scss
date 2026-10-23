@@ -1,0 +1,92 @@
+// RoasterMasthead — en-tête collant, navigation repliable sur mobile.
+// État dynamique : `aria-expanded` sur le bouton, `data-state` sur le panneau lui-même (ROCS §6.2.2 (3)).
+@use "../behaviors";
+@use "../combinators/context";
+@use "../combinators/state";
+@use "../components";
+@use "../tokens";
+
+@mixin roaster_masthead() {
+  .RoasterMasthead {
+    @include behaviors.flex_row;
+    @include behaviors.gap_medium;
+    @include behaviors.bleed_frame;
+    @include behaviors.border_bottom;
+
+    background: tokens.$color_surface;
+    inset-block-start: 0;
+    justify-content: space-between;
+    padding-block: tokens.$space_sm;
+    position: sticky;
+    z-index: tokens.$layer_masthead;
+
+    @include context.with_backdrop_blur {
+      @include behaviors.surface_glass;
+
+      backdrop-filter: blur(tokens.$blur_masthead);
+    }
+  }
+
+  .RoasterMasthead-brand {
+    @include behaviors.link_plain;
+    @include behaviors.text_heading;
+  }
+
+  .RoasterMasthead-actions {
+    @include behaviors.flex_row;
+    @include behaviors.gap_small;
+  }
+
+  .RoasterMasthead-theme {
+    @include components.action_outline;
+  }
+
+  .RoasterMasthead-toggle {
+    @include components.action_outline;
+
+    @include context.from_wide {
+      display: none;
+    }
+  }
+
+  // Replié par défaut. L'état ouvert ne pose que `display` pour que la règle large ci-dessous
+  // (spécificité inférieure, déclarée après) n'ait aucun conflit de propriété à arbitrer.
+  .RoasterMasthead-panel {
+    @include behaviors.gap_small;
+
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    order: 3;
+
+    @include state.when_open {
+      display: flex;
+    }
+
+    @include context.from_wide {
+      display: flex;
+      flex-basis: auto;
+      flex-direction: row;
+      margin-inline-start: auto;
+      order: 0;
+    }
+  }
+
+  .RoasterMasthead-link {
+    @include behaviors.link_plain;
+    @include behaviors.padding_control;
+    @include behaviors.shape_round;
+
+    @include state.on_hover {
+      @include behaviors.underlined;
+    }
+
+    @include state.on_focus_visible {
+      @include behaviors.focus_ring;
+    }
+
+    @include state.when_current {
+      @include behaviors.text_eyebrow;
+    }
+  }
+}

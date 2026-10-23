@@ -1,0 +1,34 @@
+// behaviors/interaction — contrôles natifs et retours visuels.
+@use "../tokens";
+
+@mixin control_reset {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+@mixin link_plain {
+  color: inherit;
+  text-decoration: none;
+}
+
+@mixin focus_ring {
+  outline: tokens.$focus_width solid tokens.$color_accent;
+  outline-offset: tokens.$focus_offset;
+}
+
+@mixin dimmed {
+  opacity: tokens.$opacity_dim;
+}
+
+@mixin transition_opacity {
+  transition: opacity tokens.$duration_fast tokens.$ease_out;
+}
+
+@mixin underlined {
+  text-decoration: underline;
+  text-underline-offset: tokens.$space_xs;
+}

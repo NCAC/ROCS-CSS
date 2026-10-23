@@ -1,0 +1,26 @@
+// combinators/state/attribute — spécialisations de `attribute` : ARIA et `data-*` dynamiques.
+@use "pkg:@rocss/sass/state";
+
+@mixin when_expanded {
+  @include state.attribute("aria-expanded", "true") {
+    @content;
+  }
+}
+
+@mixin when_pressed {
+  @include state.attribute("aria-pressed", "true") {
+    @content;
+  }
+}
+
+@mixin when_current {
+  @include state.attribute("aria-current", "page") {
+    @content;
+  }
+}
+
+@mixin when_open {
+  @include state.attribute("data-state", "open") {
+    @content;
+  }
+}

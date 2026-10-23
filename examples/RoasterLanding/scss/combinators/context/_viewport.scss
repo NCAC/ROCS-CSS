@@ -1,0 +1,15 @@
+// combinators/context/viewport — spécialisations du canonique `media` (I13).
+@use "pkg:@rocss/sass/context";
+@use "../../tokens";
+
+@mixin from_medium {
+  @include context.media("(min-width: #{tokens.$breakpoint_medium})") {
+    @content;
+  }
+}
+
+@mixin from_wide {
+  @include context.media("(min-width: #{tokens.$breakpoint_wide})") {
+    @content;
+  }
+}
