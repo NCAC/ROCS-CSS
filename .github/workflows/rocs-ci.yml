@@ -196,11 +196,11 @@ jobs:
     steps:
       - name: Check results
         run: |
-            if [[ "${{ needs.workspaces.result }}" != "success" || \
-              "${{ needs.stylelint.result }}" != "success" || \
-              "${{ needs.eslint.result }}" != "success" || \
-              "${{ needs.rocs-validate.result }}" != "success" || \
-              "${{ needs.validate-examples.result }}" != "success" ]]; then
+          if [[ "${{ needs.workspaces.result }}" != "success" || \
+                "${{ needs.stylelint.result }}" != "success" || \
+                "${{ needs.eslint.result }}" != "success" || \
+                "${{ needs.rocs-validate.result }}" != "success" || \
+                "${{ needs.validate-examples.result }}" != "success" ]]; then
             echo "❌ Des violations ROCS ont été détectées. Voir les détails dans les jobs ci-dessus."
             exit 1
           fi
