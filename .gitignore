@@ -15,7 +15,7 @@
 !.stylelintrc.json
 !.stylelintignore
 !eslint.config.js
-!.release-it.json
+!.changeset/
 
 !.github/
 /.github/*

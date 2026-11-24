@@ -9,6 +9,8 @@
     "build": "pnpm -r --if-present run build",
     "test": "node --test tests/*.test.js",
     "pack:check": "pnpm -r --filter \"./packages/*\" pack --dry-run",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
     "lint:css": "stylelint '**/*.{css,scss}'",
     "lint:css:fix": "stylelint '**/*.{css,scss}' --fix",
     "lint:jsx": "eslint --no-error-on-unmatched-pattern '**/*.{jsx,tsx}'",
@@ -22,7 +24,7 @@
     "serve:demo": "node tools/serve-demo.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "keywords": [
     "rocs",
@@ -41,15 +43,13 @@
   "author": "ncac",
   "license": "MIT",
   "devDependencies": {
-    "@release-it/bumper": "^7.0.5",
-    "@release-it/conventional-changelog": "^10.0.6",
+    "@changesets/cli": "^3.0.3",
     "@rocss/rocs": "workspace:*",
     "@rocss/sass": "workspace:*",
     "@rocss/sass-architecture": "workspace:*",
     "eslint": "^9.0.0",
     "express": "^5.3.0",
     "husky": "^8.0.3",
-    "release-it": "^19.2.4",
     "sass": "^1.71.0",
     "stylelint": "^16.2.0",
     "stylelint-config-standard-scss": "^13.0.0"

@@ -16,7 +16,7 @@ ROCS (Role-Oriented, One-Class CSS Semantics) is a CSS methodology specification
 ## Commands
 
 ```bash
-pnpm install --frozen-lockfile  # Install dependencies from the root (Node.js >= 20, pnpm pinned by packageManager)
+pnpm install --frozen-lockfile  # Install dependencies from the root (Node.js >= 22, pnpm pinned by packageManager)
 pnpm run build                  # Generate package documentation from canonical sources
 pnpm test                       # Run repository tests, including Sass compilation, invalid arguments and installed archives
 pnpm run lint                   # Run Stylelint (CSS/SCSS) + ESLint (JSX/TSX)
@@ -29,6 +29,8 @@ pnpm run validate:json          # Output validation report as JSON
 pnpm run compile:examples       # Compile all example SCSS files to CSS
 pnpm run check                  # build + test + lint + validate, in that order
 pnpm run pack:check             # Inspect all three archives, including the private workspace, with pnpm pack --dry-run; no publication
+pnpm changeset                  # Record a release-worthy change (package, semver bump, summary)
+pnpm run version-packages       # Apply changesets: bump versions, write CHANGELOGs, refresh lockfile
 ```
 
 To compile a single example's SCSS:
@@ -65,7 +67,7 @@ The legacy commands above remain supported through the wrapper in [tools/rocs-va
 
 ## Release status
 
-No package has been published; packages will be published under the `@rocss` npm organization, which the project owns (https://www.npmjs.com/org/rocss). Root release scripts were removed because the old global release flow does not fit independently versioned packages. Any future publication is manual from the repository, after `pnpm run check`, `pnpm run pack:check`, archive review, and verification of npm authentication and scope permissions. There is no CI publication. The root and the `sass` workspace remain private; `@rocss/sass` stays experimental at **0.1.0** pending test execution and contract review. `pack:check` inspects all three archives (`@rocss/rocs`, `@rocss/sass-architecture`, and `@rocss/sass`) without publishing. `private: true` prevents publication, not local archive creation with `pnpm pack`.
+No package has been published; packages will be published under the `@rocss` npm organization, which the project owns (https://www.npmjs.com/org/rocss). Versions and per-package changelogs are managed with Changesets ([.changeset/config.json](.changeset/config.json)): add a changeset with `pnpm changeset` for release-worthy changes, apply them with `pnpm run version-packages`. **Never run `changeset publish`**: it ignores `publishConfig.tag` and would publish `@rocss/sass-architecture` prereleases under `latest`. Git tags are per package (`@rocss/rocs@1.0.0`); the legacy global `v1.0.0` tag predates the monorepo. Any future publication is manual from the repository, package by package with `pnpm --filter <pkg> publish`, after `pnpm run check`, `pnpm run pack:check`, archive review, and verification of npm authentication and scope permissions. There is no CI publication. The root and the `sass` workspace remain private; `@rocss/sass` stays experimental at **0.1.0** pending test execution and contract review. `pack:check` inspects all three archives (`@rocss/rocs`, `@rocss/sass-architecture`, and `@rocss/sass`) without publishing. `private: true` prevents publication, not local archive creation with `pnpm pack`.
 
 ## The ROCS methodology (essential rules for working in this repo)
 

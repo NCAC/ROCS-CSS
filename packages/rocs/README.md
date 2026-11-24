@@ -32,10 +32,13 @@ fonctions d'analyse pour une intégration programmatique.
 
 ## Configurations de lint
 
+`stylelint` (^16), `stylelint-config-standard-scss` (^13) et `eslint` (≥ 9) sont
+des dépendances pair optionnelles : n'installer que celles de l'outil utilisé.
+
 Stylelint : installer `stylelint` et `stylelint-config-standard-scss`, puis
 utiliser `"extends": ["@rocss/rocs/stylelint"]` dans sa configuration.
 
-ESLint (version 9, flat config) : installer `eslint`, puis au choix :
+ESLint (version 9 ou ultérieure, flat config) : installer `eslint`, puis au choix :
 
 - `import rocs from '@rocss/rocs/eslint'` et `export default [...rocs]` : active
   `rocs/class-naming` et `rocs/no-state-classes` sur `**/*.jsx` et `**/*.tsx`,

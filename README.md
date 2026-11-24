@@ -48,7 +48,7 @@ pnpm run pack:check
 
 Tests have been added for Sass compilation (entry points and compositions), invalid arguments, and installation of all three archives outside the repository, including compilation from the installed package. **These tests still need to be run; their presence does not establish that they pass.**
 
-**No package has been published at this stage; packages will be published under the `@rocss` npm organization.** Root release scripts were removed because the previous global release process does not fit independent versions. Any future publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
+**No package has been published at this stage; packages will be published under the `@rocss` npm organization.** Per-package versions and changelogs are managed with [Changesets](https://changesets.dev) (see [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Any future publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
 
 ---
 

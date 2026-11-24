@@ -48,7 +48,7 @@ Ces mécanismes ne constituent pas un framework visuel complet : les contrôles 
 
 ## Développement
 
-Depuis la racine, avec Node.js 20 ou plus récent et pnpm (version fixée par
+Depuis la racine, avec Node.js 22 ou plus récent et pnpm (version fixée par
 `packageManager`, activable avec `corepack enable`) :
 
 ```sh
@@ -86,11 +86,27 @@ actuelles figurent dans chaque README.
 
 Les versions de packages sont indépendantes de celle de la racine. Un changement
 de CLI ne modifie pas automatiquement la version de la spécification. Chaque
-package documente la version ROCS ciblée ; l'architecture est encore en 0.x.
+package documente la version ROCS ciblée.
 
-L'ancien flux `release-it` global n'est plus exposé par les scripts racine.
-Sa configuration historique ne constitue pas une politique de publication
-multi-packages. Aucune publication automatique n'est activée.
+Les versions et les CHANGELOG sont gérés par [Changesets](https://changesets.dev)
+(configuration : [.changeset/config.json](../.changeset/config.json)) :
+
+1. pour chaque changement destiné à une release, `pnpm changeset` crée un fichier
+   dans `.changeset/` (packages concernés, niveau semver, résumé) à commiter avec
+   le changement ;
+2. au moment de préparer une release, `pnpm run version-packages` applique ces
+   fichiers : versions des `package.json`, `CHANGELOG.md` de chaque package et
+   lockfile ;
+3. relire puis commiter le résultat.
+
+Le workspace privé `@rocss/sass` est aussi versionné (`privatePackages.version`),
+sans tag git. Un incrément appliqué à une préversion la termine (`1.0.0-rc.1` +
+patch → `1.0.0`) ; une préversion suivante (`rc.2`) passe par
+`pnpm changeset pre enter rc`, mode qui s'applique alors à tout le dépôt.
+
+**Ne pas utiliser `changeset publish`** : il ignore `publishConfig.tag` et
+publierait `@rocss/sass-architecture` en préversion sous le tag `latest`.
+Aucune publication automatique n'est activée.
 
 Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`,
 mettre à jour les versions et le lockfile, contrôler les archives et leurs
@@ -99,7 +115,12 @@ installations, puis publier explicitement le workspace voulu depuis ce dépôt :
 ```sh
 pnpm --filter @rocss/rocs publish --access public
 pnpm --filter @rocss/sass-architecture publish --access public --tag next
+git tag @rocss/rocs@1.0.0 && git tag @rocss/sass-architecture@1.0.0-rc.1
+git push --tags
 ```
+
+Les tags git sont par package (`<nom>@<version>`). Le tag global historique
+`v1.0.0` précède le monorepo et ne correspond à aucune version de package.
 
 Ces commandes sont des procédures futures, pas des publications déjà réalisées.
 Ne pas publier tous les workspaces indistinctement : `@rocss/sass` reste
