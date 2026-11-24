@@ -6,9 +6,9 @@ Merci de votre intérêt pour contribuer à ROCS ! 🎉
 
 La racine **rocs-monorepo** est privée (`private: true`) et déclare les pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)). Les versions des packages sont indépendantes :
 
-- [@rocss/rocs](packages/rocs/README.md) **1.0.0** : spécification ROCS, CLI, API JavaScript et configurations Stylelint/ESLint. Les sources du validateur sont dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), son entrée CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js), et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js).
-- [@rocss/sass-architecture](packages/sass-architecture/README.md) **1.0.0-rc.1** : architecture de référence (release candidate) et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
-- [@rocss/sass](packages/sass/README.md) **0.1.0** : implémentation Sass expérimentale, toujours `private: true` et non publiée. Les tests doivent être exécutés et les contrats revus avant de retirer ce statut.
+- [@rocss/rocs](packages/rocs/README.fr.md) **1.0.0** : spécification ROCS, CLI, API JavaScript et configurations Stylelint/ESLint. Les sources du validateur sont dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), son entrée CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js), et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js).
+- [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) **1.0.0-rc.1** : architecture de référence (release candidate) et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
+- [@rocss/sass](packages/sass/README.fr.md) **0.1.0** : implémentation Sass expérimentale, publiable sous le tag npm `next` ; son API peut encore évoluer avec l'architecture.
 
 Le [guide du monorepo](docs/MONOREPO.md) détaille cette organisation. Pour ROCS, [docs/fr/](docs/fr/) fait autorité ; [docs/en/](docs/en/) en est la traduction. Modifier les sources canoniques, puis synchroniser la traduction. **Ne jamais éditer les copies de documentation de `@rocss/rocs`** : [tools/build-package-docs.js](tools/build-package-docs.js) les régénère avec `pnpm run build` ou le hook `prepack`.
 
@@ -33,7 +33,7 @@ pnpm run pack:check
 - `pnpm run build` génère la documentation embarquée des workspaces concernés.
 - `pnpm test` lance les tests du dépôt, dont les tests ajoutés de compilation Sass (points d'entrée et compositions), d'arguments invalides et d'installation des trois archives hors dépôt, avec compilation depuis le package installé. Leur présence ne signifie pas qu'ils ont été exécutés ni qu'ils réussissent.
 - `pnpm run check` enchaîne **build → test → lint → validate**.
-- `pnpm run pack:check` inspecte à blanc les trois archives (`@rocss/rocs`, `@rocss/sass-architecture` et `@rocss/sass`) avec `pnpm pack --dry-run`, **sans publication**. Le workspace privé est inclus : `private: true` interdit la publication, pas l'archivage local avec `pnpm pack`.
+- `pnpm run pack:check` inspecte à blanc les trois archives (`@rocss/rocs`, `@rocss/sass-architecture` et `@rocss/sass`) avec `pnpm pack --dry-run`, **sans publication**.
 
 ### Gestionnaire de paquets
 
@@ -61,7 +61,7 @@ Après modification d'un exemple SCSS, utiliser `pnpm run compile:examples`, pui
 
 **Aucun package n'est publié à ce stade. Le scope npm `@rocss` est une organisation npm détenue par le projet.** Les noms `@rocss/rocs`, `@rocss/sass` et `@rocss/sass-architecture` y sont donc disponibles, mais aucun n'est encore publié.
 
-Les versions et les CHANGELOG sont gérés par Changesets : tout changement destiné à une release s'accompagne d'un fichier créé par `pnpm changeset` (procédure complète dans [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Ne pas utiliser `changeset publish`, qui ignore `publishConfig.tag`. Une éventuelle publication est **manuelle depuis le dépôt**, package par package, avec `pnpm --filter <package> publish`, après revue des changements, réussite des contrôles ci-dessus, inspection du contenu des archives et vérification de l'authentification et des droits npm sur le scope. La racine et le workspace `@rocss/sass` restent privés ; ce dernier reste expérimental en **0.1.0**, dans l'attente de l'exécution des tests et de la revue des contrats. **Aucune publication par CI n'est configurée**.
+Les versions et les CHANGELOG sont gérés par Changesets : tout changement destiné à une release s'accompagne d'un fichier créé par `pnpm changeset` (procédure complète dans [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Ne pas utiliser `changeset publish`, qui ignore `publishConfig.tag`. Une éventuelle publication est **manuelle depuis le dépôt**, package par package, avec `pnpm --filter <package> publish`, après revue des changements, réussite des contrôles ci-dessus, inspection du contenu des archives et vérification de l'authentification et des droits npm sur le scope. Seule la racine est privée. `@rocss/sass-architecture` (préversion) et `@rocss/sass` (0.x, expérimental) se publient sous le tag `next`. **Aucune publication par CI n'est configurée**.
 
 ## Comment contribuer
 

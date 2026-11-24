@@ -4,9 +4,9 @@
 
 | Workspace | Version initiale | Contenu | Statut |
 | --- | --- | --- | --- |
-| `@rocss/rocs` | 1.0.0 | Spécification, CLI, API et configurations de lint | Extrait de l'outillage existant, non publié dans cette migration |
+| `@rocss/rocs` | 1.0.0 | Spécification, CLI, API et configurations de lint | Stable |
 | `@rocss/sass-architecture` | 1.0.0-rc.1 | Spécification d'architecture, documents associés et vérificateur statique `sass-architecture check` | Release candidate (tag npm `next`), vérificateur heuristique |
-| `@rocss/sass` | 0.1.0 | Implémentation Sass : sept mixins, quatre familles | Expérimental, `private: true`, tests à exécuter et contrats à revoir |
+| `@rocss/sass` | 0.1.0 | Implémentation Sass : sept mixins, quatre familles | Expérimental (tag npm `next`), API susceptible d'évoluer |
 
 La racine est privée et orchestre les workspaces pnpm déclarés dans
 [pnpm-workspace.yaml](../pnpm-workspace.yaml). Aucun orchestrateur
@@ -67,9 +67,7 @@ Les archives sont construites avec `pnpm pack`, puis installées avec npm, hors
 ligne et sans scripts, pour vérifier la compatibilité côté consommateur.
 `pnpm run pack:check` inspecte les **trois archives** (`@rocss/rocs`,
 `@rocss/sass-architecture` et `@rocss/sass`) avec
-`pnpm pack --dry-run`, y compris le workspace privé, **sans publication**.
-`private: true` interdit la publication, pas l'archivage local avec `pnpm pack`.
-**Les tests restent à exécuter ; leur présence ne signifie pas qu'ils réussissent.**
+`pnpm pack --dry-run`, **sans publication**.
 
 Les commandes historiques `validate`, `validate:strict`, `validate:json`,
 `lint` et `compile:examples` sont conservées. Le CLI est aussi accessible par
@@ -99,13 +97,12 @@ Les versions et les CHANGELOG sont gérés par [Changesets](https://changesets.d
    lockfile ;
 3. relire puis commiter le résultat.
 
-Le workspace privé `@rocss/sass` est aussi versionné (`privatePackages.version`),
-sans tag git. Un incrément appliqué à une préversion la termine (`1.0.0-rc.1` +
+Un incrément appliqué à une préversion la termine (`1.0.0-rc.1` +
 patch → `1.0.0`) ; une préversion suivante (`rc.2`) passe par
 `pnpm changeset pre enter rc`, mode qui s'applique alors à tout le dépôt.
 
 **Ne pas utiliser `changeset publish`** : il ignore `publishConfig.tag` et
-publierait `@rocss/sass-architecture` en préversion sous le tag `latest`.
+publierait `@rocss/sass-architecture` et `@rocss/sass` sous le tag `latest`.
 Aucune publication automatique n'est activée.
 
 Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`,
@@ -115,7 +112,8 @@ installations, puis publier explicitement le workspace voulu depuis ce dépôt :
 ```sh
 pnpm --filter @rocss/rocs publish --access public
 pnpm --filter @rocss/sass-architecture publish --access public --tag next
-git tag @rocss/rocs@1.0.0 && git tag @rocss/sass-architecture@1.0.0-rc.1
+pnpm --filter @rocss/sass publish --access public --tag next
+for t in @rocss/rocs@1.0.0 @rocss/sass-architecture@1.0.0-rc.1 @rocss/sass@0.1.0; do git tag "$t"; done
 git push --tags
 ```
 
@@ -123,7 +121,7 @@ Les tags git sont par package (`<nom>@<version>`). Le tag global historique
 `v1.0.0` précède le monorepo et ne correspond à aucune version de package.
 
 Ces commandes sont des procédures futures, pas des publications déjà réalisées.
-Ne pas publier tous les workspaces indistinctement : `@rocss/sass` reste
-expérimental en **0.1.0** et protégé par `private: true` dans l'attente de
-l'exécution des tests et de la revue des contrats. Aucun package n'est publié
+Toujours passer le tag explicitement : `@rocss/sass-architecture` (préversion)
+et `@rocss/sass` (0.x, expérimental) ne doivent jamais arriver sous `latest`.
+Aucun package n'est publié
 à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.

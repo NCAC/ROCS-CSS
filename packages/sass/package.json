@@ -1,8 +1,15 @@
 {
   "name": "@rocss/sass",
   "version": "0.1.0",
-  "private": true,
   "description": "Canonical Sass combinators for ROCS: context, state, scope and part",
+  "keywords": [
+    "rocs",
+    "sass",
+    "scss",
+    "sass-mixins",
+    "css-architecture",
+    "combinators"
+  ],
   "license": "MIT",
   "author": "ncac",
   "sass": "./_index.scss",
@@ -38,7 +45,8 @@
     "part/",
     "internal/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "README.fr.md"
   ],
   "peerDependencies": {
     "sass": ">=1.71.0",
@@ -56,5 +64,13 @@
     "type": "git",
     "url": "https://github.com/NCAC/ROCS-CSS.git",
     "directory": "packages/sass"
+  },
+  "homepage": "https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass#readme",
+  "bugs": {
+    "url": "https://github.com/NCAC/ROCS-CSS/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   }
 }

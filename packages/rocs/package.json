@@ -2,6 +2,19 @@
   "name": "@rocss/rocs",
   "version": "1.0.0",
   "description": "ROCS specification and heuristic HTML/CSS validation tools",
+  "keywords": [
+    "rocs",
+    "css",
+    "scss",
+    "methodology",
+    "naming-convention",
+    "semantic-css",
+    "stylelint",
+    "stylelint-config",
+    "eslint",
+    "eslint-plugin",
+    "validator"
+  ],
   "type": "module",
   "license": "MIT",
   "author": "ncac",
@@ -27,7 +40,8 @@
     "stylelint.config.json",
     "docs/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "README.fr.md"
   ],
   "scripts": {
     "build": "node ../../tools/build-package-docs.js rocs",
@@ -56,5 +70,9 @@
     "type": "git",
     "url": "https://github.com/NCAC/ROCS-CSS.git",
     "directory": "packages/rocs"
+  },
+  "homepage": "https://github.com/NCAC/ROCS-CSS/tree/main/packages/rocs#readme",
+  "bugs": {
+    "url": "https://github.com/NCAC/ROCS-CSS/issues"
   }
 }

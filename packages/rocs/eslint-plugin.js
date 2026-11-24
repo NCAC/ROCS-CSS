@@ -11,6 +11,11 @@
 //
 // Référence : docs/fr/SPECIFICATION.md §3 (Nommage), §3.5 (États)
 
+import { readFileSync } from 'node:fs';
+
+// Nom et version exposés dans meta : lus depuis le manifeste du package.
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
+
 // ─── Patterns ROCS ───────────────────────────────────────────────────────────
 const ROCS_BLOC_PATTERN =
   /^[A-Z][a-zA-Z0-9]*$/;
@@ -125,8 +130,8 @@ function checkRocsClass(cls, prefixes) {
 // ─── Plugin ROCS personnalisé ─────────────────────────────────────────────────
 const rocsPlugin = {
   meta: {
-    name: 'eslint-plugin-rocs',
-    version: '1.0.0',
+    name: pkg.name,
+    version: pkg.version,
   },
   rules: {
     /**

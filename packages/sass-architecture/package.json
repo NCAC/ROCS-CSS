@@ -1,7 +1,16 @@
 {
   "name": "@rocss/sass-architecture",
   "version": "1.0.0-rc.1",
-  "description": "Draft reference architecture specification and static checker for ROCS-compatible Sass definitions",
+  "description": "Reference Sass architecture for ROCS (release candidate) with a heuristic static checker",
+  "keywords": [
+    "rocs",
+    "sass",
+    "scss",
+    "css-architecture",
+    "specification",
+    "static-analysis",
+    "linter"
+  ],
   "type": "module",
   "license": "MIT",
   "author": "ncac",
@@ -16,7 +25,8 @@
     "src/",
     "docs/",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "README.fr.md"
   ],
   "exports": {
     ".": "./src/checker.js",
@@ -38,6 +48,10 @@
     "type": "git",
     "url": "https://github.com/NCAC/ROCS-CSS.git",
     "directory": "packages/sass-architecture"
+  },
+  "homepage": "https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass-architecture#readme",
+  "bugs": {
+    "url": "https://github.com/NCAC/ROCS-CSS/issues"
   },
   "dependencies": {
     "postcss": "^8.5.31",

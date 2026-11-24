@@ -6,6 +6,9 @@ import stylelint from 'stylelint';
 import config from '../packages/rocs/eslint.config.js';
 import plugin, { DEFAULT_ALLOWED_PREFIXES } from '../packages/rocs/eslint-plugin.js';
 import legacyConfig from '../eslint.config.js';
+import { readFileSync } from 'node:fs';
+
+const rocsManifest = JSON.parse(readFileSync(new URL('../packages/rocs/package.json', import.meta.url), 'utf8'));
 
 test('ESLint config parses JSX and reports the ROCS one-class rule', () => {
   assert.equal(legacyConfig, config);
@@ -31,6 +34,7 @@ test('Shared ESLint config only enables ROCS rules on JSX/TSX files', () => {
 test('ESLint plugin is exported on its own for custom configurations', () => {
   assert.equal(config[0].plugins.rocs, plugin);
   assert.deepEqual(Object.keys(plugin.rules).sort(), ['class-naming', 'no-state-classes']);
+  assert.deepEqual(plugin.meta, { name: '@rocss/rocs', version: rocsManifest.version });
   const linter = new Linter();
   const messages = linter.verify('export default () => <div className="is-open" />;', [{
     files: ['**/*.jsx'],

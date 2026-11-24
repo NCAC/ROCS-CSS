@@ -1,11 +1,11 @@
 # @rocss/rocs
 
-Spécification ROCS et outils de validation HTML/CSS. Package du monorepo
-[ROCS](https://github.com/NCAC/ROCS-CSS).
+**English** · [Français](README.fr.md)
 
-## Utilisation
+ROCS (Role-Oriented, One-Class CSS Semantics) specification and HTML/CSS
+validation tools. Part of the [ROCS](https://github.com/NCAC/ROCS-CSS) monorepo.
 
-Après publication sur npm :
+## Usage
 
 ```sh
 npm install --save-dev @rocss/rocs
@@ -13,10 +13,10 @@ npx rocs --dir ./src
 npx rocs --dir ./src --format json
 ```
 
-Dans le dépôt, après `pnpm install`, la commande est également accessible via
-`pnpm exec rocs --dir ./examples`. Les anciennes commandes du dépôt restent disponibles.
+Inside the repository, after `pnpm install`, the command is also available as
+`pnpm exec rocs --dir ./examples`. The legacy repository commands remain available.
 
-## API JavaScript
+## JavaScript API
 
 ```js
 import { analyzeHtml, analyzeScss, validateRocsClass } from '@rocss/rocs';
@@ -24,55 +24,52 @@ import { analyzeHtml, analyzeScss, validateRocsClass } from '@rocss/rocs';
 const issues = analyzeHtml('<div class="ProductCard"></div>', 'example.html');
 ```
 
-`analyzeHtml(content, filePath)` et `analyzeScss(content, filePath)` retournent
-des tableaux de diagnostics. `analyzeScss` accepte aussi du CSS.
-`validateRocsClass(name)` contrôle un nom de classe. L'import ne lance pas le CLI.
-`runCli(args)` est également exportée, mais termine le processus : utiliser les
-fonctions d'analyse pour une intégration programmatique.
+`analyzeHtml(content, filePath)` and `analyzeScss(content, filePath)` return
+arrays of diagnostics. `analyzeScss` also accepts plain CSS.
+`validateRocsClass(name)` checks a single class name. Importing the module does
+not launch the CLI. `runCli(args)` is exported too, but it terminates the
+process: use the analysis functions for programmatic integrations.
 
-## Configurations de lint
+## Lint configurations
 
-`stylelint` (^16), `stylelint-config-standard-scss` (^13) et `eslint` (≥ 9) sont
-des dépendances pair optionnelles : n'installer que celles de l'outil utilisé.
+`stylelint` (^16), `stylelint-config-standard-scss` (^13) and `eslint` (≥ 9) are
+optional peer dependencies: install only the ones for the tool you use.
 
-Stylelint : installer `stylelint` et `stylelint-config-standard-scss`, puis
-utiliser `"extends": ["@rocss/rocs/stylelint"]` dans sa configuration.
+Stylelint: install `stylelint` and `stylelint-config-standard-scss`, then use
+`"extends": ["@rocss/rocs/stylelint"]` in your configuration.
 
-ESLint (version 9 ou ultérieure, flat config) : installer `eslint`, puis au choix :
+ESLint (version 9 or later, flat config): install `eslint`, then either:
 
-- `import rocs from '@rocss/rocs/eslint'` et `export default [...rocs]` : active
-  `rocs/class-naming` et `rocs/no-state-classes` sur `**/*.jsx` et `**/*.tsx`,
-  sans aucune règle cœur d'ESLint ni ignore ;
-- `import rocs from '@rocss/rocs/eslint-plugin'` : le plugin seul, à déclarer
-  dans `plugins: { rocs }` avec ses propres `files` et sévérités.
+- `import rocs from '@rocss/rocs/eslint'` and `export default [...rocs]`: enables
+  `rocs/class-naming` and `rocs/no-state-classes` on `**/*.jsx` and `**/*.tsx`,
+  with no ESLint core rules and no ignores;
+- `import rocs from '@rocss/rocs/eslint-plugin'`: the plugin alone, to register
+  under `plugins: { rocs }` with your own `files` and severities.
 
-Les classes de frameworks tiers sont ignorées selon une liste de préfixes
-(`js-`, `v-`, `ng-`, `swiper-`, `slick-`, `fancybox-` par défaut), configurable
-pour les deux règles via `settings: { rocs: { allowedPrefixes: ['ais-'] } }`
-(ajout) et `useDefaultPrefixes: false` (remplacement). Voir le guide
-d'implémentation, §2.3.
+Third-party framework classes are skipped based on a prefix list (`js-`, `v-`,
+`ng-`, `swiper-`, `slick-`, `fancybox-` by default), configurable for both rules
+with `settings: { rocs: { allowedPrefixes: ['ais-'] } }` (adds prefixes) and
+`useDefaultPrefixes: false` (replaces the defaults). See the implementation
+guide, §2.3.
 
-Un parseur adapté reste nécessaire pour TypeScript et les autres syntaxes.
+TypeScript and other syntaxes still need an appropriate parser.
 
-Les dépendances de configuration sont des peers optionnelles : le CLI et l'API
-d'analyse ne nécessitent aucune dépendance d'exécution externe.
+The CLI and the analysis API have no runtime dependencies.
 
-## Portée réelle
+## Actual scope
 
-Le CLI parcourt HTML, HTM, CSS et SCSS. Ses analyses sont **heuristiques**,
-pas une preuve complète de conformité. Sources SCSS et CSS générés sont
-analysés séparément. Les expressions dynamiques et les templates Twig, Vue,
-JSX, etc. ne disposent pas d'adaptateurs dans ce CLI. Certaines décisions
-sémantiques demandent une revue humaine. Les règles existantes ne sont pas
-modifiées par l'extraction en package.
+The CLI scans HTML, HTM, CSS and SCSS files. Its analysis is **heuristic**, not
+a complete proof of compliance. SCSS sources and generated CSS are analyzed
+separately. Dynamic expressions and Twig, Vue, JSX, etc. templates have no
+adapters in this CLI. Some semantic decisions require human review.
 
-## Spécification embarquée
+## Bundled specification
 
-[Spécification française](docs/fr/SPECIFICATION.md) : source normative.
-[Version anglaise](docs/en/SPECIFICATION.md) : traduction.
+[French specification](docs/fr/SPECIFICATION.md): normative source.
+[English version](docs/en/SPECIFICATION.md): translation.
 
-Ces documents sont copiés depuis la source canonique du dépôt lors de
-`pnpm run build` ou `pnpm pack`. Ne pas modifier les copies générées.
+These documents are copied from the repository's canonical sources during
+`pnpm run build` or `pnpm pack`. Do not edit the generated copies.
 
-Version de la spécification ciblée : **ROCS 1.0**. Aucun usage de Sass n'est
-nécessaire pour utiliser ce package.
+Targeted specification version: **ROCS 1.0**. Using this package does not
+require Sass.

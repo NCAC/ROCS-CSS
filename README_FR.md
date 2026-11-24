@@ -14,9 +14,9 @@ La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm wo
 
 | Package | Version | Contenu et statut |
 | --- | --- | --- |
-| [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0-rc.1 | Architecture de référence (release candidate, tag npm `next`) avec vérificateur statique heuristique ; aucun mixin Sass. |
-| [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Implémentation Sass expérimentale privée** (`private: true`) : sept mixins dans quatre familles ; tests à exécuter et contrats à revoir avant toute levée du statut privé. |
+| [@rocss/rocs](packages/rocs/README.fr.md) | 1.0.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) | 1.0.0-rc.1 | Architecture de référence (release candidate, tag npm `next`) avec vérificateur statique heuristique ; aucun mixin Sass. |
+| [@rocss/sass](packages/sass/README.fr.md) | 0.1.0 | **Implémentation Sass expérimentale** (tag npm `next`) : sept mixins dans quatre familles ; l'API peut encore évoluer. |
 
 Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
 
@@ -40,7 +40,7 @@ pnpm run check
 pnpm run pack:check
 ```
 
-`pnpm run check` enchaîne **build → test → lint → validate**. `pnpm run pack:check` inspecte à blanc les **trois archives**, dont celle du workspace privé `@rocss/sass`, via `pnpm pack --dry-run` ; **il ne publie rien**. Le statut privé empêche la publication, pas la création d'une archive locale avec `pnpm pack`.
+`pnpm run check` enchaîne **build → test → lint → validate**. `pnpm run pack:check` inspecte à blanc les **trois archives**, via `pnpm pack --dry-run` ; **il ne publie rien**.
 
 Des tests ont été ajoutés pour les compilations Sass (points d'entrée et compositions), les arguments invalides et l'installation des trois archives hors dépôt, avec compilation depuis le package installé. **Ces tests restent à exécuter ; leur présence ne garantit pas leur réussite.**
 

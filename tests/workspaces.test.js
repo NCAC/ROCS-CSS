@@ -36,7 +36,19 @@ test('Private root and pnpm lockfile match workspace manifests', () => {
     assert.equal(manifest.devDependencies[`@rocss/${name}`], 'workspace:*');
     assert.match(lock, new RegExp(`^  packages/${name}:`, 'm'), `Missing lockfile importer: ${name}`);
   }
-  assert.equal(readJson('packages/sass/package.json').private, true);
+  // Every package is publishable and public; prereleases and 0.x stay off `latest`.
+  // `changeset publish` ignores publishConfig.tag, hence manual pnpm publish.
+  const expectedTags = { rocs: undefined, 'sass-architecture': 'next', sass: 'next' };
+  for (const name of names) {
+    const pkg = readJson(`packages/${name}/package.json`);
+    assert.equal(pkg.private, undefined, `${name} must be publishable`);
+    assert.equal(pkg.publishConfig.access, 'public');
+    assert.equal(pkg.publishConfig.tag, expectedTags[name], `${name} npm dist-tag`);
+    for (const field of ['description', 'keywords', 'homepage', 'bugs', 'repository', 'license']) {
+      assert.ok(pkg[field], `${name} is missing ${field}`);
+    }
+    assert.ok(pkg.files.includes('README.fr.md'), `${name} must ship its French README`);
+  }
   // Consumers bring their own compiler; pkg: URLs require Dart Sass >= 1.71.0.
   const { peerDependencies, peerDependenciesMeta } = readJson('packages/sass/package.json');
   for (const compiler of ['sass', 'sass-embedded']) {

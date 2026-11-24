@@ -20,7 +20,7 @@ The **rocs-monorepo** root is private (`private: true`) and uses pnpm workspaces
 | --- | --- | --- |
 | [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | ROCS specification, CLI/JavaScript validation API, and Stylelint/ESLint configurations. |
 | [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0-rc.1 | Reference architecture (release candidate, npm tag `next`), with a heuristic static checker; no Sass mixins. |
-| [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Private experimental Sass implementation** (`private: true`): seven mixins across four families; tests must be run and contracts reviewed before removing private status. |
+| [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Experimental Sass implementation** (npm tag `next`): seven mixins across four families; the API may still change. |
 
 See the [monorepo guide](docs/MONOREPO.md) and [contribution instructions](CONTRIBUTING.md).
 
@@ -44,7 +44,7 @@ pnpm run check
 pnpm run pack:check
 ```
 
-`pnpm run check` runs **build → test → lint → validate**. `pnpm run pack:check` inspects **all three archives**, including the private `@rocss/sass` workspace, using `pnpm pack --dry-run`; **it publishes nothing**. Private status prevents publication, not local archive creation with `pnpm pack`.
+`pnpm run check` runs **build → test → lint → validate**. `pnpm run pack:check` inspects **all three archives**, using `pnpm pack --dry-run`; **it publishes nothing**.
 
 Tests have been added for Sass compilation (entry points and compositions), invalid arguments, and installation of all three archives outside the repository, including compilation from the installed package. **These tests still need to be run; their presence does not establish that they pass.**
 

@@ -1,30 +1,30 @@
 # @rocss/sass
 
-Mixins Sass canoniques, issues d'un import initial puis adaptées dans ce workspace.
-Le workspace est désormais la source de référence du monorepo ; le dossier
-d'origine reste intact.
+**English** · [Français](README.fr.md)
 
-**Version expérimentale 0.1.0, encore privée, non publiée.** Les tests doivent
-être exécutés et les contrats revus avant de retirer `private: true`.
-Références ciblées : ROCS 1.0 et architecture Sass 1.0.0-rc.1.
+Canonical Sass mixins for the combinators layer, the reference implementation of
+the [`@rocss/sass-architecture`](https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass-architecture#readme) architecture.
+
+**Experimental version 0.1.0, published under the npm tag `next`.** The API may
+still change, in particular to follow the architecture, which is itself a
+release candidate. Targeted references: ROCS 1.0 and Sass architecture 1.0.0-rc.1.
 
 ## Imports
 
-Après `pnpm install` à la racine, les workspaces sont liés dans `node_modules/@rocss/`
-(dépendances `workspace:*` de la racine).
-Après une future publication, l'installation sera
-`npm install --save-dev @rocss/sass sass`.
+In a project: `npm install --save-dev @rocss/sass@next sass`.
+Inside the repository, after `pnpm install` at the root, the workspaces are
+linked in `node_modules/@rocss/` (`workspace:*` root dependencies).
 
-Le compilateur n'est pas fourni : `sass` et `sass-embedded` (≥ 1.71.0, pour les
-URL `pkg:`) sont déclarés en `peerDependencies` optionnelles. Installer l'un des
-deux ; le gestionnaire de paquets signale alors une version trop ancienne.
+The compiler is not bundled: `sass` and `sass-embedded` (≥ 1.71.0, for `pkg:`
+URLs) are declared as optional `peerDependencies`. Install one of them; the
+package manager then reports a version that is too old.
 
-### Voie recommandée : URL `pkg:`
+### Recommended: `pkg:` URLs
 
-Les URL `pkg:` (Dart Sass ≥ 1.71.0) résolvent le package selon l'algorithme de
-Node.js, à partir des `exports` du manifeste (condition `sass`). Elles ne
-dépendent ni de l'emplacement de `node_modules` ni de son organisation, et
-fonctionnent donc aussi avec pnpm ou dans un monorepo.
+`pkg:` URLs (Dart Sass ≥ 1.71.0) resolve the package with the Node.js
+algorithm, from the manifest `exports` (`sass` condition). They depend neither
+on where `node_modules` lives nor on its layout, so they also work with pnpm
+and in monorepos.
 
 ```scss
 @use "pkg:@rocss/sass/context";
@@ -39,7 +39,7 @@ fonctionnent donc aussi avec pnpm ou dans un monorepo.
 }
 ```
 
-Il faut activer l'importeur de packages Node, qui n'est pas actif par défaut :
+The Node package importer must be enabled; it is off by default:
 
 ```sh
 # CLI
@@ -47,7 +47,7 @@ sass --pkg-importer=node input.scss output.css
 ```
 
 ```js
-// API JavaScript
+// JavaScript API
 import * as sass from 'sass';
 
 const result = sass.compile('input.scss', {
@@ -55,19 +55,18 @@ const result = sass.compile('input.scss', {
 });
 ```
 
-`NodePackageImporter` résout depuis le dossier du script d'entrée. Sans script
-d'entrée (`node -e`, REPL, certains outils), passer explicitement le dossier de
-départ : `new sass.NodePackageImporter(process.cwd())`. Avec un bundler, fournir
-le même importeur via ses options Sass (par exemple `importers` dans
-`css.preprocessorOptions.scss` de Vite ou dans `sassOptions` de `sass-loader`).
+`NodePackageImporter` resolves from the entry script's directory. Without an
+entry script (`node -e`, REPL, some tools), pass the starting directory
+explicitly: `new sass.NodePackageImporter(process.cwd())`. With a bundler,
+provide the same importer through its Sass options (for example `importers` in
+Vite's `css.preprocessorOptions.scss` or in `sass-loader`'s `sassOptions`).
 
-`@use "pkg:@rocss/sass"` charge l'entrée agrégée ; une couche restreinte à une
-famille importe directement son sous-chemin (I23).
+`@use "pkg:@rocss/sass"` loads the aggregate entry point; a layer restricted to
+one family imports its subpath directly (I23).
 
-### Alternative : chemin de chargement
+### Alternative: load path
 
-Sans `pkg:`, ajouter `node_modules` aux chemins de chargement et importer sans
-préfixe :
+Without `pkg:`, add `node_modules` to the load paths and import without a prefix:
 
 ```scss
 @use "@rocss/sass/state";
@@ -77,32 +76,31 @@ préfixe :
 sass --load-path=node_modules input.scss output.css
 ```
 
-ou `loadPaths: ["node_modules"]` avec l'API. Cette voie suppose que
-`node_modules/@rocss/sass` existe à l'emplacement indiqué : c'est le cas pour une
-dépendance directe, mais pas toujours avec pnpm (dépendance transitive) ni dans
-un sous-package de monorepo. Les fichiers SCSS ne sont pas des modules
-JavaScript.
+or `loadPaths: ["node_modules"]` with the API. This assumes that
+`node_modules/@rocss/sass` exists at that location: true for a direct
+dependency, but not always with pnpm (transitive dependency) or in a monorepo
+subpackage. The SCSS files are not JavaScript modules.
 
-| Famille | Mixins et arguments |
+| Family | Mixins and arguments |
 | --- | --- |
 | `context` | `media($condition)`, `supports($condition)`, `container($condition)` |
 | `state` | `pseudo-class($pseudo)`, `attribute($name, $value: null)` |
 | `scope` | `ancestor($ancestor)` |
 | `part` | `pseudo-element($pseudo)` |
 
-Les mixins du package sont en **kebab-case**, comme les modules intégrés
-`sass:list` ou `sass:meta` ; les mixins d'un projet qui les consomme (spécialisations,
-behaviors, components) sont en **snake_case** (architecture Sass §0.3). Sass traitant
-`-` et `_` comme équivalents, `state.pseudo_class` reste accepté : c'est une
-convention de lecture, non une contrainte du compilateur.
+The package mixins are **kebab-case**, like the built-in modules `sass:list` or
+`sass:meta`; the mixins of a consuming project (specializations, behaviors,
+components) are **snake_case** (Sass architecture §0.3). Since Sass treats `-`
+and `_` as equivalent, `state.pseudo_class` is still accepted: this is a
+readability convention, not a compiler constraint.
 
-Chaque famille est importable par son sous-chemin (`/context`, `/state`,
-`/scope`, `/part`). L'entrée principale agrège les sept mixins sans émettre
-de CSS au chargement. Une couche restreinte à une famille doit importer son
-sous-chemin, pas l'agrégateur (I23). Les utilitaires internes ne font pas partie
-de l'API publique.
+Each family can be imported through its subpath (`/context`, `/state`,
+`/scope`, `/part`). The main entry point aggregates the seven mixins without
+emitting CSS when loaded. A layer restricted to one family must import its
+subpath, not the aggregate (I23). Internal utilities are not part of the
+public API.
 
-Chaque mixin exige un bloc de contenu et le transmet une fois. Exemple de scope :
+Every mixin requires a content block and forwards it once. Scope example:
 
 ```scss
 @use "pkg:@rocss/sass/scope";
@@ -117,31 +115,29 @@ Chaque mixin exige un bloc de contenu et le transmet une fois. Exemple de scope 
 }
 ```
 
-## Validation et limites
+## Validation and limits
 
-- Pseudo-classes simples : liste fermée dans la source. Les quatre variantes
- `nth-*` acceptent des indices `An+B`, des entiers, `odd` et `even`.
- Les arguments sélecteurs (`is`, `not`, `has`, `where`, `nth-child(... of ...)`)
- sont refusés par ce mécanisme.
-- Attributs : identifiants ASCII et valeurs chaîne/nombre sans guillemets,
- antislash, crochets ni retours à la ligne.
-- Ancêtres : un composé `<racine>[<attribut>]`, avec racine `html`, `body`,
- `:root` ou une classe. Le parent initial doit être un composé unique ; les
- scopes imbriqués sont refusés. L'ancêtre est fourni par le projet.
-- Pseudo-éléments : liste fermée dans la source.
-- Conditions : chaînes non blanches, sans `{`, `}` ni `;`. Ce contrôle n'est
- pas un parseur complet des requêtes CSS ; Sass et le navigateur complètent
- la validation syntaxique.
+- Simple pseudo-classes: closed list in the source. The four `nth-*` variants
+ accept `An+B` indices, integers, `odd` and `even`. Selector arguments (`is`,
+ `not`, `has`, `where`, `nth-child(... of ...)`) are rejected by this mechanism.
+- Attributes: ASCII identifiers and string/number values without quotes,
+ backslashes, brackets or line breaks.
+- Ancestors: a `<root>[<attribute>]` compound, with `html`, `body`, `:root` or a
+ class as root. The initial parent must be a single compound; nested scopes are
+ rejected. The ancestor is provided by the project.
+- Pseudo-elements: closed list in the source.
+- Conditions: non-blank strings without `{`, `}` or `;`. This check is not a
+ complete CSS query parser; Sass and the browser complete the syntax validation.
 
-Les contrôles sont syntaxiques, pas une preuve de conformité sémantique ROCS.
-Le consommateur reste responsable du sens des attributs, de l'appartenance
-au même Block, du parent ROCS, de l'ordre `context → scope → state → part`
-et du plafond de spécificité. Ce package ne fournit ni tokens de design,
-ni composants visuels, ni contrôle automatique du graphe architectural.
+These checks are syntactic, not a proof of ROCS semantic compliance. The
+consumer remains responsible for the meaning of attributes, membership in the
+same Block, the ROCS parent, the `context → scope → state → part` order and the
+specificity cap. This package provides no design tokens, no visual components
+and no automatic check of the architecture graph.
 
-## Vérifications
+## Checks
 
-Depuis la racine : `pnpm test` compile les points d'entrée et les compositions,
-teste les arguments refusés et installe les trois archives dans un projet
-temporaire hors dépôt. `pnpm run pack:check` inspecte aussi l'archive Sass.
-La présence de tests ne signifie pas qu'ils ont déjà été exécutés.
+From the repository root: `pnpm test` compiles the entry points and
+compositions, tests rejected arguments and installs the three archives in a
+temporary project outside the repository. `pnpm run pack:check` also inspects
+the Sass archive.
