@@ -85,10 +85,12 @@ variables. The CLI also has no adapters for Vue, JSX, etc.
 
 ## Bundled specification
 
-[French specification](docs/fr/SPECIFICATION.md): normative source.
-[English version](docs/en/SPECIFICATION.md): translation.
+[French specification](https://github.com/NCAC/ROCS-CSS/blob/main/docs/fr/SPECIFICATION.md): normative source.
+[English version](https://github.com/NCAC/ROCS-CSS/blob/main/docs/en/SPECIFICATION.md): translation.
 
-These documents are copied from the repository's canonical sources during
+The package ships both files as `docs/fr/SPECIFICATION.md` and
+`docs/en/SPECIFICATION.md` (also exported as `@rocss/rocs/docs/*`). They are
+copied from the repository's canonical sources during
 `pnpm run build` or `pnpm pack`. Do not edit the generated copies.
 
 Targeted specification version: **ROCS 1.0**. Using this package does not

@@ -88,10 +88,12 @@ modifiées par l'extraction en package.
 
 ## Spécification embarquée
 
-[Spécification française](docs/fr/SPECIFICATION.md) : source normative.
-[Version anglaise](docs/en/SPECIFICATION.md) : traduction.
+[Spécification française](https://github.com/NCAC/ROCS-CSS/blob/main/docs/fr/SPECIFICATION.md) : source normative.
+[Version anglaise](https://github.com/NCAC/ROCS-CSS/blob/main/docs/en/SPECIFICATION.md) : traduction.
 
-Ces documents sont copiés depuis la source canonique du dépôt lors de
+Le package embarque ces deux fichiers sous `docs/fr/SPECIFICATION.md` et
+`docs/en/SPECIFICATION.md` (également exportés via `@rocss/rocs/docs/*`). Ils sont
+copiés depuis la source canonique du dépôt lors de
 `pnpm run build` ou `pnpm pack`. Ne pas modifier les copies générées.
 
 Version de la spécification ciblée : **ROCS 1.0**. Aucun usage de Sass n'est
