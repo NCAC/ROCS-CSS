@@ -185,8 +185,8 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0(supports-color@7.2.0)
       husky:
-        specifier: ^8.0.3
-        version: 8.0.3
+        specifier: ^9.1.7
+        version: 9.1.7
       sass:
         specifier: ^1.71.0
         version: 1.105.2
@@ -921,9 +921,9 @@ packages:
     resolution: {integrity: sha512-Z+8unD6em/MJwyrkWQ2M3wygRGI1+MztbutiNwk1DCuEPXOZRWGjtcMPZYP1exY9iNZMhd7ZOSMQSo9WYtiQRw==}
     hasBin: true
 
-  husky@8.0.3:
-    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
-    engines: {node: '>=14'}
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
     hasBin: true
 
   iconv-lite@0.7.3:
@@ -1340,6 +1340,10 @@ packages:
   slice-ansi@4.0.0:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
+
+  source-map-js@1.2.2:
+    resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
+    engines: {node: '>=0.10.0'}
 
   source-map-js@1.2.4:
     resolution: {integrity: sha512-J7ZjMvHd9O1fcT/5V09QWaaSl2BbWx3F6O08spde82Namf9UB0GxRVIPiNbVsdKkoizHiSpTodo3vp2bAy91MA==}
@@ -2253,7 +2257,7 @@ snapshots:
 
   human-id@4.2.2: {}
 
-  husky@8.0.3: {}
+  husky@9.1.7: {}
 
   iconv-lite@0.7.3:
     dependencies:
@@ -2477,7 +2481,7 @@ snapshots:
     dependencies:
       nanoid: 3.3.20
       picocolors: 1.1.1
-      source-map-js: 1.2.4
+      source-map-js: 1.2.2
 
   prelude-ls@1.2.1: {}
 
@@ -2618,6 +2622,8 @@ snapshots:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
+
+  source-map-js@1.2.2: {}
 
   source-map-js@1.2.4: {}
 
