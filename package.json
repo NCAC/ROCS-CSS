@@ -47,7 +47,7 @@
     "@rocss/rocs": "workspace:*",
     "@rocss/sass": "workspace:*",
     "@rocss/sass-architecture": "workspace:*",
-    "eslint": "^9.0.0",
+    "eslint": "^10.15.0",
     "express": "^5.3.0",
     "husky": "^8.0.3",
     "sass": "^1.71.0",
