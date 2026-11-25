@@ -1,6 +1,6 @@
 {
   "name": "@rocss/sass-architecture",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Reference Sass architecture for ROCS with a heuristic static checker",
   "keywords": [
     "rocs",
@@ -26,7 +26,8 @@
     "docs/",
     "LICENSE",
     "README.md",
-    "README.fr.md"
+    "README.fr.md",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": "./src/checker.js",

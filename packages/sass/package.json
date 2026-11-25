@@ -1,6 +1,6 @@
 {
   "name": "@rocss/sass",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Canonical Sass combinators for ROCS: context, state, scope and part",
   "keywords": [
     "rocs",
@@ -46,7 +46,8 @@
     "internal/",
     "LICENSE",
     "README.md",
-    "README.fr.md"
+    "README.fr.md",
+    "CHANGELOG.md"
   ],
   "peerDependencies": {
     "sass": ">=1.71.0",

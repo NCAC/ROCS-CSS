@@ -1,6 +1,6 @@
 {
   "name": "@rocss/rocs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "ROCS specification and heuristic HTML/CSS validation tools",
   "keywords": [
     "rocs",
@@ -41,7 +41,8 @@
     "docs/",
     "LICENSE",
     "README.md",
-    "README.fr.md"
+    "README.fr.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "node ../../tools/build-package-docs.js rocs",

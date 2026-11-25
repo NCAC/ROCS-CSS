@@ -50,6 +50,7 @@ test('Private root and pnpm lockfile match workspace manifests', () => {
       assert.ok(pkg[field], `${name} is missing ${field}`);
     }
     assert.ok(pkg.files.includes('README.fr.md'), `${name} must ship its French README`);
+    assert.ok(pkg.files.includes('CHANGELOG.md'), `${name} must ship its CHANGELOG`);
   }
   assert.equal(versions.size, 1, `Package versions must be synchronized: ${[...versions].join(', ')}`);
   assert.deepEqual(
