@@ -32,7 +32,9 @@ Convention: one folder per layer (`tokens`, `primitives`, `behaviors`,
 Exit codes: 0 compliant, 1 violation (or warning with `--strict`), 2 invalid usage.
 
 With `--compile`, every module of the layers in the chain is compiled with
-`sass` (≥ 1.71.0, optional peer, looked up first in the analyzed project) and
+`sass` (≥ 1.71.0, looked up first in the analyzed project; not declared as a
+peer, so its version is checked at load time and an older compiler stops the
+command with exit code 2) and
 must produce no CSS (I2); `globals` may only produce `@keyframes`, `@font-face`
 and `@property`. This semantic check catches, for example, an external
 dependency that emits CSS when loaded. A module that does not compile on its own
