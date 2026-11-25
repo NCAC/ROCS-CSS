@@ -1,0 +1,7 @@
+// =============================================================================
+// context/_index.scss — Point d'entrée de la famille context (I23)
+// =============================================================================
+
+@forward "media" show media;
+@forward "supports" show supports;
+@forward "container" show container;

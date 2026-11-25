@@ -1,0 +1,7 @@
+// Module d'exposition : réexporte sans consommer ni créer de dépendance entre modules (I7).
+@forward "breakpoint";
+@forward "color";
+@forward "motion";
+@forward "shape";
+@forward "space";
+@forward "type";

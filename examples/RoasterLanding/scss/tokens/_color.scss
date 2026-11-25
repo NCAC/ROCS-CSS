@@ -1,0 +1,46 @@
+// tokens/color — identité, alias et valeurs nommées (I4, I6, I6 bis).
+// Aucune émission (I2) : l'affectation des custom properties relève de bootstrap (I3).
+
+// color-surface
+$color_surface_name: --color-surface;
+$color_surface: var(--color-surface);
+$color_surface_default_value: #faf6f0;
+
+// color-surface-dark
+$color_surface_dark_value: #1b1613;
+$color_surface_raised_name: --color-surface-raised;
+$color_surface_raised: var(--color-surface-raised);
+$color_surface_raised_default_value: #fff;
+$color_surface_raised_dark_value: #261f1a;
+$color_surface_glass_name: --color-surface-glass;
+$color_surface_glass: var(--color-surface-glass);
+$color_surface_glass_default_value: rgb(250 246 240 / 85%);
+$color_surface_glass_dark_value: rgb(27 22 19 / 85%);
+$color_text_name: --color-text;
+$color_text: var(--color-text);
+$color_text_default_value: #2a1f18;
+$color_text_dark_value: #f3ebe2;
+$color_text_muted_name: --color-text-muted;
+$color_text_muted: var(--color-text-muted);
+$color_text_muted_default_value: #6b5b4f;
+$color_text_muted_dark_value: #b9a99b;
+$color_accent_name: --color-accent;
+$color_accent: var(--color-accent);
+$color_accent_default_value: #a8481c;
+$color_accent_dark_value: #e08a57;
+$color_accent_contrast_name: --color-accent-contrast;
+$color_accent_contrast: var(--color-accent-contrast);
+$color_accent_contrast_default_value: #fff;
+$color_accent_contrast_dark_value: #1b1613;
+$color_border_name: --color-border;
+$color_border: var(--color-border);
+$color_border_default_value: #e4d9cc;
+$color_border_dark_value: #3a2f27;
+$shadow_raised_name: --shadow-raised;
+$shadow_raised: var(--shadow-raised);
+$shadow_raised_default_value: 0 0.5rem 1.5rem rgb(42 31 24 / 10%);
+$shadow_raised_dark_value: 0 0.5rem 1.5rem rgb(0 0 0 / 50%);
+$filter_photo_name: --filter-photo;
+$filter_photo: var(--filter-photo);
+$filter_photo_default_value: none;
+$filter_photo_dark_value: brightness(0.85);

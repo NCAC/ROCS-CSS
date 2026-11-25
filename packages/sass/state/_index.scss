@@ -1,0 +1,6 @@
+// =============================================================================
+// state/_index.scss — Point d'entrée de la famille state (I23)
+// =============================================================================
+
+@forward "pseudo-class" show pseudo-class;
+@forward "attribute" show attribute;

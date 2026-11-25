@@ -1,0 +1,118 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "rules": {
+    "selector-class-pattern": [
+      "^[A-Z][a-zA-Z0-9]*(?:-(?:[a-z]+[0-9]*)(?:[A-Z][a-z]+[0-9]*){0,2})?$",
+      {
+        "message": "ROCS §3.2 — Classes en PascalCase (Bloc) ou Bloc-camelCase (Élément). Ex valides : ProductCard, ProductCard-title, CookiesConsentModal-closeButton"
+      }
+    ],
+    "selector-max-id": [
+      0,
+      {
+        "message": "ROCS §5 — Les sélecteurs id sont interdits en CSS. Utilisez une classe ROCS."
+      }
+    ],
+    "selector-max-compound-selectors": [
+      2,
+      {
+        "severity": "warning",
+        "message": "ROCS §6.2.1 — Évitez les sélecteurs combinés profonds. Max 2 niveaux pour les exceptions (tiers, métadonnées contextuelles avec :where())."
+      }
+    ],
+    "no-descending-specificity": null,
+    "selector-max-specificity": [
+      "0,3,1",
+      {
+        "severity": "warning",
+        "message": "ROCS §6.1 — Maintenez une spécificité faible. Une spécificité élevée signale souvent un sélecteur combiné non conforme."
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "where",
+          "is",
+          "has",
+          "not",
+          "global",
+          "local"
+        ]
+      }
+    ],
+    "keyframes-name-pattern": [
+      "^[a-z][a-zA-Z0-9]*$",
+      {
+        "message": "ROCS §2 (guide) — Les @keyframes décrivent un mouvement visuel (camelCase), jamais un contexte métier."
+      }
+    ],
+    "custom-property-pattern": [
+      "^[a-z][a-zA-Z0-9-]*$",
+      {
+        "message": "Les custom properties doivent être en kebab-case. Ex: --color-primary, --duration-fast"
+      }
+    ],
+    "scss/dollar-variable-pattern": "^[a-z][a-zA-Z0-9-_]*$",
+    "scss/at-mixin-pattern": "^[a-z][a-zA-Z0-9_-]*$",
+    "scss/at-function-pattern": "^[a-z][a-zA-Z0-9_-]*$",
+    "declaration-no-important": [
+      true,
+      {
+        "severity": "warning",
+        "message": "ROCS §6.1 — Évitez !important. ROCS repose sur une spécificité faible et prévisible."
+      }
+    ],
+    "color-named": [
+      "never",
+      {
+        "severity": "warning",
+        "message": "Utilisez des custom properties (--color-*) plutôt que des couleurs nommées."
+      }
+    ],
+    "comment-empty-line-before": null,
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": [
+          "first-nested"
+        ],
+        "ignore": [
+          "after-comment"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/_tokens.scss",
+        "**/tokens.scss",
+        "**/tokens/**/*.scss"
+      ],
+      "rules": {
+        "selector-class-pattern": null
+      }
+    },
+    {
+      "files": [
+        "**/_mixins.scss",
+        "**/mixins/**/*.scss"
+      ],
+      "rules": {
+        "selector-class-pattern": null
+      }
+    },
+    {
+      "files": [
+        "**/_animations.scss",
+        "**/animations/**/*.scss"
+      ],
+      "rules": {
+        "keyframes-name-pattern": null
+      }
+    }
+  ]
+}

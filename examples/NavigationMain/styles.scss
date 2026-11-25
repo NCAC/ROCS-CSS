@@ -85,7 +85,7 @@
 
 // ─── Bouton hamburger (mobile) ────────────────────────────────────────────────
 
-.NavigationMain-menuToggle {
+.NavigationMain-toggle {
   display: none; // masqué par défaut (desktop)
   flex-direction: column;
   justify-content: center;
@@ -110,7 +110,7 @@
   }
 }
 
-.NavigationMain-menuToggleBar {
+.NavigationMain-toggleBar {
   display: block;
   width: 20px;
   height: 2px;
@@ -121,15 +121,15 @@
 }
 
 // ROCS §6.2.2 — :where() obligatoire sur les descendants ROCS
-.NavigationMain-menuToggle[aria-expanded="true"] :where(.NavigationMain-menuToggleBar:nth-child(1)) {
+.NavigationMain-toggle[aria-expanded="true"] :where(.NavigationMain-toggleBar:nth-child(1)) {
   transform: translateY(7px) rotate(45deg);
 }
 
-.NavigationMain-menuToggle[aria-expanded="true"] :where(.NavigationMain-menuToggleBar:nth-child(2)) {
+.NavigationMain-toggle[aria-expanded="true"] :where(.NavigationMain-toggleBar:nth-child(2)) {
   opacity: 0;
 }
 
-.NavigationMain-menuToggle[aria-expanded="true"] :where(.NavigationMain-menuToggleBar:nth-child(3)) {
+.NavigationMain-toggle[aria-expanded="true"] :where(.NavigationMain-toggleBar:nth-child(3)) {
   transform: translateY(-7px) rotate(-45deg);
 }
 
@@ -336,7 +336,7 @@
 // ROCS : @media est un mécanisme CSS pur — compatible avec toutes les classes ROCS
 
 @media (width <= 768px) {
-  .NavigationMain-menuToggle {
+  .NavigationMain-toggle {
     display: flex; // visible en mobile
   }
 
@@ -395,7 +395,7 @@
   .NavigationMain-link,
   .NavigationMain-trigger,
   .NavigationMain-githubLink,
-  .NavigationMain-menuToggleBar {
+  .NavigationMain-toggleBar {
     transition: none;
   }
 

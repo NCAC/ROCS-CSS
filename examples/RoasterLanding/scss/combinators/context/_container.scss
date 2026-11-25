@@ -1,0 +1,9 @@
+// combinators/context/container — spécialisation du canonique `container`.
+@use "pkg:@rocss/sass/context";
+@use "../../tokens";
+
+@mixin when_container_wide {
+  @include context.container("(min-width: #{tokens.$container_card_wide})") {
+    @content;
+  }
+}

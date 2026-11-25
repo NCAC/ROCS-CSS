@@ -1,0 +1,8 @@
+// Couche de consommation : seule à nommer des classes ROCS (I19).
+// Chaque bloc est exposé sous forme de mixin ; l'émission est décidée par le point d'entrée.
+@forward "RoasterMasthead";
+@forward "RoasterHero";
+@forward "BeanRange";
+@forward "BeanCard";
+@forward "RoasterFaq";
+@forward "RoasterColophon";

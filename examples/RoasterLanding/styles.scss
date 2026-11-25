@@ -1,0 +1,14 @@
+// RoasterLanding — point d'entrée de compilation.
+// Ordre : globals (symboles), bootstrap (reset + tokens), puis la consommation.
+// Ce fichier n'appartient à aucune couche : il peut atteindre globals et bootstrap (I1).
+@use "scss/globals";
+@use "scss/bootstrap";
+@use "scss/blocks";
+
+// execution
+@include blocks.roaster_masthead;
+@include blocks.roaster_hero;
+@include blocks.bean_range;
+@include blocks.bean_card;
+@include blocks.roaster_faq;
+@include blocks.roaster_colophon;

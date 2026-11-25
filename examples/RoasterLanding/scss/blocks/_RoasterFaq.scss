@@ -1,0 +1,36 @@
+// RoasterFaq — questions fréquentes. Le panneau est masqué par l'attribut natif `hidden`
+// (piloté par JS) : aucune règle ici ne doit définir `display` sur `RoasterFaq-answer`.
+@use "../behaviors";
+@use "../components";
+
+@mixin roaster_faq() {
+  .RoasterFaq {
+    @include components.section_frame;
+    @include components.stack_large;
+  }
+
+  .RoasterFaq-title {
+    @include behaviors.text_heading;
+  }
+
+  .RoasterFaq-list {
+    @include components.stack_small;
+  }
+
+  .RoasterFaq-entry {
+    @include components.card_raised;
+  }
+
+  .RoasterFaq-heading {
+    @include behaviors.text_body;
+  }
+
+  .RoasterFaq-question {
+    @include components.disclosure_trigger;
+  }
+
+  .RoasterFaq-text {
+    @include behaviors.measure_readable;
+    @include behaviors.text_muted;
+  }
+}

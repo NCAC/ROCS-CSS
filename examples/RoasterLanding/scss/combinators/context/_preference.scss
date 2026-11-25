@@ -1,0 +1,14 @@
+// combinators/context/preference — préférences utilisateur, spécialisations de `media`.
+@use "pkg:@rocss/sass/context";
+
+@mixin reduced_motion {
+  @include context.media("(prefers-reduced-motion: reduce)") {
+    @content;
+  }
+}
+
+@mixin prefers_dark {
+  @include context.media("(prefers-color-scheme: dark)") {
+    @content;
+  }
+}

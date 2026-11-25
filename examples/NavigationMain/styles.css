@@ -59,7 +59,7 @@
   justify-content: center;
 }
 
-.NavigationMain-menuToggle {
+.NavigationMain-toggle {
   display: none;
   flex-direction: column;
   justify-content: center;
@@ -74,15 +74,15 @@
   border-radius: 6px;
   padding: 8px;
 }
-.NavigationMain-menuToggle:hover {
+.NavigationMain-toggle:hover {
   background: var(--nav-link-hover-bg);
 }
-.NavigationMain-menuToggle:focus-visible {
+.NavigationMain-toggle:focus-visible {
   outline: none;
   box-shadow: var(--nav-focus-ring);
 }
 
-.NavigationMain-menuToggleBar {
+.NavigationMain-toggleBar {
   display: block;
   width: 20px;
   height: 2px;
@@ -91,15 +91,15 @@
   transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
 }
 
-.NavigationMain-menuToggle[aria-expanded=true] :where(.NavigationMain-menuToggleBar:nth-child(1)) {
+.NavigationMain-toggle[aria-expanded=true] :where(.NavigationMain-toggleBar:nth-child(1)) {
   transform: translateY(7px) rotate(45deg);
 }
 
-.NavigationMain-menuToggle[aria-expanded=true] :where(.NavigationMain-menuToggleBar:nth-child(2)) {
+.NavigationMain-toggle[aria-expanded=true] :where(.NavigationMain-toggleBar:nth-child(2)) {
   opacity: 0;
 }
 
-.NavigationMain-menuToggle[aria-expanded=true] :where(.NavigationMain-menuToggleBar:nth-child(3)) {
+.NavigationMain-toggle[aria-expanded=true] :where(.NavigationMain-toggleBar:nth-child(3)) {
   transform: translateY(-7px) rotate(-45deg);
 }
 
@@ -264,7 +264,7 @@
 }
 
 @media (width <= 768px) {
-  .NavigationMain-menuToggle {
+  .NavigationMain-toggle {
     display: flex;
   }
   .NavigationMain-nav {
@@ -307,7 +307,7 @@
   .NavigationMain-link,
   .NavigationMain-trigger,
   .NavigationMain-githubLink,
-  .NavigationMain-menuToggleBar {
+  .NavigationMain-toggleBar {
     transition: none;
   }
   .NavigationMain-submenu[aria-hidden=false],

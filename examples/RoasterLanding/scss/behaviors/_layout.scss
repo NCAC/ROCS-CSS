@@ -1,0 +1,55 @@
+// behaviors/layout — mise en page portée par le conteneur (I19 : pas de sélecteur enfant).
+@use "../tokens";
+
+@mixin content_frame {
+  inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: tokens.$content_width;
+  padding-inline: tokens.$space_md;
+}
+
+// Fond pleine largeur, contenu aligné sur la largeur maximale.
+@mixin bleed_frame {
+  padding-inline: max(#{tokens.$space_md}, (100% - #{tokens.$content_width}) * 0.5);
+}
+
+@mixin padding_section {
+  padding-block: tokens.$space_section;
+}
+
+@mixin padding_control {
+  padding: tokens.$space_sm tokens.$space_md;
+}
+
+@mixin padding_card {
+  padding: tokens.$space_md;
+}
+
+@mixin flex_column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex_row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin gap_small {
+  gap: tokens.$space_sm;
+}
+
+@mixin gap_medium {
+  gap: tokens.$space_md;
+}
+
+@mixin gap_large {
+  gap: tokens.$space_lg;
+}
+
+@mixin inline_center {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}

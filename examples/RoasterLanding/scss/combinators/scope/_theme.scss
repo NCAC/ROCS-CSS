@@ -1,0 +1,8 @@
+// combinators/scope/theme — spécialisation de `ancestor` : métadonnée contextuelle globale (ROCS §4.7).
+@use "pkg:@rocss/sass/scope";
+
+@mixin in_dark_theme {
+  @include scope.ancestor('html[data-theme="dark"]') {
+    @content;
+  }
+}

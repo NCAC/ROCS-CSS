@@ -1,0 +1,97 @@
+// bootstrap/root — affectation des tokens (I3) et surcharges contextuelles (I6, I6 bis).
+// Consomme tokens, primitives et la seule famille `context` (I23).
+@use "../tokens";
+@use "../primitives";
+@use "../combinators/context";
+
+// Valeurs claires et sombres d'un même token : un nom, un alias, deux valeurs (I6).
+$light_values: (
+  tokens.$color_surface_name: tokens.$color_surface_default_value,
+  tokens.$color_surface_raised_name: tokens.$color_surface_raised_default_value,
+  tokens.$color_surface_glass_name: tokens.$color_surface_glass_default_value,
+  tokens.$color_text_name: tokens.$color_text_default_value,
+  tokens.$color_text_muted_name: tokens.$color_text_muted_default_value,
+  tokens.$color_accent_name: tokens.$color_accent_default_value,
+  tokens.$color_accent_contrast_name: tokens.$color_accent_contrast_default_value,
+  tokens.$color_border_name: tokens.$color_border_default_value,
+  tokens.$shadow_raised_name: tokens.$shadow_raised_default_value,
+  tokens.$filter_photo_name: tokens.$filter_photo_default_value
+);
+$dark_values: (
+  tokens.$color_surface_name: tokens.$color_surface_dark_value,
+  tokens.$color_surface_raised_name: tokens.$color_surface_raised_dark_value,
+  tokens.$color_surface_glass_name: tokens.$color_surface_glass_dark_value,
+  tokens.$color_text_name: tokens.$color_text_dark_value,
+  tokens.$color_text_muted_name: tokens.$color_text_muted_dark_value,
+  tokens.$color_accent_name: tokens.$color_accent_dark_value,
+  tokens.$color_accent_contrast_name: tokens.$color_accent_contrast_dark_value,
+  tokens.$color_border_name: tokens.$color_border_dark_value,
+  tokens.$shadow_raised_name: tokens.$shadow_raised_dark_value,
+  tokens.$filter_photo_name: tokens.$filter_photo_dark_value
+);
+
+:root {
+  @each $name, $value in $light_values {
+    #{$name}: #{$value};
+  }
+
+  #{tokens.$space_xs_name}: #{tokens.$space_xs_default_value};
+  #{tokens.$space_sm_name}: #{tokens.$space_sm_default_value};
+  #{tokens.$space_md_name}: #{tokens.$space_md_default_value};
+  #{tokens.$space_lg_name}: #{tokens.$space_lg_default_value};
+  #{tokens.$space_section_name}: #{tokens.$space_section_default_value};
+  #{tokens.$content_width_name}: #{tokens.$content_width_default_value};
+  #{tokens.$measure_name}: #{tokens.$measure_default_value};
+  #{tokens.$card_min_width_name}: #{tokens.$card_min_width_default_value};
+  #{tokens.$layer_masthead_name}: #{tokens.$layer_masthead_default_value};
+
+  #{tokens.$font_body_name}: #{tokens.$font_body_default_value};
+  #{tokens.$font_display_name}: #{tokens.$font_display_default_value};
+  #{tokens.$size_small_name}: #{tokens.$size_small_default_value};
+  #{tokens.$size_body_name}: #{tokens.$size_body_default_value};
+  #{tokens.$size_heading_name}: #{tokens.$size_heading_default_value};
+  #{tokens.$size_display_name}: #{primitives.fluid_size(tokens.$size_display_min, tokens.$size_display_max)};
+  #{tokens.$line_body_name}: #{tokens.$line_body_default_value};
+  #{tokens.$line_tight_name}: #{tokens.$line_tight_default_value};
+  #{tokens.$weight_semibold_name}: #{tokens.$weight_semibold_default_value};
+  #{tokens.$weight_bold_name}: #{tokens.$weight_bold_default_value};
+  #{tokens.$tracking_caps_name}: #{tokens.$tracking_caps_default_value};
+
+  #{tokens.$radius_md_name}: #{tokens.$radius_md_default_value};
+  #{tokens.$border_width_name}: #{tokens.$border_width_default_value};
+  #{tokens.$rule_length_name}: #{tokens.$rule_length_default_value};
+  #{tokens.$focus_width_name}: #{tokens.$focus_width_default_value};
+  #{tokens.$focus_offset_name}: #{tokens.$focus_offset_default_value};
+  #{tokens.$opacity_dim_name}: #{tokens.$opacity_dim_default_value};
+  #{tokens.$ratio_photo_name}: #{tokens.$ratio_photo_default_value};
+
+  #{tokens.$duration_fast_name}: #{tokens.$duration_fast_default_value};
+  #{tokens.$duration_slow_name}: #{tokens.$duration_slow_default_value};
+  #{tokens.$ease_out_name}: #{tokens.$ease_out_default_value};
+  #{tokens.$distance_rise_name}: #{tokens.$distance_rise_default_value};
+
+  // I6 : même token, valeur différente selon la condition (combinator `context`).
+  @include context.from_wide {
+    #{tokens.$space_section_name}: #{tokens.$space_section_wide_value};
+  }
+
+  // Préférence système, sans JS ; les deux attributs ci-dessous la surchargent explicitement.
+  @include context.prefers_dark {
+    @each $name, $value in $dark_values {
+      #{$name}: #{$value};
+    }
+  }
+}
+
+// I6 bis : métadonnée contextuelle globale, forme `:root[data-*]`.
+:root[data-theme="dark"] {
+  @each $name, $value in $dark_values {
+    #{$name}: #{$value};
+  }
+}
+
+:root[data-theme="light"] {
+  @each $name, $value in $light_values {
+    #{$name}: #{$value};
+  }
+}

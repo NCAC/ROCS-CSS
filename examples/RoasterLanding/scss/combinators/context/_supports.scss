@@ -1,0 +1,9 @@
+// combinators/context/supports — spécialisation du canonique `supports`.
+@use "pkg:@rocss/sass/context";
+@use "../../tokens";
+
+@mixin with_backdrop_blur {
+  @include context.supports("(backdrop-filter: blur(#{tokens.$blur_masthead}))") {
+    @content;
+  }
+}

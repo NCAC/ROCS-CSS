@@ -1,0 +1,61 @@
+// BeanCard — fiche d'un café. Réutilisable dans tout conteneur de requêtes.
+@use "../behaviors";
+@use "../combinators/context";
+@use "../combinators/scope";
+@use "../components";
+@use "../tokens";
+
+@mixin bean_card() {
+  .BeanCard {
+    @include components.card_raised;
+    @include behaviors.gap_medium;
+
+    display: grid;
+
+    @include context.when_container_wide {
+      align-items: center;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .BeanCard-photo {
+    @include behaviors.shape_round;
+
+    aspect-ratio: tokens.$ratio_photo;
+    background:
+      radial-gradient(circle at 70% 40%, tokens.$color_accent, transparent 65%),
+      tokens.$color_border;
+
+    // Un token (`--filter-photo`) pourrait porter cette variation ; le scope est conservé ici
+    // pour exercer `scope.ancestor` avec une métadonnée globale (spécificité 0,1,1).
+    @include scope.in_dark_theme {
+      filter: tokens.$filter_photo;
+    }
+  }
+
+  .BeanCard-body {
+    @include components.stack_small;
+  }
+
+  .BeanCard-origin {
+    @include behaviors.text_eyebrow;
+  }
+
+  .BeanCard-name {
+    @include behaviors.text_heading;
+  }
+
+  .BeanCard-notes {
+    @include behaviors.text_muted;
+  }
+
+  .BeanCard-price {
+    @include behaviors.weight_semibold;
+  }
+
+  .BeanCard-cta {
+    @include components.action_outline;
+
+    align-self: start;
+  }
+}

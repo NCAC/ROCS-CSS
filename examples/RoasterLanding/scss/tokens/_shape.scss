@@ -1,0 +1,40 @@
+// tokens/shape — bordures, rayons, focus, flou, opacité, ratio.
+@use "sass:math";
+
+// radius-md
+$radius_md_name: --radius-md;
+$radius_md: var(--radius-md);
+$radius_md_default_value: 0.75rem;
+
+// border-width
+$border_width_name: --border-width;
+$border_width: var(--border-width);
+$border_width_default_value: 1px;
+
+// rule-length
+$rule_length_name: --rule-length;
+$rule_length: var(--rule-length);
+$rule_length_default_value: 2rem;
+
+// focus-width
+$focus_width_name: --focus-width;
+$focus_width: var(--focus-width);
+$focus_width_default_value: 3px;
+
+// focus-offset
+$focus_offset_name: --focus-offset;
+$focus_offset: var(--focus-offset);
+$focus_offset_default_value: 2px;
+
+// opacity-dim
+$opacity_dim_name: --opacity-dim;
+$opacity_dim: var(--opacity-dim);
+$opacity_dim_default_value: 0.85;
+
+// ratio-photo
+$ratio_photo_name: --ratio-photo;
+$ratio_photo: var(--ratio-photo);
+$ratio_photo_default_value: math.div(4, 3);
+
+// Valeur Sass seule : le flou apparaît dans un prélude `@supports`, où `var()` n'est pas résolu (I5).
+$blur_masthead: 12px;

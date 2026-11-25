@@ -1,0 +1,55 @@
+// components/action — formes génériques d'action (I17, I18) : assemblent behaviors et combinators.
+@use "../behaviors";
+@use "../combinators/context";
+@use "../combinators/state";
+
+@mixin action_solid {
+  @include behaviors.control_reset;
+  @include behaviors.link_plain;
+  @include behaviors.inline_center;
+  @include behaviors.surface_accent;
+  @include behaviors.padding_control;
+  @include behaviors.shape_round;
+  @include behaviors.weight_semibold;
+  @include behaviors.transition_opacity;
+
+  @include state.on_hover {
+    @include behaviors.dimmed;
+  }
+
+  @include state.on_focus_visible {
+    @include behaviors.focus_ring;
+  }
+
+  @include context.reduced_motion {
+    transition: none;
+  }
+}
+
+@mixin action_outline {
+  @include behaviors.control_reset;
+  @include behaviors.link_plain;
+  @include behaviors.inline_center;
+  @include behaviors.border_outline;
+  @include behaviors.padding_control;
+  @include behaviors.shape_round;
+  @include behaviors.weight_semibold;
+  @include behaviors.transition_opacity;
+
+  @include state.on_hover {
+    @include behaviors.dimmed;
+  }
+
+  @include state.on_focus_visible {
+    @include behaviors.focus_ring;
+  }
+
+  // Bouton à bascule : l'état « pressé » est un attribut ARIA piloté par JS.
+  @include state.when_pressed {
+    @include behaviors.surface_accent;
+  }
+
+  @include context.reduced_motion {
+    transition: none;
+  }
+}

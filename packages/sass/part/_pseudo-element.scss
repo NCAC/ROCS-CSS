@@ -1,0 +1,33 @@
+// =============================================================================
+// part/_pseudo-element.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme pseudo-élément (famille part, I12) : &::<pseudo>.
+// Domaine fermé aux pseudo-éléments listés ci-dessous.
+// =============================================================================
+
+@use "sass:list";
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+$allowed: (
+  "before", "after", "first-line", "first-letter", "marker", "placeholder",
+  "selection", "backdrop", "file-selector-button"
+);
+
+@mixin pseudo-element($pseudo) {
+  @if not meta.content-exists() {
+    @error "pseudo-element() : bloc @content obligatoire.";
+  }
+
+  @if not v.parent-is-supported(&) {
+    @error "pseudo-element() : & doit être un composé unique ou un parent canonique de scope.";
+  }
+
+  @if meta.type-of($pseudo) != "string" or not list.index($allowed, $pseudo) {
+    @error "pseudo-element() : pseudo-élément hors du domaine fermé : #{meta.inspect($pseudo)}.";
+  }
+
+  &::#{$pseudo} {
+    @content;
+  }
+}

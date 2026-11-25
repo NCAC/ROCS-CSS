@@ -1,0 +1,10 @@
+packages:
+  - packages/*
+allowBuilds:
+  # Native watcher builds are unnecessary for compilation and the test suite.
+  # Explicitly deny this script rather than allowing dependency scripts globally.
+  '@parcel/watcher': false
+
+# Workspace peers come from root devDependencies. Optional compiler peers of
+# @rocss/sass (sass, sass-embedded) must not pull sass-embedded into the repo.
+autoInstallPeers: false

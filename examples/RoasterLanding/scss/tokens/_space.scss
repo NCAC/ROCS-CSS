@@ -1,0 +1,49 @@
+// tokens/space — espacements et dimensions de mise en page.
+
+// space-xs
+$space_xs_name: --space-xs;
+$space_xs: var(--space-xs);
+$space_xs_default_value: 0.25rem;
+
+// space-sm
+$space_sm_name: --space-sm;
+$space_sm: var(--space-sm);
+$space_sm_default_value: 0.5rem;
+
+// space-md
+$space_md_name: --space-md;
+$space_md: var(--space-md);
+$space_md_default_value: 1rem;
+
+// space-lg
+$space_lg_name: --space-lg;
+$space_lg: var(--space-lg);
+$space_lg_default_value: 2rem;
+
+// Un seul token, deux valeurs selon le contexte (I6) : la surcharge est émise par bootstrap.
+
+// space-section
+$space_section_name: --space-section;
+$space_section: var(--space-section);
+$space_section_default_value: 3rem;
+$space_section_wide_value: 5rem;
+
+// content-width
+$content_width_name: --content-width;
+$content_width: var(--content-width);
+$content_width_default_value: 68rem;
+
+// measure
+$measure_name: --measure;
+$measure: var(--measure);
+$measure_default_value: 56ch;
+
+// card-min-width
+$card_min_width_name: --card-min-width;
+$card_min_width: var(--card-min-width);
+$card_min_width_default_value: 16rem;
+
+// layer-masthead
+$layer_masthead_name: --layer-masthead;
+$layer_masthead: var(--layer-masthead);
+$layer_masthead_default_value: 10;

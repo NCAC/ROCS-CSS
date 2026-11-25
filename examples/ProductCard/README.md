@@ -67,7 +67,7 @@ Ouvrir `index.html` dans un navigateur.
 ```scss
 // Pas de classe .flex-between dans le HTML
 .ProductCard-footer {
-  @include flex-between;
+  @include flex_between;
 }
 ```
 

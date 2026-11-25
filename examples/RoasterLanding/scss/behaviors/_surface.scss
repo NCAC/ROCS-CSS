@@ -1,0 +1,30 @@
+// behaviors/surface — fonds, bordures, ombres.
+@use "../tokens";
+
+@mixin surface_raised {
+  background: tokens.$color_surface_raised;
+  border: tokens.$border_width solid tokens.$color_border;
+  border-radius: tokens.$radius_md;
+  box-shadow: tokens.$shadow_raised;
+}
+
+@mixin surface_accent {
+  background: tokens.$color_accent;
+  color: tokens.$color_accent_contrast;
+}
+
+@mixin surface_glass {
+  background: tokens.$color_surface_glass;
+}
+
+@mixin border_outline {
+  border: tokens.$border_width solid tokens.$color_border;
+}
+
+@mixin border_bottom {
+  border-block-end: tokens.$border_width solid tokens.$color_border;
+}
+
+@mixin shape_round {
+  border-radius: tokens.$radius_md;
+}

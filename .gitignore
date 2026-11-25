@@ -8,20 +8,35 @@
 !README_FR.md
 
 !package.json
-!package-lock.json
+!pnpm-workspace.yaml
+!pnpm-lock.yaml
 !CONTRIBUTING.md
 
 !.stylelintrc.json
 !.stylelintignore
 !eslint.config.js
-!.release-it.json
+!.changeset/
 
 !.github/
 /.github/*
 !/.github/workflows/
+!/.github/dependabot.yml
 
 !.husky/
 
 !docs/
 !tools/
 !examples/
+
+# Monorepo sources and package tests
+!packages/
+!tests/
+!CLAUDE.md
+
+# Generated documentation included in package tarballs, never edited here
+/packages/rocs/docs/
+/packages/rocs/LICENSE
+/packages/sass-architecture/LICENSE
+**/*.tgz
+# Dependencies of any workspace
+**/node_modules/

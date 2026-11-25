@@ -1,0 +1,23 @@
+// =============================================================================
+// context/_media.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme media (famille context, I12) : enveloppe @content dans
+// @media <condition>, exactement une fois (I11), sans transformer &.
+// =============================================================================
+
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+@mixin media($condition) {
+  @if not meta.content-exists() {
+    @error "media() : bloc @content obligatoire.";
+  }
+
+  @if not v.is-condition($condition) {
+    @error "media() : condition non vide sans accolades ni point-virgule attendue, reçu #{meta.inspect($condition)}.";
+  }
+
+  @media #{$condition} {
+    @content;
+  }
+}

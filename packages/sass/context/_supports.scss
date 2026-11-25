@@ -1,0 +1,23 @@
+// =============================================================================
+// context/_supports.scss
+// -----------------------------------------------------------------------------
+// Canonique du mécanisme supports (famille context, I12) : enveloppe @content dans
+// @supports <condition>, exactement une fois (I11), sans transformer &.
+// =============================================================================
+
+@use "sass:meta";
+@use "../internal/validate" as v;
+
+@mixin supports($condition) {
+  @if not meta.content-exists() {
+    @error "supports() : bloc @content obligatoire.";
+  }
+
+  @if not v.is-condition($condition) {
+    @error "supports() : condition non vide sans accolades ni point-virgule attendue, reçu #{meta.inspect($condition)}.";
+  }
+
+  @supports #{$condition} {
+    @content;
+  }
+}

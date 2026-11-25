@@ -1,0 +1,34 @@
+# Dependabot — mises à jour de dépendances
+# L'écosystème « npm » couvre aussi pnpm : Dependabot lit pnpm-lock.yaml à la
+# racine du workspace et met à jour les manifestes de packages/*.
+# Les alertes de sécurité restent traitées à part, sans attendre ce planning.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    # Laisser mûrir une version avant de la proposer (politique supply-chain).
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    versioning-strategy: increase-if-necessary
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Mineures et correctifs : une seule PR hebdomadaire.
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+      # Les majeures restent en PR individuelles, à revoir une par une.
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      github-actions:
+        patterns: ["*"]

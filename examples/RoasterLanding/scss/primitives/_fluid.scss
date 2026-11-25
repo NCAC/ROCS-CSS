@@ -1,0 +1,11 @@
+// primitives/fluid — calcul pur, fonctions uniquement (I8).
+@use "sass:math";
+@use "../tokens";
+
+// Interpole linéairement entre $min (à $from) et $max (à $to) via clamp().
+@function fluid_size($min, $max, $from: tokens.$breakpoint_medium, $to: tokens.$breakpoint_wide) {
+  $slope: math.div(math.div($max - $min, 1rem), math.div($to - $from, 1rem));
+  $intercept: $min - $slope * $from;
+
+  @return clamp(#{$min}, #{$intercept} + #{$slope * 100}vw, #{$max});
+}

@@ -1,0 +1,37 @@
+// components/disclosure — déclencheur de panneau repliable.
+// Compose state (pseudo-classe, attribut ARIA) et part, dans l'ordre de I15 : state → part.
+@use "../behaviors";
+@use "../combinators/part";
+@use "../combinators/state";
+@use "../tokens";
+
+@mixin disclosure_trigger {
+  @include behaviors.control_reset;
+  @include behaviors.weight_semibold;
+
+  align-items: center;
+  display: flex;
+  inline-size: 100%;
+  justify-content: space-between;
+  text-align: start;
+
+  @include state.on_focus_visible {
+    @include behaviors.focus_ring;
+  }
+
+  // Chevron généré : pivote quand l'élément porte `aria-expanded="true"`.
+  @include part.after {
+    border-block-end: tokens.$focus_width solid currentcolor;
+    border-inline-end: tokens.$focus_width solid currentcolor;
+    block-size: tokens.$space_sm;
+    content: "";
+    inline-size: tokens.$space_sm;
+    transform: rotate(45deg);
+  }
+
+  @include state.when_expanded {
+    @include part.after {
+      transform: rotate(-135deg);
+    }
+  }
+}

@@ -1,0 +1,67 @@
+// RoasterHero — accroche : texte et visuel décoratif.
+@use "../behaviors";
+@use "../combinators/context";
+@use "../combinators/part";
+@use "../components";
+@use "../tokens";
+
+@mixin roaster_hero() {
+  .RoasterHero {
+    @include components.section_frame;
+    @include behaviors.gap_large;
+
+    align-items: center;
+    display: grid;
+
+    @include context.from_wide {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .RoasterHero-copy {
+    @include components.stack_medium;
+  }
+
+  .RoasterHero-eyebrow {
+    @include behaviors.text_eyebrow;
+
+    @include part.before {
+      background: currentcolor;
+      block-size: tokens.$border_width;
+      content: "";
+      display: inline-block;
+      inline-size: tokens.$rule_length;
+      margin-inline-end: tokens.$space_sm;
+      vertical-align: middle;
+    }
+  }
+
+  .RoasterHero-title {
+    @include behaviors.text_display;
+  }
+
+  .RoasterHero-lead {
+    @include behaviors.measure_readable;
+    @include behaviors.text_muted;
+  }
+
+  .RoasterHero-cta {
+    @include components.action_solid;
+
+    align-self: start;
+  }
+
+  .RoasterHero-visual {
+    @include behaviors.shape_round;
+
+    animation: tokens.$animation_fade_rise tokens.$duration_slow tokens.$ease_out both;
+    aspect-ratio: tokens.$ratio_photo;
+    background:
+      radial-gradient(circle at 30% 30%, tokens.$color_accent, transparent 60%),
+      tokens.$color_surface_raised;
+
+    @include context.reduced_motion {
+      animation: none;
+    }
+  }
+}

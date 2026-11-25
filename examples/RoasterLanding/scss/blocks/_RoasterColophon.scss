@@ -1,0 +1,29 @@
+// RoasterColophon — pied de page.
+@use "../behaviors";
+@use "../combinators/state";
+@use "../components";
+
+@mixin roaster_colophon() {
+  .RoasterColophon {
+    @include components.cluster_medium;
+    @include behaviors.bleed_frame;
+    @include behaviors.padding_section;
+    @include behaviors.text_muted;
+    @include behaviors.text_small;
+
+    justify-content: space-between;
+  }
+
+  .RoasterColophon-text {
+    @include behaviors.text_small;
+  }
+
+  .RoasterColophon-link {
+    @include behaviors.link_plain;
+    @include behaviors.underlined;
+
+    @include state.on_focus_visible {
+      @include behaviors.focus_ring;
+    }
+  }
+}

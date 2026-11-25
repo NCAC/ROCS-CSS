@@ -1,0 +1,32 @@
+// components/layout — formes de mise en page génériques.
+@use "../behaviors";
+
+@mixin section_frame {
+  @include behaviors.content_frame;
+  @include behaviors.padding_section;
+}
+
+@mixin stack_small {
+  @include behaviors.flex_column;
+  @include behaviors.gap_small;
+}
+
+@mixin stack_medium {
+  @include behaviors.flex_column;
+  @include behaviors.gap_medium;
+}
+
+@mixin stack_large {
+  @include behaviors.flex_column;
+  @include behaviors.gap_large;
+}
+
+@mixin cluster_medium {
+  @include behaviors.flex_row;
+  @include behaviors.gap_medium;
+}
+
+@mixin card_raised {
+  @include behaviors.surface_raised;
+  @include behaviors.padding_card;
+}

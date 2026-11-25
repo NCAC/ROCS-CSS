@@ -1,0 +1,14 @@
+// combinators/part/pseudo-element — spécialisations de `pseudo-element`.
+@use "pkg:@rocss/sass/part";
+
+@mixin before {
+  @include part.pseudo-element("before") {
+    @content;
+  }
+}
+
+@mixin after {
+  @include part.pseudo-element("after") {
+    @content;
+  }
+}

@@ -1,0 +1,32 @@
+// BeanRange — grille de produits. Chaque item est un conteneur de requêtes : la carte réagit
+// à la largeur de sa cellule, pas à celle du viewport.
+@use "../behaviors";
+@use "../components";
+@use "../tokens";
+
+@mixin bean_range() {
+  .BeanRange {
+    @include components.section_frame;
+    @include components.stack_large;
+  }
+
+  .BeanRange-title {
+    @include behaviors.text_heading;
+  }
+
+  .BeanRange-intro {
+    @include behaviors.measure_readable;
+    @include behaviors.text_muted;
+  }
+
+  .BeanRange-list {
+    @include behaviors.gap_large;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(tokens.$card_min_width, 1fr));
+  }
+
+  .BeanRange-item {
+    container-type: inline-size;
+  }
+}
