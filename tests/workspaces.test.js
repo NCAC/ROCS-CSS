@@ -170,3 +170,24 @@ test('Build and tarballs work outside the monorepo', () => {
     rmSync(temporary, { recursive: true, force: true });
   }
 });
+test('Package README relative links resolve to files tracked by git', () => {
+  // npm rewrites relative README links to GitHub URLs under the package
+  // directory: generated, git-ignored copies (docs/, LICENSE) would 404 there.
+  const tracked = new Set(
+    spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean)
+  );
+  const isTracked = path => tracked.has(path) || [...tracked].some(file => file.startsWith(`${path.replace(/\/$/, '')}/`));
+  const broken = [];
+  for (const name of names) {
+    for (const readme of ['README.md', 'README.fr.md']) {
+      const text = readFileSync(join(root, 'packages', name, readme), 'utf8');
+      for (const [, target] of text.matchAll(/\]\(([^)\s]+)\)/g)) {
+        const path = target.split('#')[0];
+        if (!path || /^[a-z]+:/i.test(path)) continue;
+        const resolved = join('packages', name, path).replace(/\\/g, '/');
+        if (!isTracked(resolved)) broken.push(`packages/${name}/${readme} → ${target}`);
+      }
+    }
+  }
+  assert.deepEqual(broken, []);
+});
