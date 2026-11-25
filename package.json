@@ -20,7 +20,7 @@
     "validate:json": "node tools/rocs-validate.js --dir ./examples --format json",
     "compile:examples": "sass examples/ProductCard/styles.scss examples/ProductCard/styles.css && sass examples/NavigationMain/styles.scss examples/NavigationMain/styles.css && sass examples/CheckoutForm/styles.scss examples/CheckoutForm/styles.css && sass --pkg-importer=node examples/RoasterLanding/styles.scss examples/RoasterLanding/styles.css",
     "check": "pnpm run build && pnpm test && pnpm run lint && pnpm run validate",
-    "prepare": "husky install",
+    "prepare": "husky",
     "serve:demo": "node tools/serve-demo.js"
   },
   "engines": {
@@ -47,9 +47,9 @@
     "@rocss/rocs": "workspace:*",
     "@rocss/sass": "workspace:*",
     "@rocss/sass-architecture": "workspace:*",
-    "eslint": "^9.0.0",
+    "eslint": "^10.15.0",
     "express": "^5.3.0",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "sass": "^1.71.0",
     "stylelint": "^16.2.0",
     "stylelint-config-standard-scss": "^13.0.0"
