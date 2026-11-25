@@ -4,11 +4,11 @@ Merci de votre intérêt pour contribuer à ROCS ! 🎉
 
 ## Monorepo : périmètre et sources
 
-La racine **rocs-monorepo** est privée (`private: true`) et déclare les pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)). Les versions des packages sont indépendantes :
+La racine **rocs-monorepo** est privée (`private: true`) et déclare les pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)). Les trois packages partagent une même version, synchronisée par le groupe `fixed` de Changesets :
 
 - [@rocss/rocs](packages/rocs/README.fr.md) **1.0.0** : spécification ROCS, CLI, API JavaScript et configurations Stylelint/ESLint. Les sources du validateur sont dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), son entrée CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js), et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js).
-- [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) **1.0.0-rc.1** : architecture de référence (release candidate) et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
-- [@rocss/sass](packages/sass/README.fr.md) **0.1.0** : implémentation Sass expérimentale, publiable sous le tag npm `next` ; son API peut encore évoluer avec l'architecture.
+- [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) **1.0.0** : architecture de référence et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
+- [@rocss/sass](packages/sass/README.fr.md) **1.0.0** : implémentation Sass de la couche combinators.
 
 Le [guide du monorepo](docs/MONOREPO.md) détaille cette organisation. Pour ROCS, [docs/fr/](docs/fr/) fait autorité ; [docs/en/](docs/en/) en est la traduction. Modifier les sources canoniques, puis synchroniser la traduction. **Ne jamais éditer les copies de documentation de `@rocss/rocs`** : [tools/build-package-docs.js](tools/build-package-docs.js) les régénère avec `pnpm run build` ou le hook `prepack`.
 
@@ -61,7 +61,7 @@ Après modification d'un exemple SCSS, utiliser `pnpm run compile:examples`, pui
 
 **Aucun package n'est publié à ce stade. Le scope npm `@rocss` est une organisation npm détenue par le projet.** Les noms `@rocss/rocs`, `@rocss/sass` et `@rocss/sass-architecture` y sont donc disponibles, mais aucun n'est encore publié.
 
-Les versions et les CHANGELOG sont gérés par Changesets : tout changement destiné à une release s'accompagne d'un fichier créé par `pnpm changeset` (procédure complète dans [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Ne pas utiliser `changeset publish`, qui ignore `publishConfig.tag`. Une éventuelle publication est **manuelle depuis le dépôt**, package par package, avec `pnpm --filter <package> publish`, après revue des changements, réussite des contrôles ci-dessus, inspection du contenu des archives et vérification de l'authentification et des droits npm sur le scope. Seule la racine est privée. `@rocss/sass-architecture` (préversion) et `@rocss/sass` (0.x, expérimental) se publient sous le tag `next`. **Aucune publication par CI n'est configurée**.
+Les versions et les CHANGELOG sont gérés par Changesets : tout changement destiné à une release s'accompagne d'un fichier créé par `pnpm changeset` (procédure complète dans [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Ne pas utiliser `changeset publish` : la publication reste manuelle. Une éventuelle publication est **manuelle depuis le dépôt**, package par package, avec `pnpm --filter <package> publish`, après revue des changements, réussite des contrôles ci-dessus, inspection du contenu des archives et vérification de l'authentification et des droits npm sur le scope. Seule la racine est privée. Les versions stables se publient sous le tag `latest` ; une éventuelle préversion se publierait sous `next`, passé explicitement. **Aucune publication par CI n'est configurée**.
 
 ## Comment contribuer
 

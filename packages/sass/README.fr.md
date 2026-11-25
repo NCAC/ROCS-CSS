@@ -5,15 +5,15 @@
 Mixins Sass canoniques de la couche combinators, implémentation de référence de
 l'architecture [`@rocss/sass-architecture`](https://github.com/NCAC/ROCS-CSS/blob/main/packages/sass-architecture/README.fr.md).
 
-**Version expérimentale 0.1.0, publiée sous le tag npm `next`.** L'API peut encore
-évoluer, notamment pour suivre l'architecture, elle-même en release candidate.
-Références ciblées : ROCS 1.0 et architecture Sass 1.0.0-rc.1.
+**Version stable 1.0.0.** L'API publique (sept mixins canoniques répartis en
+quatre familles) suit le versionnage sémantique : un changement incompatible
+impose une version majeure. Références ciblées : ROCS 1.0 et architecture Sass 1.0.
 
 ## Imports
 
 Après `pnpm install` à la racine, les workspaces sont liés dans `node_modules/@rocss/`
 (dépendances `workspace:*` de la racine).
-Dans un projet : `npm install --save-dev @rocss/sass@next sass`.
+Dans un projet : `npm install --save-dev @rocss/sass sass`.
 
 Le compilateur n'est pas fourni : `sass` et `sass-embedded` (≥ 1.71.0, pour les
 URL `pkg:`) sont déclarés en `peerDependencies` optionnelles. Installer l'un des

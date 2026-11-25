@@ -1,6 +1,6 @@
 # ROCS — *Role-Oriented, One-Class CSS Methodology*
 
-**ROCS specification 1.0.0** — packages are versioned independently.
+**ROCS specification 1.0.0** — the three `@rocss` packages share one synchronized version (1.0.0).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![ROCS spec: stable](https://img.shields.io/badge/ROCS%20spec-stable-green.svg)]()
@@ -19,8 +19,8 @@ The **rocs-monorepo** root is private (`private: true`) and uses pnpm workspaces
 | Package | Version | Contents and status |
 | --- | --- | --- |
 | [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | ROCS specification, CLI/JavaScript validation API, and Stylelint/ESLint configurations. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0-rc.1 | Reference architecture (release candidate, npm tag `next`), with a heuristic static checker; no Sass mixins. |
-| [@rocss/sass](packages/sass/README.md) | 0.1.0 | **Experimental Sass implementation** (npm tag `next`): seven mixins across four families; the API may still change. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0 | Reference architecture, with a heuristic static checker; no Sass mixins. |
+| [@rocss/sass](packages/sass/README.md) | 1.0.0 | Sass implementation: seven canonical mixins across four families. |
 
 See the [monorepo guide](docs/MONOREPO.md) and [contribution instructions](CONTRIBUTING.md).
 
@@ -48,7 +48,7 @@ pnpm run pack:check
 
 Tests have been added for Sass compilation (entry points and compositions), invalid arguments, and installation of all three archives outside the repository, including compilation from the installed package. **These tests still need to be run; their presence does not establish that they pass.**
 
-**No package has been published at this stage; packages will be published under the `@rocss` npm organization.** Per-package versions and changelogs are managed with [Changesets](https://changesets.dev) (see [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Any future publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
+**No package has been published at this stage; packages will be published under the `@rocss` npm organization.** The three packages share one synchronized version (Changesets `fixed` group); versions and per-package changelogs are managed with [Changesets](https://changesets.dev) (see [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Any future publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
 
 ---
 

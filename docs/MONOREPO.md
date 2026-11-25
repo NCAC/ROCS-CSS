@@ -5,8 +5,8 @@
 | Workspace | Version initiale | Contenu | Statut |
 | --- | --- | --- | --- |
 | `@rocss/rocs` | 1.0.0 | Spécification, CLI, API et configurations de lint | Stable |
-| `@rocss/sass-architecture` | 1.0.0-rc.1 | Spécification d'architecture, documents associés et vérificateur statique `sass-architecture check` | Release candidate (tag npm `next`), vérificateur heuristique |
-| `@rocss/sass` | 0.1.0 | Implémentation Sass : sept mixins, quatre familles | Expérimental (tag npm `next`), API susceptible d'évoluer |
+| `@rocss/sass-architecture` | 1.0.0 | Spécification d'architecture, documents associés et vérificateur statique `sass-architecture check` | Stable, vérificateur heuristique |
+| `@rocss/sass` | 1.0.0 | Implémentation Sass : sept mixins, quatre familles | Stable |
 
 La racine est privée et orchestre les workspaces pnpm déclarés dans
 [pnpm-workspace.yaml](../pnpm-workspace.yaml). Aucun orchestrateur
@@ -82,9 +82,10 @@ actuelles figurent dans chaque README.
 
 ## Versions et publication
 
-Les versions de packages sont indépendantes de celle de la racine. Un changement
-de CLI ne modifie pas automatiquement la version de la spécification. Chaque
-package documente la version ROCS ciblée.
+Les versions de packages sont indépendantes de celle de la racine. Les trois
+packages partagent en revanche un même numéro de version : ils forment un
+groupe `fixed` dans la configuration Changesets, si bien qu'un incrément sur
+l'un s'applique aux trois. Chaque package documente la version ROCS ciblée.
 
 Les versions et les CHANGELOG sont gérés par [Changesets](https://changesets.dev)
 (configuration : [.changeset/config.json](../.changeset/config.json)) :
@@ -97,13 +98,13 @@ Les versions et les CHANGELOG sont gérés par [Changesets](https://changesets.d
    lockfile ;
 3. relire puis commiter le résultat.
 
-Un incrément appliqué à une préversion la termine (`1.0.0-rc.1` +
-patch → `1.0.0`) ; une préversion suivante (`rc.2`) passe par
-`pnpm changeset pre enter rc`, mode qui s'applique alors à tout le dépôt.
+Une préversion (`2.0.0-rc.1`, par exemple) passe par
+`pnpm changeset pre enter rc`, mode qui s'applique alors à tout le dépôt ; elle
+se publie sous le tag `next`, toujours passé explicitement.
 
 **Ne pas utiliser `changeset publish`** : il ignore `publishConfig.tag` et
-publierait `@rocss/sass-architecture` et `@rocss/sass` sous le tag `latest`.
-Aucune publication automatique n'est activée.
+publierait une préversion sous le tag `latest`. La publication reste manuelle ;
+aucune publication automatique n'est activée.
 
 Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`,
 mettre à jour les versions et le lockfile, contrôler les archives et leurs
@@ -111,9 +112,9 @@ installations, puis publier explicitement le workspace voulu depuis ce dépôt :
 
 ```sh
 pnpm --filter @rocss/rocs publish --access public
-pnpm --filter @rocss/sass-architecture publish --access public --tag next
-pnpm --filter @rocss/sass publish --access public --tag next
-for t in @rocss/rocs@1.0.0 @rocss/sass-architecture@1.0.0-rc.1 @rocss/sass@0.1.0; do git tag "$t"; done
+pnpm --filter @rocss/sass-architecture publish --access public
+pnpm --filter @rocss/sass publish --access public
+for p in rocs sass-architecture sass; do git tag "@rocss/$p@1.0.0"; done
 git push --tags
 ```
 
@@ -121,7 +122,7 @@ Les tags git sont par package (`<nom>@<version>`). Le tag global historique
 `v1.0.0` précède le monorepo et ne correspond à aucune version de package.
 
 Ces commandes sont des procédures futures, pas des publications déjà réalisées.
-Toujours passer le tag explicitement : `@rocss/sass-architecture` (préversion)
-et `@rocss/sass` (0.x, expérimental) ne doivent jamais arriver sous `latest`.
+Les versions stables se publient sous `latest` ; une préversion ne doit jamais
+y arriver, d'où le tag `next` passé explicitement.
 Aucun package n'est publié
 à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.
