@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
@@ -206,6 +206,13 @@ test('CLI reports violations, supports JSON and rejects missing layers', () => {
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('CLI help shows the package version from its manifest', () => {
+  const { version } = JSON.parse(readFileSync(join(root, 'packages/sass-architecture/package.json'), 'utf8'));
+  const help = spawnSync(process.execPath, [cli, '--help'], { encoding: 'utf8' });
+  assert.equal(help.status, 0, help.stderr);
+  assert.ok(help.stdout.includes(`ROCS Sass Architecture Checker — v${version}`), help.stdout);
 });
 
 test('The @rocss/sass workspace satisfies its own architecture checks', () => {

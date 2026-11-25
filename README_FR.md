@@ -44,7 +44,7 @@ pnpm run pack:check
 
 Des tests ont été ajoutés pour les compilations Sass (points d'entrée et compositions), les arguments invalides et l'installation des trois archives hors dépôt, avec compilation depuis le package installé. **Ces tests restent à exécuter ; leur présence ne garantit pas leur réussite.**
 
-**Aucun package n'est publié à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.** Les trois packages partagent une même version synchronisée (groupe `fixed` de Changesets) ; les versions et les CHANGELOG par package sont gérés par [Changesets](https://changesets.dev) (voir [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Une éventuelle publication sera manuelle depuis le dépôt, après les contrôles et vérification des droits npm ; aucune publication par CI n'est configurée.
+**Les trois packages sont publiés sur npm en 1.0.0** sous l'organisation `@rocss` : [@rocss/rocs](https://www.npmjs.com/package/@rocss/rocs), [@rocss/sass-architecture](https://www.npmjs.com/package/@rocss/sass-architecture) et [@rocss/sass](https://www.npmjs.com/package/@rocss/sass). Les trois packages partagent une même version synchronisée (groupe `fixed` de Changesets) ; les versions et les CHANGELOG par package sont gérés par [Changesets](https://changesets.dev) (voir [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Toute publication est manuelle depuis le dépôt, après les contrôles et vérification des droits npm ; aucune publication par CI n'est configurée.
 
 ---
 

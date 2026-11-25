@@ -1,10 +1,14 @@
+import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import process from 'node:process';
 import { checkArchitecture, LAYERS } from './checker.js';
 import { checkEmission } from './emission.js';
 
+// Version affichée : lue depuis le manifeste du package, jamais codée en dur.
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+
 const HELP = `
-ROCS Sass Architecture Checker — v0.1
+ROCS Sass Architecture Checker — v${version}
 Vérifie statiquement les invariants de l'architecture Sass de référence.
 
 Usage:

@@ -106,23 +106,35 @@ se publie sous le tag `next`, toujours passé explicitement.
 publierait une préversion sous le tag `latest`. La publication reste manuelle ;
 aucune publication automatique n'est activée.
 
-Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`,
-mettre à jour les versions et le lockfile, contrôler les archives et leurs
-installations, puis publier explicitement le workspace voulu depuis ce dépôt :
+Les trois packages sont publiés sur npm en 1.0.0 sous le tag `latest`
+(tags git `@rocss/<package>@1.0.0`).
+
+Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`
+(`npm whoami`, `npm access list packages @rocss`), mettre à jour les versions et
+le lockfile, contrôler les archives et leurs installations, puis publier
+explicitement chaque workspace depuis ce dépôt :
 
 ```sh
 pnpm --filter @rocss/rocs publish --access public
 pnpm --filter @rocss/sass-architecture publish --access public
 pnpm --filter @rocss/sass publish --access public
-for p in rocs sass-architecture sass; do git tag "@rocss/$p@1.0.0"; done
-git push --tags
+```
+
+npm applique une publication en deux temps (*staged publishing*) : chaque
+`publish` dépose d'abord la version en attente, et le registre expose à sa place
+une version provisoire `0.0.0-stage` (« Temporary package placeholder for staged
+publishing »). La version n'est en ligne qu'après validation sur npmjs.com ; tant
+qu'elle n'est pas validée, `latest` peut pointer sur `0.0.0-stage`. Valider
+chaque package, puis vérifier le résultat avant de poser les tags git :
+
+```sh
+for p in rocs sass-architecture sass; do npm view "@rocss/$p" dist-tags --prefer-online; done
+for p in rocs sass-architecture sass; do git tag -a "@rocss/$p@<version>" -m "@rocss/$p <version>"; done
+git push origin --tags
 ```
 
 Les tags git sont par package (`<nom>@<version>`). Le tag global historique
 `v1.0.0` précède le monorepo et ne correspond à aucune version de package.
 
-Ces commandes sont des procédures futures, pas des publications déjà réalisées.
 Les versions stables se publient sous `latest` ; une préversion ne doit jamais
 y arriver, d'où le tag `next` passé explicitement.
-Aucun package n'est publié
-à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.
