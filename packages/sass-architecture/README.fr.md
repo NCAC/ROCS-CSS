@@ -2,7 +2,7 @@
 
 [English](README.md) · **Français**
 
-**Architecture de référence**, version 1.0.0, ciblant ROCS 1.0.
+**Architecture de référence**, stable depuis la 1.0.0, ciblant ROCS 1.0.
 Ce package est essentiellement documentaire. Il fournit aussi un vérificateur
 statique optionnel (`sass-architecture check`) ; il ne fournit aucun mixin Sass.
 
@@ -73,7 +73,7 @@ revue est arbitrée dans sa section « Arbitrage ».
 
 La 1.0.0 fige la spécification et les identifiants de règles (`I1`…`I23`).
 Le vérificateur reste **heuristique** : voir les limites ci-dessus.
-L'implémentation de référence `@rocss/sass` est elle aussi stable (1.0.0).
+L'implémentation de référence `@rocss/sass` est elle aussi stable depuis la 1.0.0.
 
 Politique : une nouvelle vérification est introduite en avertissement et ne
 devient une erreur qu'à la version majeure suivante, afin qu'une mise à jour

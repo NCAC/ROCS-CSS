@@ -6,9 +6,9 @@ Merci de votre intérêt pour contribuer à ROCS ! 🎉
 
 La racine **rocs-monorepo** est privée (`private: true`) et déclare les pnpm workspaces `packages/*` ([pnpm-workspace.yaml](pnpm-workspace.yaml)). Les trois packages partagent une même version, synchronisée par le groupe `fixed` de Changesets :
 
-- [@rocss/rocs](packages/rocs/README.fr.md) **1.0.0** : spécification ROCS, CLI, API JavaScript et configurations Stylelint/ESLint. Les sources du validateur sont dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), son entrée CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js), et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js).
-- [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) **1.0.0** : architecture de référence et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
-- [@rocss/sass](packages/sass/README.fr.md) **1.0.0** : implémentation Sass de la couche combinators.
+- [@rocss/rocs](packages/rocs/README.fr.md) **1.1.0** : spécification ROCS, CLI, API JavaScript et configurations Stylelint/ESLint. Les sources du validateur sont dans [packages/rocs/src/validator.js](packages/rocs/src/validator.js), son entrée CLI dans [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js), et les configurations dans [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) et [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js).
+- [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) **1.1.0** : architecture de référence et vérificateur statique heuristique, sans mixins. Ses documents sont des sources, éditées directement dans [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/), sans adopter automatiquement les propositions de la revue.
+- [@rocss/sass](packages/sass/README.fr.md) **1.1.0** : implémentation Sass de la couche combinators.
 
 Le [guide du monorepo](docs/MONOREPO.md) détaille cette organisation. Pour ROCS, [docs/fr/](docs/fr/) fait autorité ; [docs/en/](docs/en/) en est la traduction. Modifier les sources canoniques, puis synchroniser la traduction. **Ne jamais éditer les copies de documentation de `@rocss/rocs`** : [tools/build-package-docs.js](tools/build-package-docs.js) les régénère avec `pnpm run build` ou le hook `prepack`.
 
@@ -59,7 +59,7 @@ Après modification d'un exemple SCSS, utiliser `pnpm run compile:examples`, pui
 
 ## Versions et publication
 
-**Les trois packages sont publiés sur npm en 1.0.0** sous l'organisation `@rocss`, détenue par le projet : [@rocss/rocs](https://www.npmjs.com/package/@rocss/rocs), [@rocss/sass-architecture](https://www.npmjs.com/package/@rocss/sass-architecture) et [@rocss/sass](https://www.npmjs.com/package/@rocss/sass).
+**Les trois packages sont publiés sur npm** sous l'organisation `@rocss`, détenue par le projet : [@rocss/rocs](https://www.npmjs.com/package/@rocss/rocs), [@rocss/sass-architecture](https://www.npmjs.com/package/@rocss/sass-architecture) et [@rocss/sass](https://www.npmjs.com/package/@rocss/sass).
 
 Les versions et les CHANGELOG sont gérés par Changesets : tout changement destiné à une release s'accompagne d'un fichier créé par `pnpm changeset` (procédure complète dans [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Ne pas utiliser `changeset publish` : la publication reste manuelle. Toute publication est **manuelle depuis le dépôt**, package par package, avec `pnpm --filter <package> publish`, après revue des changements, réussite des contrôles ci-dessus, inspection du contenu des archives et vérification de l'authentification et des droits npm sur le scope. Seule la racine est privée. Les versions stables se publient sous le tag `latest` ; une éventuelle préversion se publierait sous `next`, passé explicitement. npm valide chaque publication en deux temps (version provisoire `0.0.0-stage` jusqu'à validation sur npmjs.com) : vérifier `npm view @rocss/<package> dist-tags` avant de poser les tags git. **Aucune publication par CI n'est configurée**.
 

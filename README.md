@@ -1,6 +1,6 @@
 # ROCS — *Role-Oriented, One-Class CSS Methodology*
 
-**ROCS specification 1.0.0** — the three `@rocss` packages share one synchronized version (1.0.0).
+**ROCS specification 1.0.0** — the three `@rocss` packages share one synchronized version (1.1.0).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![ROCS spec: stable](https://img.shields.io/badge/ROCS%20spec-stable-green.svg)]()
@@ -18,9 +18,9 @@ The **rocs-monorepo** root is private (`private: true`) and uses pnpm workspaces
 
 | Package | Version | Contents and status |
 | --- | --- | --- |
-| [@rocss/rocs](packages/rocs/README.md) | 1.0.0 | ROCS specification, CLI/JavaScript validation API, and Stylelint/ESLint configurations. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.0.0 | Reference architecture, with a heuristic static checker; no Sass mixins. |
-| [@rocss/sass](packages/sass/README.md) | 1.0.0 | Sass implementation: seven canonical mixins across four families. |
+| [@rocss/rocs](packages/rocs/README.md) | 1.1.0 | ROCS specification, CLI/JavaScript validation API, and Stylelint/ESLint configurations. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.md) | 1.1.0 | Reference architecture, with a heuristic static checker; no Sass mixins. |
+| [@rocss/sass](packages/sass/README.md) | 1.1.0 | Sass implementation: seven canonical mixins across four families. |
 
 See the [monorepo guide](docs/MONOREPO.md) and [contribution instructions](CONTRIBUTING.md).
 
@@ -48,7 +48,7 @@ pnpm run pack:check
 
 Tests have been added for Sass compilation (entry points and compositions), invalid arguments, and installation of all three archives outside the repository, including compilation from the installed package. **These tests still need to be run; their presence does not establish that they pass.**
 
-**All three packages are published on npm at 1.0.0** under the `@rocss` organization: [@rocss/rocs](https://www.npmjs.com/package/@rocss/rocs), [@rocss/sass-architecture](https://www.npmjs.com/package/@rocss/sass-architecture) and [@rocss/sass](https://www.npmjs.com/package/@rocss/sass). The three packages share one synchronized version (Changesets `fixed` group); versions and per-package changelogs are managed with [Changesets](https://changesets.dev) (see [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
+**All three packages are published on npm** under the `@rocss` organization: [@rocss/rocs](https://www.npmjs.com/package/@rocss/rocs), [@rocss/sass-architecture](https://www.npmjs.com/package/@rocss/sass-architecture) and [@rocss/sass](https://www.npmjs.com/package/@rocss/sass). The three packages share one synchronized version (Changesets `fixed` group); versions and per-package changelogs are managed with [Changesets](https://changesets.dev) (see [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Publication is manual from the repository, after checks and verification of npm permissions; no CI publication is configured.
 
 ---
 

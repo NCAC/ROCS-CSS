@@ -5,7 +5,7 @@
 Canonical Sass mixins for the combinators layer, the reference implementation of
 the [`@rocss/sass-architecture`](https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass-architecture#readme) architecture.
 
-**Stable version 1.0.0.** The public API (seven canonical mixins across four
+**Stable since 1.0.0.** The public API (seven canonical mixins across four
 families) follows semantic versioning: a breaking change requires a major
 version. Targeted references: ROCS 1.0 and Sass architecture 1.0.
 

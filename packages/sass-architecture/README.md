@@ -2,7 +2,7 @@
 
 **English** · [Français](README.fr.md)
 
-**Reference architecture** for ROCS-compatible Sass, version 1.0.0,
+**Reference architecture** for ROCS-compatible Sass, stable since 1.0.0,
 targeting ROCS 1.0. This package is mostly documentation.
 It also ships an optional static checker (`sass-architecture check`); it
 provides no Sass mixins (see [`@rocss/sass`](https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass#readme)).
@@ -70,7 +70,7 @@ constraints are not obligations for every ROCS application.
 
 1.0.0 freezes the specification and the rule identifiers (`I1`…`I23`). The
 checker remains **heuristic**: see the limits above. The reference
-implementation `@rocss/sass` is also stable (1.0.0).
+implementation `@rocss/sass` is also stable since 1.0.0.
 
 Policy: a new check is introduced as a warning and only becomes an error at the
 next major version, so that a minor update does not break existing projects.

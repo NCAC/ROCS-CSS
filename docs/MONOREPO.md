@@ -106,8 +106,8 @@ se publie sous le tag `next`, toujours passé explicitement.
 publierait une préversion sous le tag `latest`. La publication reste manuelle ;
 aucune publication automatique n'est activée.
 
-Les trois packages sont publiés sur npm en 1.0.0 sous le tag `latest`
-(tags git `@rocss/<package>@1.0.0`).
+Les trois packages sont publiés sur npm sous le tag `latest` depuis la 1.0.0
+(tags git `@rocss/<package>@<version>`).
 
 Avant publication : vérifier ses droits de publication dans l'organisation `@rocss`
 (`npm whoami`, `npm access list packages @rocss`), mettre à jour les versions et
