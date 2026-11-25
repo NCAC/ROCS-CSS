@@ -1,6 +1,6 @@
 # ROCS — *Role‑Oriented CSS Semantics*
 
-**Spécification ROCS 1.0.0** — les trois packages `@rocss` partagent une même version synchronisée (1.1.0).
+**Spécification ROCS 1.0.0** — les trois packages `@rocss` partagent une même version synchronisée (1.1.1).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -14,9 +14,9 @@ La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm wo
 
 | Package | Version | Contenu et statut |
 | --- | --- | --- |
-| [@rocss/rocs](packages/rocs/README.fr.md) | 1.1.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) | 1.1.0 | Architecture de référence avec vérificateur statique heuristique ; aucun mixin Sass. |
-| [@rocss/sass](packages/sass/README.fr.md) | 1.1.0 | Implémentation Sass : sept mixins canoniques dans quatre familles. |
+| [@rocss/rocs](packages/rocs/README.fr.md) | 1.1.1 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) | 1.1.1 | Architecture de référence avec vérificateur statique heuristique ; aucun mixin Sass. |
+| [@rocss/sass](packages/sass/README.fr.md) | 1.1.1 | Implémentation Sass : sept mixins canoniques dans quatre familles. |
 
 Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
 
