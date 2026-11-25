@@ -1,9 +1,10 @@
 /**
  * Validateur autonome de conformité ROCS v1.0
  *
- * Analyse les fichiers HTML, SCSS et CSS d'un répertoire et produit un rapport
- * de conformité basé sur la spécification normative ROCS.
- * L'analyse reste heuristique, sans validation complète des templates.
+ * Analyse les fichiers HTML, Twig, SCSS et CSS d'un répertoire et produit un
+ * rapport de conformité basé sur la spécification normative ROCS.
+ * L'analyse reste heuristique : dans les templates Twig, seules les classes
+ * statiques sont vérifiées, les valeurs dynamiques ne sont pas devinées.
  *
  * Usage :
  *   rocs --dir ./src
@@ -251,6 +252,195 @@ export function analyzeHtml(content, filePath) {
   return issues;
 }
 
+// ─── Analyse Twig ─────────────────────────────────────────────────────────────
+
+// Marqueurs de masquage : un caractère par caractère source, pour conserver
+// les positions (lignes et colonnes) du template d'origine.
+const TWIG_EXPR_MASK = '\u0001';
+const TWIG_TAG_MASK = '\u0002';
+
+/**
+ * Masque la syntaxe Twig sans décaler les positions : les commentaires {# #}
+ * deviennent des espaces, les expressions {{ }} et les balises {% %} des
+ * marqueurs. Les retours à la ligne sont conservés.
+ * @param {string} content
+ * @returns {{ masked: string, tags: Map<number, { end: number, keyword: string }> }}
+ */
+function maskTwig(content) {
+  const tags = new Map();
+  let masked = '';
+  let i = 0;
+  while (i < content.length) {
+    const open = content.slice(i, i + 2);
+    const close = { '{#': '#}', '{{': '}}', '{%': '%}' }[open];
+    if (!close) {
+      masked += content[i++];
+      continue;
+    }
+    const closeAt = content.indexOf(close, i + 2);
+    const end = closeAt === -1 ? content.length : closeAt + 2;
+    const source = content.slice(i, end);
+    const fill = open === '{#' ? ' ' : open === '{{' ? TWIG_EXPR_MASK : TWIG_TAG_MASK;
+    masked += source.replace(/[^\n]/g, fill);
+    if (open === '{%') {
+      const keyword = (source.slice(2).replace(/^[-~]?\s*/, '').match(/^[a-z]+/) || [''])[0];
+      tags.set(i, { end, keyword });
+    }
+    i = end;
+  }
+  return { masked, tags };
+}
+
+/**
+ * Découpe la valeur masquée d'un attribut class en un arbre : classes statiques
+ * et groupes conditionnels ({% if %} … {% elseif %} … {% else %} … {% endif %}).
+ * Une classe collée à une expression ({{ }}) est dynamique et ignorée.
+ * @returns {Array<{ cls: string, offset: number } | { branches: any[][] }>}
+ */
+function parseTwigClassValue(masked, start, end, tags) {
+  const root = [];
+  const stack = [{ items: root }];
+  let token = '';
+  let tokenStart = -1;
+  let dynamic = false;
+  const current = () => stack[stack.length - 1].items;
+  const flush = () => {
+    if (token && !dynamic) current().push({ cls: token, offset: tokenStart });
+    token = '';
+    tokenStart = -1;
+    dynamic = false;
+  };
+
+  for (let i = start; i < end;) {
+    const ch = masked[i];
+    if (ch === TWIG_TAG_MASK) {
+      flush();
+      const tag = tags.get(i);
+      if (!tag) { i++; continue; }
+      if (tag.keyword === 'if') {
+        const group = { branches: [[]] };
+        current().push(group);
+        stack.push({ group, items: group.branches[0] });
+      } else if ((tag.keyword === 'elseif' || tag.keyword === 'else') && stack.length > 1 && stack[stack.length - 1].group) {
+        const frame = stack[stack.length - 1];
+        frame.items = [];
+        frame.group.branches.push(frame.items);
+      } else if (tag.keyword === 'endif' && stack.length > 1) {
+        stack.pop();
+      }
+      i = tag.end;
+      continue;
+    }
+    if (ch === TWIG_EXPR_MASK) {
+      dynamic = true;
+      if (tokenStart === -1) tokenStart = i;
+      i++;
+      continue;
+    }
+    if (/\s/.test(ch)) {
+      flush();
+      i++;
+      continue;
+    }
+    if (tokenStart === -1) tokenStart = i;
+    token += ch;
+    i++;
+  }
+  flush();
+  return root;
+}
+
+/** Aplatit l'arbre en liste de classes statiques, toutes branches comprises. */
+function flattenTwigClasses(items) {
+  return items.flatMap(item => ('cls' in item ? [item] : item.branches.flatMap(flattenTwigClasses)));
+}
+
+/**
+ * Nombre maximal de classes ROCS portées à la fois par l'élément : les classes
+ * inconditionnelles plus, pour chaque condition, la branche la plus chargée.
+ * Les branches d'une même condition sont exclusives (R03 par chemin de rendu).
+ */
+function maxRocsClasses(items, isRocs) {
+  let count = 0;
+  for (const item of items) {
+    if ('cls' in item) count += isRocs(item.cls) ? 1 : 0;
+    else count += Math.max(0, ...item.branches.map(branch => maxRocsClasses(branch, isRocs)));
+  }
+  return count;
+}
+
+/**
+ * Analyse un template Twig (.twig, .html.twig) avec les règles HTML.
+ * Les commentaires Twig sont ignorés ; les classes statiques sont vérifiées,
+ * y compris dans les blocs conditionnels et les attributs mixtes
+ * (class="ServiceCard {{ extra_classes }}"). Les valeurs dynamiques ne sont
+ * pas devinées : seule la partie statique du template est contrôlée.
+ * @param {string} content
+ * @param {string} filePath
+ * @returns {Issue[]}
+ */
+export function analyzeTwig(content, filePath) {
+  const issues = [];
+  const { masked, tags } = maskTwig(content);
+  const sourceLines = content.split('\n');
+  const lineStarts = [0];
+  for (let i = 0; i < content.length; i++) if (content[i] === '\n') lineStarts.push(i + 1);
+  const lineOf = offset => {
+    let lo = 0;
+    let hi = lineStarts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (lineStarts[mid] <= offset) lo = mid; else hi = mid - 1;
+    }
+    return lo + 1;
+  };
+  const at = (offset, issue) => {
+    const line = lineOf(offset);
+    issues.push({ ...issue, line, context: sourceLines[line - 1].trim() });
+  };
+  const isRocs = cls => ROCS_CLASS_PATTERN.test(cls) && !STATE_CLASS_PATTERNS.some(p => p.test(cls));
+
+  const classAttrRegex = /\bclass="([^"]*)"/g;
+  let match;
+  while ((match = classAttrRegex.exec(masked)) !== null) {
+    const valueStart = match.index + match[0].indexOf('"') + 1;
+    const tree = parseTwigClassValue(masked, valueStart, valueStart + match[1].length, tags);
+
+    for (const { cls, offset } of flattenTwigClasses(tree)) {
+      for (const issue of validateRocsClass(cls)) at(offset, issue);
+    }
+
+    // R03 — Max 1 classe ROCS par élément, sur chaque chemin de rendu
+    const count = maxRocsClasses(tree, isRocs);
+    if (count > 1) {
+      const rocsClasses = [...new Set(flattenTwigClasses(tree).map(item => item.cls).filter(isRocs))];
+      at(match.index, {
+        rule: 'R03',
+        severity: 'error',
+        message: `${count} classes ROCS sur un même élément (§3.1) : [${rocsClasses.join(', ')}]. Maximum autorisé : 1.`,
+      });
+    }
+  }
+
+  // R05 — data-* de variant statique (heuristique), hors syntaxe Twig
+  const dataAttrRegex = /\bdata-[a-zA-Z-]+="[^"]*"/g;
+  let dataMatch;
+  while ((dataMatch = dataAttrRegex.exec(masked)) !== null) {
+    const name = dataMatch[0].slice(0, dataMatch[0].indexOf('=') + 1);
+    if (STATIC_VARIANT_DATA_ATTRS.some(p => p.test(name))) {
+      const attr = content.slice(dataMatch.index, dataMatch.index + dataMatch[0].length);
+      at(dataMatch.index, {
+        rule: 'R05',
+        severity: 'warning',
+        message: `Attribut "${attr}" (§4.3) — heuristique : peut-être un variant sémantique statique. Vérifiez si une classe ROCS distincte serait plus appropriée.`,
+      });
+    }
+  }
+
+  issues.sort((a, b) => a.line - b.line);
+  return issues;
+}
+
 // ─── Analyse SCSS/CSS ─────────────────────────────────────────────────────────
 
 /**
@@ -444,7 +634,8 @@ export function runCli(args = process.argv.slice(2)) {
   if (options.help) {
     console.log(`
 ROCS Validator — v1.0
-Valide la conformité ROCS des fichiers HTML, SCSS et CSS.
+Valide la conformité ROCS des fichiers HTML, Twig (.twig, .html.twig), SCSS et CSS.
+Dans les templates Twig, seules les classes statiques sont vérifiées.
 
 Usage:
   rocs [options]
@@ -460,7 +651,7 @@ Options:
 Règles implémentées:
   R01 §3.2  Bloc PascalCase, max 4 segments
   R02 §3.2  Élément Bloc-camelCase, max 3 segments
-  R03 §3.1  Max 1 classe ROCS par élément HTML
+  R03 §3.1  Max 1 classe ROCS par élément HTML (Twig : par chemin de rendu)
   R04 §3.5  Classes d'état interdites
   R05 §4.3  data-* variant statique (heuristique)
   R06 §5    id interdit dans les sélecteurs CSS
@@ -473,6 +664,8 @@ Règles implémentées:
 
   const targetDir = options.dir;
   const htmlFiles = collectFiles(targetDir, ['.html', '.htm']);
+  // Templates Twig : extname('x.html.twig') vaut '.twig', ce qui couvre les deux formes.
+  const twigFiles = collectFiles(targetDir, ['.twig']);
   // Les sources SCSS et les fichiers CSS sont analysés, y compris les CSS générés.
   const scssFiles = collectFiles(targetDir, ['.scss', '.css']);
 
@@ -484,6 +677,17 @@ Règles implémentées:
   for (const file of htmlFiles) {
     const content = readFileSync(file, 'utf-8');
     const issues = analyzeHtml(content, file);
+    const relPath = relative(process.cwd(), file);
+    reports.push({ file: relPath, issues });
+    stats.files++;
+    stats.errors += issues.filter(i => i.severity === 'error').length;
+    stats.warnings += issues.filter(i => i.severity === 'warning').length;
+  }
+
+  // Analyser les templates Twig
+  for (const file of twigFiles) {
+    const content = readFileSync(file, 'utf-8');
+    const issues = analyzeTwig(content, file);
     const relPath = relative(process.cwd(), file);
     reports.push({ file: relPath, issues });
     stats.files++;

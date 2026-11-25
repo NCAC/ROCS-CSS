@@ -51,7 +51,7 @@ The legacy commands above remain supported through the wrapper in [tools/rocs-va
 ## Architecture
 
 - [docs/fr/](docs/fr/): canonical French ROCS specification and companion documents; [docs/en/](docs/en/): English translations.
-- [packages/rocs/src/validator.js](packages/rocs/src/validator.js): validator implementation and exported API (`analyzeHtml`, `analyzeScss`, `validateRocsClass`, `runCli`). Importing the module does not launch the CLI; `runCli` terminates the process, so use the analysis functions for integrations.
+- [packages/rocs/src/validator.js](packages/rocs/src/validator.js): validator implementation and exported API (`analyzeHtml`, `analyzeTwig`, `analyzeScss`, `validateRocsClass`, `runCli`). Importing the module does not launch the CLI; `runCli` terminates the process, so use the analysis functions for integrations.
 - [packages/rocs/bin/rocs.js](packages/rocs/bin/rocs.js): package CLI entry point; [tools/rocs-validate.js](tools/rocs-validate.js): compatibility wrapper only.
 - [packages/rocs/stylelint.config.json](packages/rocs/stylelint.config.json) and [packages/rocs/eslint.config.js](packages/rocs/eslint.config.js): actual lint configurations. The ESLint rules and regex live in [packages/rocs/eslint-plugin.js](packages/rocs/eslint-plugin.js) (exported as `@rocss/rocs/eslint-plugin`); `eslint.config.js` only enables them on JSX/TSX, with no ESLint core rules. The root [.stylelintrc.json](.stylelintrc.json) and [eslint.config.js](eslint.config.js) delegate to them. ESLint targets JSX; TypeScript and other syntaxes require appropriate parser setup.
 - [packages/sass-architecture/docs/fr/](packages/sass-architecture/docs/fr/): canonical Sass architecture draft documents (`SPECIFICATION.md`, `GUIDE.md`, `REVIEW.md`), not an implemented framework. Unlike the `@rocss/rocs` documentation copies, they are sources and are edited directly.
@@ -63,7 +63,7 @@ The legacy commands above remain supported through the wrapper in [tools/rocs-va
 
 **Test status:** added tests cover Sass entry-point and composition compilation, invalid arguments, and installation of all three local archives outside the repository, including compilation from the installed package. They run in `pnpm run check` and in CI.
 
-**Validator scope:** CSS was added to the scanned extensions, alongside HTML, HTM and SCSS. Both SCSS sources and generated CSS are analyzed separately. Analysis is heuristic, not a complete compliance proof; the CLI has no template adapters for Twig, Vue, JSX, etc., and semantic decisions still require human review. Moving tooling into a package does not change the business rules below.
+**Validator scope:** scanned extensions are HTML, HTM, Twig (`.twig`, including `.html.twig`), CSS and SCSS. Both SCSS sources and generated CSS are analyzed separately. Twig templates get the HTML rules on static classes only: comments are ignored, `{% if %}` branches are exclusive for R03, and dynamic values (expressions, classes glued to `{{ }}`, `attributes.addClass()`, `{% set %}`) are not guessed. Analysis is heuristic, not a complete compliance proof; the CLI has no template adapters for Vue, JSX, etc., and semantic decisions still require human review. Moving tooling into a package does not change the business rules below.
 
 ## Release status
 

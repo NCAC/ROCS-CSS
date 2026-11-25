@@ -16,7 +16,7 @@ Pour les combinators, modifier les sources canoniques dans [packages/sass/](pack
 
 L'API fournit sept mixins : `context.media`, `context.supports`, `context.container`, `state.pseudo-class`, `state.attribute`, `scope.ancestor` et `part.pseudo-element`. Importer les familles via `@use "pkg:@rocss/sass/context"`, `/state`, `/scope` ou `/part`, avec l'importeur de packages Node de Dart Sass (CLI : `--pkg-importer=node` ; API : `importers: [new NodePackageImporter()]`). `loadPaths: ["node_modules"]` reste possible. Après `pnpm install`, la résolution utilise le workspace local, sans publication.
 
-Le [CLI historique](tools/rocs-validate.js) est conservé comme wrapper du validateur du package. CSS a été ajouté aux extensions analysées : HTML, HTM, CSS et SCSS. Cette analyse reste **heuristique**, sans adaptateurs de templates Twig, Vue, JSX, etc. ; SCSS et CSS générés sont analysés séparément. Un résultat sans diagnostic n'est pas une preuve de conformité complète : les choix sémantiques nécessitent une revue humaine.
+Le [CLI historique](tools/rocs-validate.js) est conservé comme wrapper du validateur du package. Extensions analysées : HTML, HTM, Twig (`.twig`, `.html.twig`), CSS et SCSS. Cette analyse reste **heuristique** : dans les templates Twig, seules les classes statiques sont vérifiées, et il n'y a pas d'adaptateurs Vue, JSX, etc. ; SCSS et CSS générés sont analysés séparément. Un résultat sans diagnostic n'est pas une preuve de conformité complète : les choix sémantiques nécessitent une revue humaine.
 
 ## Installation et contrôles
 
