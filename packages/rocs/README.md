@@ -19,13 +19,13 @@ Inside the repository, after `pnpm install`, the command is also available as
 ## JavaScript API
 
 ```js
-import { analyzeHtml, analyzeScss, validateRocsClass } from '@rocss/rocs';
+import { analyzeHtml, analyzeScss, analyzeTwig, validateRocsClass } from '@rocss/rocs';
 
 const issues = analyzeHtml('<div class="ProductCard"></div>', 'example.html');
 ```
 
-`analyzeHtml(content, filePath)` and `analyzeScss(content, filePath)` return
-arrays of diagnostics. `analyzeScss` also accepts plain CSS.
+`analyzeHtml(content, filePath)`, `analyzeTwig(content, filePath)` and
+`analyzeScss(content, filePath)` return arrays of diagnostics. `analyzeScss` also accepts plain CSS.
 `validateRocsClass(name)` checks a single class name. Importing the module does
 not launch the CLI. `runCli(args)` is exported too, but it terminates the
 process: use the analysis functions for programmatic integrations.
@@ -58,10 +58,30 @@ The CLI and the analysis API have no runtime dependencies.
 
 ## Actual scope
 
-The CLI scans HTML, HTM, CSS and SCSS files. Its analysis is **heuristic**, not
-a complete proof of compliance. SCSS sources and generated CSS are analyzed
-separately. Dynamic expressions and Twig, Vue, JSX, etc. templates have no
-adapters in this CLI. Some semantic decisions require human review.
+The CLI scans HTML, HTM, Twig (`.twig`, including `.html.twig`), CSS and SCSS
+files. Its analysis is **heuristic**, not a complete proof of compliance. SCSS
+sources and generated CSS are analyzed separately. Some semantic decisions
+require human review.
+
+### Twig templates
+
+Twig templates are analyzed with the HTML rules, without starting Drupal or
+compiling the templates. Diagnostics point to the line in the source template.
+
+- Twig comments (`{# … #}`) are ignored.
+- Static classes are checked, including inside conditional blocks and in mixed
+  attributes such as `class="ServiceCard {{ extra_classes }}"`.
+- For the one-class rule (R03), the branches of a `{% if %}` /
+  `{% elseif %}` / `{% else %}` are exclusive:
+  `class="{% if featured %}ServiceCardFeatured{% else %}ServiceCard{% endif %}"`
+  is compliant, and the rule applies to each rendering path.
+
+**Limit: dynamic values are not guessed.** Only classes written literally in the
+template are checked. The analysis ignores a class produced by an expression
+(`{{ classes|join(' ') }}`), a class glued to an expression
+(`ServiceCard{{ suffix }}`, `is-{{ state }}`), and classes added through Drupal
+attribute objects (`{{ attributes.addClass('ServiceCard') }}`) or `{% set %}`
+variables. The CLI also has no adapters for Vue, JSX, etc.
 
 ## Bundled specification
 

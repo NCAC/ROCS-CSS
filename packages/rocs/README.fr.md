@@ -19,13 +19,13 @@ Dans le dépôt, après `pnpm install`, la commande est également accessible vi
 ## API JavaScript
 
 ```js
-import { analyzeHtml, analyzeScss, validateRocsClass } from '@rocss/rocs';
+import { analyzeHtml, analyzeScss, analyzeTwig, validateRocsClass } from '@rocss/rocs';
 
 const issues = analyzeHtml('<div class="ProductCard"></div>', 'example.html');
 ```
 
-`analyzeHtml(content, filePath)` et `analyzeScss(content, filePath)` retournent
-des tableaux de diagnostics. `analyzeScss` accepte aussi du CSS.
+`analyzeHtml(content, filePath)`, `analyzeTwig(content, filePath)` et
+`analyzeScss(content, filePath)` retournent des tableaux de diagnostics. `analyzeScss` accepte aussi du CSS.
 `validateRocsClass(name)` contrôle un nom de classe. L'import ne lance pas le CLI.
 `runCli(args)` est également exportée, mais termine le processus : utiliser les
 fonctions d'analyse pour une intégration programmatique.
@@ -59,11 +59,31 @@ d'analyse ne nécessitent aucune dépendance d'exécution externe.
 
 ## Portée réelle
 
-Le CLI parcourt HTML, HTM, CSS et SCSS. Ses analyses sont **heuristiques**,
-pas une preuve complète de conformité. Sources SCSS et CSS générés sont
-analysés séparément. Les expressions dynamiques et les templates Twig, Vue,
-JSX, etc. ne disposent pas d'adaptateurs dans ce CLI. Certaines décisions
-sémantiques demandent une revue humaine. Les règles existantes ne sont pas
+Le CLI parcourt HTML, HTM, Twig (`.twig`, y compris `.html.twig`), CSS et
+SCSS. Ses analyses sont **heuristiques**, pas une preuve complète de
+conformité. Sources SCSS et CSS générés sont analysés séparément. Certaines
+décisions sémantiques demandent une revue humaine.
+
+### Templates Twig
+
+Les templates Twig sont analysés avec les règles HTML, sans démarrer Drupal ni
+compiler les templates. Les diagnostics indiquent la ligne du template source.
+
+- Les commentaires Twig (`{# … #}`) sont ignorés.
+- Les classes statiques sont vérifiées, y compris dans les blocs conditionnels
+  et dans les attributs mixtes comme `class="ServiceCard {{ extra_classes }}"`.
+- Pour la règle d'une classe par élément (R03), les branches d'un `{% if %}` /
+  `{% elseif %}` / `{% else %}` sont exclusives :
+  `class="{% if featured %}ServiceCardFeatured{% else %}ServiceCard{% endif %}"`
+  est conforme, et la règle s'applique à chaque chemin de rendu.
+
+**Limite : les valeurs dynamiques ne sont pas devinées.** Seules les classes
+écrites littéralement dans le template sont vérifiées. L'analyse ignore une
+classe produite par une expression (`{{ classes|join(' ') }}`), une classe
+collée à une expression (`ServiceCard{{ suffix }}`, `is-{{ state }}`), et les
+classes ajoutées via les objets d'attributs de Drupal
+(`{{ attributes.addClass('ServiceCard') }}`) ou des variables `{% set %}`.
+Le CLI n'a pas non plus d'adaptateurs pour Vue, JSX, etc. Les règles existantes ne sont pas
 modifiées par l'extraction en package.
 
 ## Spécification embarquée
