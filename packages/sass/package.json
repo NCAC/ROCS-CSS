@@ -49,18 +49,6 @@
     "README.fr.md",
     "CHANGELOG.md"
   ],
-  "peerDependencies": {
-    "sass": ">=1.71.0",
-    "sass-embedded": ">=1.71.0"
-  },
-  "peerDependenciesMeta": {
-    "sass": {
-      "optional": true
-    },
-    "sass-embedded": {
-      "optional": true
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/NCAC/ROCS-CSS.git",
