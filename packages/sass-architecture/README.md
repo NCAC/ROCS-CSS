@@ -2,12 +2,12 @@
 
 **English** · [Français](README.fr.md)
 
-**Reference architecture** for ROCS-compatible Sass, version 1.0.0-rc.1
-(release candidate), targeting ROCS 1.0. This package is mostly documentation.
+**Reference architecture** for ROCS-compatible Sass, version 1.0.0,
+targeting ROCS 1.0. This package is mostly documentation.
 It also ships an optional static checker (`sass-architecture check`); it
 provides no Sass mixins (see [`@rocss/sass`](https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass#readme)).
 
-Installation: `npm install --save-dev @rocss/sass-architecture@next`.
+Installation: `npm install --save-dev @rocss/sass-architecture`.
 The Markdown files can be read directly or located through the
 `@rocss/sass-architecture/specification` and `@rocss/sass-architecture/guide`
 subpaths; they are not JavaScript modules to import.
@@ -66,16 +66,14 @@ The specification distinguishes `tokens`, `primitives`, `behaviors`,
 `combinators`, `components`, `globals` and `bootstrap`. Its additional
 constraints are not obligations for every ROCS application.
 
-## Release candidate status
+## Stability
 
-1.0.0-rc.1 is published under the npm tag `next`, not `latest`. It freezes the
-specification and the rule identifiers (`I1`…`I23`) to gather feedback before
-1.0.0. The checker remains **heuristic**: see the limits above. The reference
-implementation `@rocss/sass` is still experimental (0.1.0, tag `next`).
+1.0.0 freezes the specification and the rule identifiers (`I1`…`I23`). The
+checker remains **heuristic**: see the limits above. The reference
+implementation `@rocss/sass` is also stable (1.0.0).
 
-Proposed policy from 1.0.0 on: a new check is introduced as a warning and only
-becomes an error at the next major version, so that a minor update does not
-break existing projects.
+Policy: a new check is introduced as a warning and only becomes an error at the
+next major version, so that a minor update does not break existing projects.
 
-Package versions are independent. ROCS compliance depends neither on adopting
+The three `@rocss` packages share one version number, kept in sync by Changesets. ROCS compliance depends neither on adopting
 this architecture nor on installing this package.

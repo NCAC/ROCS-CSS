@@ -1,6 +1,6 @@
 # ROCS — *Role‑Oriented CSS Semantics*
 
-**Spécification ROCS 1.0.0** — versions des packages indépendantes.
+**Spécification ROCS 1.0.0** — les trois packages `@rocss` partagent une même version synchronisée (1.0.0).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -15,8 +15,8 @@ La racine **rocs-monorepo** est privée (`private: true`) et utilise les pnpm wo
 | Package | Version | Contenu et statut |
 | --- | --- | --- |
 | [@rocss/rocs](packages/rocs/README.fr.md) | 1.0.0 | Spécification ROCS, validateur CLI/API JavaScript et configurations Stylelint/ESLint. |
-| [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) | 1.0.0-rc.1 | Architecture de référence (release candidate, tag npm `next`) avec vérificateur statique heuristique ; aucun mixin Sass. |
-| [@rocss/sass](packages/sass/README.fr.md) | 0.1.0 | **Implémentation Sass expérimentale** (tag npm `next`) : sept mixins dans quatre familles ; l'API peut encore évoluer. |
+| [@rocss/sass-architecture](packages/sass-architecture/README.fr.md) | 1.0.0 | Architecture de référence avec vérificateur statique heuristique ; aucun mixin Sass. |
+| [@rocss/sass](packages/sass/README.fr.md) | 1.0.0 | Implémentation Sass : sept mixins canoniques dans quatre familles. |
 
 Voir le [guide du monorepo](docs/MONOREPO.md) et les [consignes de contribution](CONTRIBUTING.md).
 
@@ -44,7 +44,7 @@ pnpm run pack:check
 
 Des tests ont été ajoutés pour les compilations Sass (points d'entrée et compositions), les arguments invalides et l'installation des trois archives hors dépôt, avec compilation depuis le package installé. **Ces tests restent à exécuter ; leur présence ne garantit pas leur réussite.**
 
-**Aucun package n'est publié à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.** Les versions et les CHANGELOG par package sont gérés par [Changesets](https://changesets.dev) (voir [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Une éventuelle publication sera manuelle depuis le dépôt, après les contrôles et vérification des droits npm ; aucune publication par CI n'est configurée.
+**Aucun package n'est publié à ce stade ; les packages seront publiés sous l'organisation npm `@rocss`.** Les trois packages partagent une même version synchronisée (groupe `fixed` de Changesets) ; les versions et les CHANGELOG par package sont gérés par [Changesets](https://changesets.dev) (voir [docs/MONOREPO.md](docs/MONOREPO.md#versions-et-publication)). Une éventuelle publication sera manuelle depuis le dépôt, après les contrôles et vérification des droits npm ; aucune publication par CI n'est configurée.
 
 ---
 

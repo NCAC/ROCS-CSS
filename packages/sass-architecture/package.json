@@ -1,7 +1,7 @@
 {
   "name": "@rocss/sass-architecture",
-  "version": "1.0.0-rc.1",
-  "description": "Reference Sass architecture for ROCS (release candidate) with a heuristic static checker",
+  "version": "1.0.0",
+  "description": "Reference Sass architecture for ROCS with a heuristic static checker",
   "keywords": [
     "rocs",
     "sass",
@@ -41,8 +41,7 @@
     "prepack": "pnpm run build"
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   },
   "repository": {
     "type": "git",

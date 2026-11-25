@@ -5,13 +5,13 @@
 Canonical Sass mixins for the combinators layer, the reference implementation of
 the [`@rocss/sass-architecture`](https://github.com/NCAC/ROCS-CSS/tree/main/packages/sass-architecture#readme) architecture.
 
-**Experimental version 0.1.0, published under the npm tag `next`.** The API may
-still change, in particular to follow the architecture, which is itself a
-release candidate. Targeted references: ROCS 1.0 and Sass architecture 1.0.0-rc.1.
+**Stable version 1.0.0.** The public API (seven canonical mixins across four
+families) follows semantic versioning: a breaking change requires a major
+version. Targeted references: ROCS 1.0 and Sass architecture 1.0.
 
 ## Imports
 
-In a project: `npm install --save-dev @rocss/sass@next sass`.
+In a project: `npm install --save-dev @rocss/sass sass`.
 Inside the repository, after `pnpm install` at the root, the workspaces are
 linked in `node_modules/@rocss/` (`workspace:*` root dependencies).
 

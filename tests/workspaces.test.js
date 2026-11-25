@@ -36,19 +36,27 @@ test('Private root and pnpm lockfile match workspace manifests', () => {
     assert.equal(manifest.devDependencies[`@rocss/${name}`], 'workspace:*');
     assert.match(lock, new RegExp(`^  packages/${name}:`, 'm'), `Missing lockfile importer: ${name}`);
   }
-  // Every package is publishable and public; prereleases and 0.x stay off `latest`.
-  // `changeset publish` ignores publishConfig.tag, hence manual pnpm publish.
-  const expectedTags = { rocs: undefined, 'sass-architecture': 'next', sass: 'next' };
+  // Every package is publishable, public and stable: all three share one version
+  // (Changesets `fixed` group) and publish under `latest`.
+  const versions = new Set();
   for (const name of names) {
     const pkg = readJson(`packages/${name}/package.json`);
     assert.equal(pkg.private, undefined, `${name} must be publishable`);
     assert.equal(pkg.publishConfig.access, 'public');
-    assert.equal(pkg.publishConfig.tag, expectedTags[name], `${name} npm dist-tag`);
+    assert.equal(pkg.publishConfig.tag, undefined, `${name} must publish under latest`);
+    assert.doesNotMatch(pkg.version, /-/, `${name} must not be a prerelease`);
+    versions.add(pkg.version);
     for (const field of ['description', 'keywords', 'homepage', 'bugs', 'repository', 'license']) {
       assert.ok(pkg[field], `${name} is missing ${field}`);
     }
     assert.ok(pkg.files.includes('README.fr.md'), `${name} must ship its French README`);
   }
+  assert.equal(versions.size, 1, `Package versions must be synchronized: ${[...versions].join(', ')}`);
+  assert.deepEqual(
+    readJson('.changeset/config.json').fixed,
+    [names.map(name => `@rocss/${name}`)],
+    'Changesets must keep the three packages in one fixed group'
+  );
   // Consumers bring their own compiler; pkg: URLs require Dart Sass >= 1.71.0.
   const { peerDependencies, peerDependenciesMeta } = readJson('packages/sass/package.json');
   for (const compiler of ['sass', 'sass-embedded']) {

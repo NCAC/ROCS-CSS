@@ -6,7 +6,13 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "ignore": [],
-  "fixed": [],
+  "fixed": [
+    [
+      "@rocss/rocs",
+      "@rocss/sass-architecture",
+      "@rocss/sass"
+    ]
+  ],
   "linked": [],
   "updateInternalDependencies": "patch"
 }

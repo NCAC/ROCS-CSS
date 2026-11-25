@@ -1,6 +1,6 @@
 {
   "name": "@rocss/sass",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Canonical Sass combinators for ROCS: context, state, scope and part",
   "keywords": [
     "rocs",
@@ -70,7 +70,6 @@
     "url": "https://github.com/NCAC/ROCS-CSS/issues"
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   }
 }
