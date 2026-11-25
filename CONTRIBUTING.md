@@ -43,8 +43,8 @@ Seul `pnpm-lock.yaml` fait foi : ne pas créer de `package-lock.json`. La racine
 déclare les trois workspaces en `devDependencies` `workspace:*` afin qu'ils
 soient liés dans `node_modules/@rocss/` (résolution Sass et CLI `rocs`).
 `autoInstallPeers: false` (dans `pnpm-workspace.yaml`) empêche pnpm d'installer
-les peers optionnels des workspaces, notamment `sass-embedded` : les peers sont
-fournis par les `devDependencies` de la racine.
+les peers optionnels des workspaces : les peers sont fournis par les
+`devDependencies` de la racine.
 
 La politique `allowBuilds` refuse explicitement le script natif de
 `@parcel/watcher`, inutile pour les compilations et les tests actuels. Ce refus

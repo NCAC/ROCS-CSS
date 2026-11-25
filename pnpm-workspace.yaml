@@ -5,6 +5,6 @@ allowBuilds:
   # Explicitly deny this script rather than allowing dependency scripts globally.
   '@parcel/watcher': false
 
-# Workspace peers come from root devDependencies. Optional compiler peers of
-# @rocss/sass (sass, sass-embedded) must not pull sass-embedded into the repo.
+# Workspace peers come from root devDependencies; pnpm must not install
+# optional workspace peers on its own.
 autoInstallPeers: false

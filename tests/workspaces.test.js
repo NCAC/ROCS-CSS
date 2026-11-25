@@ -58,11 +58,12 @@ test('Private root and pnpm lockfile match workspace manifests', () => {
     [names.map(name => `@rocss/${name}`)],
     'Changesets must keep the three packages in one fixed group'
   );
-  // Consumers bring their own compiler; pkg: URLs require Dart Sass >= 1.71.0.
-  const { peerDependencies, peerDependenciesMeta } = readJson('packages/sass/package.json');
-  for (const compiler of ['sass', 'sass-embedded']) {
-    assert.equal(peerDependencies[compiler], '>=1.71.0');
-    assert.equal(peerDependenciesMeta[compiler].optional, true);
+  // Consumers bring their own Dart Sass (>= 1.71.0 for pkg: URLs), documented in
+  // the README. No compiler is declared, so scanners do not attribute its native
+  // binaries, install scripts or child processes to an SCSS-only package.
+  const sassPkg = readJson('packages/sass/package.json');
+  for (const field of ['dependencies', 'peerDependencies', 'peerDependenciesMeta', 'optionalDependencies']) {
+    assert.equal(sassPkg[field], undefined, `@rocss/sass must not declare ${field}`);
   }
 });
 

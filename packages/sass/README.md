@@ -15,9 +15,12 @@ In a project: `npm install --save-dev @rocss/sass sass`.
 Inside the repository, after `pnpm install` at the root, the workspaces are
 linked in `node_modules/@rocss/` (`workspace:*` root dependencies).
 
-The compiler is not bundled: `sass` and `sass-embedded` (≥ 1.71.0, for `pkg:`
-URLs) are declared as optional `peerDependencies`. Install one of them; the
-package manager then reports a version that is too old.
+The compiler is not bundled, and none is declared in `peerDependencies`: the
+package ships SCSS only. Install Dart Sass **≥ 1.71.0** (required for `pkg:`
+URLs), either as `sass` (JavaScript build, the reference) or as `sass-embedded`
+(same API and same CSS output, faster on large projects, with native binaries
+running the compiler in a child process). The package manager does not check
+this version: a compiler older than 1.71.0 does not support `pkg:` URLs.
 
 ### Recommended: `pkg:` URLs
 

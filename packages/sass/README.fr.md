@@ -15,9 +15,13 @@ Après `pnpm install` à la racine, les workspaces sont liés dans `node_modules
 (dépendances `workspace:*` de la racine).
 Dans un projet : `npm install --save-dev @rocss/sass sass`.
 
-Le compilateur n'est pas fourni : `sass` et `sass-embedded` (≥ 1.71.0, pour les
-URL `pkg:`) sont déclarés en `peerDependencies` optionnelles. Installer l'un des
-deux ; le gestionnaire de paquets signale alors une version trop ancienne.
+Le compilateur n'est pas fourni, et aucun n'est déclaré en `peerDependencies` :
+le package ne contient que du SCSS. Installer Dart Sass **≥ 1.71.0** (requis
+pour les URL `pkg:`), au choix `sass` (version JavaScript, la référence) ou
+`sass-embedded` (même API et même CSS produit, plus rapide sur les gros projets,
+avec des binaires natifs qui lancent le compilateur dans un processus séparé).
+Le gestionnaire de paquets ne vérifie pas cette version : un compilateur
+antérieur à 1.71.0 ne prend pas en charge les URL `pkg:`.
 
 ### Voie recommandée : URL `pkg:`
 
