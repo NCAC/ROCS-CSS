@@ -1,5 +1,9 @@
 # @rocss/sass
 
+## 1.1.2
+
+No changes in this release.
+
 ## 1.1.1
 
 ### Patch Changes
