@@ -65,6 +65,12 @@ test('Private root and pnpm lockfile match workspace manifests', () => {
   for (const field of ['dependencies', 'peerDependencies', 'peerDependenciesMeta', 'optionalDependencies']) {
     assert.equal(sassPkg[field], undefined, `@rocss/sass must not declare ${field}`);
   }
+  // The checker loads sass only for --compile and checks its version at load time.
+  const architecture = readJson('packages/sass-architecture/package.json');
+  for (const field of ['peerDependencies', 'peerDependenciesMeta', 'optionalDependencies']) {
+    assert.equal(architecture[field], undefined, `@rocss/sass-architecture must not declare ${field}`);
+  }
+  assert.deepEqual(Object.keys(architecture.dependencies).sort(), ['postcss', 'postcss-scss', 'postcss-selector-parser']);
 });
 
 test('Build and tarballs work outside the monorepo', () => {

@@ -9,20 +9,38 @@ const CHAIN = ['tokens', 'primitives', 'behaviors', 'combinators', 'components']
 // `globals` n'émet que des déclarations non sélectives (I2).
 const GLOBAL_AT_RULES = ['keyframes', 'font-face', 'property'];
 
+// Version minimale de Dart Sass (NodePackageImporter, URL `pkg:`). Aucun
+// compilateur n'est déclaré en peer : la version est contrôlée ici, au chargement.
+const MIN_SASS = [1, 71, 0];
+
+function assertSassVersion(sass) {
+  const match = /(\d+)\.(\d+)\.(\d+)/.exec(String(sass.info ?? ''));
+  if (!match) return;
+  const version = match.slice(1).map(Number);
+  // Premier composant qui diffère (majeure, mineure, correctif) : il décide.
+  const index = version.findIndex((part, i) => part !== MIN_SASS[i]);
+  if (index !== -1 && version[index] < MIN_SASS[index]) {
+    throw new Error(`Le compilateur "sass" ${version.join('.')} est trop ancien : --compile exige sass >= ${MIN_SASS.join('.')}.`);
+  }
+}
+
 async function loadSass(root) {
   const candidates = [
     async () => import(pathToFileURL(createRequire(join(root, 'noop.js')).resolve('sass')).href),
     async () => import('sass'),
   ];
   for (const candidate of candidates) {
+    let module;
     try {
-      const module = await candidate();
-      return module.compile ? module : module.default;
+      module = await candidate();
     } catch {
-      // Essayer le compilateur suivant.
+      continue; // Essayer le compilateur suivant.
     }
+    const sass = module.compile ? module : module.default;
+    assertSassVersion(sass);
+    return sass;
   }
-  throw new Error('Le compilateur "sass" (>= 1.71.0) est introuvable : installez-le pour utiliser --compile.');
+  throw new Error(`Le compilateur "sass" (>= ${MIN_SASS.join('.')}) est introuvable : installez-le pour utiliser --compile.`);
 }
 
 /**

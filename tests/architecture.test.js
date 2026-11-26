@@ -215,6 +215,26 @@ test('CLI help shows the package version from its manifest', () => {
   assert.ok(help.stdout.includes(`ROCS Sass Architecture Checker — v${version}`), help.stdout);
 });
 
+test('--compile checks the Sass version, since no compiler is declared as a peer', () => {
+  // Stub compiler installed in the analyzed project, which loadSass tries first.
+  const withSass = version => project({
+    ...compliant,
+    'node_modules/sass/package.json': JSON.stringify({ name: 'sass', version, main: 'index.js' }),
+    'node_modules/sass/index.js': `exports.info = "dart-sass\\t${version}\\t(Sass Compiler)";\n`
+      + 'exports.Logger = { silent: {} };\nexports.compile = () => ({ css: "" });\n',
+  });
+  for (const [version, status] of [['1.70.9', 2], ['1.71.0', 0], ['2.0.0', 0]]) {
+    const dir = withSass(version);
+    try {
+      const result = spawnSync(process.execPath, [cli, 'check', dir, '--compile'], { encoding: 'utf8' });
+      assert.equal(result.status, status, `sass ${version}: ${result.stdout}${result.stderr}`);
+      if (status === 2) assert.match(result.stderr, /sass" 1\.70\.9 est trop ancien.*>= 1\.71\.0/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+});
+
 test('The @rocss/sass workspace satisfies its own architecture checks', () => {
   const result = checkArchitecture(join(root, 'packages/sass'), {
     layers: { combinators: '.' },
